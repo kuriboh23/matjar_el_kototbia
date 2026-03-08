@@ -1,7 +1,7 @@
 <?php
 /**
  * FILE: pages/product_detail.php
- * PURPOSE: Detailed product view based on docs/Prompt.md.
+ * PURPOSE: Rebuilt detailed product view with New Design and Sticky Bar.
  */
 
 require_once __DIR__ . '/../config/config.php';
@@ -17,6 +17,7 @@ if (!$product) {
 
 $product_id = (int)$product['product_id'];
 $product_name = get_product_name($product);
+$product_desc = ($current_language === 'ar') ? $product['product_description_ar'] : $product['product_description_fr'];
 $product_price = (float)$product['product_price'];
 $product_sale_price = (float)$product['product_sale_price'];
 $is_on_sale = (bool)$product['product_is_on_sale'] && $product_sale_price > 0 && $product_sale_price < $product_price;
@@ -25,109 +26,62 @@ $display_price = $is_on_sale ? $product_sale_price : $product_price;
 // Related products
 $related_products = get_products_by_category((int)$product['product_category_id'], 1, 6);
 
+// Check if item is in session cart
+$cart = $_SESSION[CART_SESSION_KEY] ?? [];
+$in_cart = isset($cart[$product_id]);
+$current_qty = $in_cart ? $cart[$product_id] : 0;
+
 $page_title = $product_name . ' - ' . $lang['site_name'];
 require_once __DIR__ . '/../includes/header.php';
 ?>
 
+<!-- Header Override for Details (Optional, keeping main header) -->
+<div class="container py-3 d-flex align-items-center gap-3">
+    <div onclick="window.history.back()" style="cursor:pointer" class="icon-trigger">
+        <i data-lucide="arrow-left"></i>
+    </div>
+    <div class="fw-bold" style="font-size: 1.1rem;"><?php echo $lang['product_details'] ?? 'Détails'; ?></div>
+</div>
+
+<!-- Clickable Image Section -->
+<div class="hri-product-img-container" onclick="openLightbox()">
+    <img id="mainImg" src="<?php echo get_product_image_url($product['product_image']); ?>" alt="<?php echo htmlspecialchars($product_name); ?>">
+</div>
+
+<!-- Lightbox -->
+<div id="lightbox" class="hri-lightbox" onclick="closeLightbox()">
+    <div class="hri-lightbox__close"><i data-lucide="x" size="32"></i></div>
+    <img id="lightboxImg" src="" alt="Zoom">
+</div>
+
+<!-- Product Info -->
 <div class="container py-4">
-    <!-- Breadcrumb -->
-    <nav aria-label="breadcrumb" class="mb-3">
-        <ol class="breadcrumb small" style="font-size: 0.8rem;">
-            <li class="breadcrumb-item"><a href="<?php echo SITE_URL; ?>/index.php" class="text-primary text-decoration-none"><?php echo $lang['home']; ?></a></li>
-            <li class="breadcrumb-item"><a href="<?php echo SITE_URL; ?>/pages/products.php" class="text-primary text-decoration-none"><?php echo $lang['products']; ?></a></li>
-            <li class="breadcrumb-item active" aria-current="page"><?php echo htmlspecialchars($product_name); ?></li>
-        </ol>
-    </nav>
+    <div class="mb-2">
+        <?php if ($is_on_sale): ?>
+            <span class="badge bg-danger rounded-pill px-3">-<?php echo round((($product_price - $product_sale_price) / $product_price) * 100); ?>%</span>
+        <?php endif; ?>
+        <span class="badge bg-light text-dark border rounded-pill px-3 ms-1"><?php echo translate('unit_' . $product['product_unit']); ?></span>
+    </div>
 
-    <div class="row g-4">
-        <!-- Left Column: Image Gallery (40%) -->
-        <div class="col-lg-5">
-            <div class="bg-white border rounded-3 p-3 text-center mb-3">
-                <img id="mainImage" src="<?php echo get_product_image_url($product['product_image']); ?>" class="img-fluid" style="max-height: 450px; object-fit: contain;" alt="">
-            </div>
-            
-            <div class="d-flex gap-2 overflow-auto pb-2 mb-4">
-                <img src="<?php echo get_product_image_url($product['product_image']); ?>" class="img-thumbnail" style="width: 80px; height: 80px; cursor: pointer;" onclick="document.getElementById('mainImage').src=this.src">
-                <!-- Additional thumbnails if available -->
-            </div>
+    <h1 style="font-weight: 800; font-size: 24px; margin: 0;"><?php echo htmlspecialchars($product_name); ?></h1>
+    
+    <div class="hri-product-card__price mt-3 mb-4" style="font-size: 28px;">
+        <span class="current text-dark"><?php echo format_price($display_price); ?></span>
+        <?php if ($is_on_sale): ?>
+            <span class="original fs-5 text-muted ms-2"><?php echo format_price($product_price); ?></span>
+        <?php endif; ?>
+    </div>
 
-            <div class="border-top pt-3">
-                <h6 class="fw-bold small mb-3">PARTAGEZ CE PRODUIT</h6>
-                <div class="d-flex gap-2">
-                    <a href="#" class="btn btn-outline-secondary btn-sm rounded-circle"><i class="bi bi-facebook"></i></a>
-                    <a href="#" class="btn btn-outline-secondary btn-sm rounded-circle"><i class="bi bi-twitter-x"></i></a>
-                    <a href="#" class="btn btn-outline-secondary btn-sm rounded-circle"><i class="bi bi-whatsapp"></i></a>
-                </div>
-            </div>
-        </div>
-
-        <!-- Right Column: Product Info (60%) -->
-        <div class="col-lg-7">
-            <div class="bg-white border rounded-3 p-4">
-                <!-- Badges -->
-                <div class="d-flex gap-2 mb-3">
-                    <span class="hri-badge-official">Boutique Officielle</span>
-                    <?php if ($is_on_sale): ?>
-                        <span class="hri-badge-extra">-<?php echo round((($product_price - $product_sale_price) / $product_price) * 100); ?>% Additionnel</span>
-                    <?php endif; ?>
-                </div>
-
-                <h1 class="h3 fw-bold mb-2"><?php echo htmlspecialchars($product_name); ?></h1>
-                
-                <?php if ($product['product_stock'] < 10): ?>
-                    <p class="text-warning small fw-bold mb-3">
-                        <i class="bi bi-exclamation-circle me-1"></i>
-                        <?php echo $product['product_stock']; ?> articles seulement
-                    </p>
-                <?php endif; ?>
-
-                <hr class="opacity-10 my-3">
-
-                <!-- Price Block -->
-                <div class="hri-detail-price mb-3">
-                    <span class="hri-price-big"><?php echo format_price($display_price); ?></span>
-                    <?php if ($is_on_sale): ?>
-                        <span class="hri-price-was"><?php echo format_price($product_price); ?></span>
-                        <span class="hri-badge-pct">-<?php echo round((($product_price - $product_sale_price) / $product_price) * 100); ?>%</span>
-                    <?php endif; ?>
-                </div>
-
-                <p class="text-muted small mb-4">
-                    + livraison à partir de <strong>10.00 Dhs</strong> (livraison gratuite si supérieur à <strong>200.00 Dhs</strong>) vers <strong>Safi</strong>
-                </p>
-
-                <div class="mb-4">
-                    <label class="form-label small fw-bold text-uppercase">Options Disponibles</label>
-                    <div class="btn-group w-100" role="group">
-                        <input type="radio" class="btn-check" name="unit" id="unit1" checked>
-                        <label class="btn btn-outline-secondary py-2" for="unit1"><?php echo translate('unit_' . $product['product_unit']); ?></label>
-                    </div>
-                </div>
-
-                <!-- Primary CTA -->
-                <button class="hri-btn-buy btn w-100 mb-4" onclick="addCardToCart(<?php echo $product_id; ?>)">
-                    <i class="bi bi-cart3 me-2"></i> J'achète
-                </button>
-
-                <!-- PROMOTIONS section -->
-                <div class="bg-light rounded p-3">
-                    <h6 class="fw-bold small text-uppercase mb-3">PROMOTIONS</h6>
-                    <div class="d-flex align-items-center gap-3 mb-2 small">
-                        <i class="bi bi-send-fill text-success"></i>
-                        <span>Livraison gratuite sur commande ≥ 200 Dhs</span>
-                    </div>
-                    <div class="d-flex align-items-center gap-3 small">
-                        <i class="bi bi-star-fill text-warning"></i>
-                        <span>Contactez-nous via WhatsApp: <?php echo STORE_WHATSAPP_NUMBER; ?></span>
-                    </div>
-                </div>
-            </div>
+    <div class="product-description mb-5">
+        <h6 class="fw-bold text-uppercase small text-muted mb-3"><?php echo $current_language === 'ar' ? 'الوصف' : 'Description'; ?></h6>
+        <div style="color: #555; line-height: 1.7; font-size: 15px;">
+            <?php echo !empty($product_desc) ? nl2br(htmlspecialchars($product_desc)) : ( $current_language === 'ar' ? 'لا يوجد وصف متاح.' : 'Aucune description disponible.' ); ?>
         </div>
     </div>
 
     <!-- Related Products -->
-    <div class="mt-5">
-        <h4 class="fw-bold mb-4">Produits similaires</h4>
+    <div class="mt-5 pt-4 border-top">
+        <h4 class="fw-bold mb-4"><?php echo $lang['related_products'] ?? 'Produits similaires'; ?></h4>
         <div class="row g-2 g-md-3">
             <?php foreach ($related_products as $product_data): ?>
                 <?php if ($product_data['product_id'] == $product_id) continue; ?>
@@ -138,5 +92,25 @@ require_once __DIR__ . '/../includes/header.php';
         </div>
     </div>
 </div>
+
+<!-- Sticky Action Bar -->
+<div class="hri-detail-sticky-bar">
+    <a href="tel:<?php echo clean_phone_number(STORE_PHONE_DISPLAY); ?>" class="hri-btn-call">
+        <i data-lucide="phone"></i>
+    </a>
+
+    <div class="hri-detail-action-wrapper <?php echo $in_cart ? 'is-active' : ''; ?>" id="actionWrap">
+        <button class="hri-btn-acheter" onclick="initAcheterDetail(<?php echo $product_id; ?>)">
+            <?php echo $current_language === 'ar' ? 'شراء الآن' : 'Acheter'; ?>
+        </button>
+        <div class="hri-detail-qty-controls">
+            <button class="hri-detail-qty-btn" onclick="changeQtyDetail(<?php echo $product_id; ?>, -1)">−</button>
+            <span id="qty-display" class="hri-detail-qty-num"><?php echo $current_qty; ?></span>
+            <button class="hri-detail-qty-btn" onclick="changeQtyDetail(<?php echo $product_id; ?>, 1)">+</button>
+        </div>
+    </div>
+</div>
+
+<div class="bottom-spacer" style="height: 100px;"></div>
 
 <?php require_once __DIR__ . '/../includes/footer.php'; ?>

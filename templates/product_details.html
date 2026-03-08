@@ -1,0 +1,248 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Détails Produit - Matjar El Kotobia</title>
+    <script src="https://unpkg.com/lucide@latest"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;600;800&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --carbon-black: #171711;
+            --alice-blue: #eaf6ff;
+            --princeton-orange: #ff8200;
+            --medium-jungle: #089b43;
+            --white: #ffffff;
+            --gray-bg: #f8f9fa;
+        }
+
+        body {
+            margin: 0;
+            font-family: 'Plus Jakarta Sans', sans-serif;
+            background-color: var(--white);
+            padding-bottom: 100px;
+        }
+
+        /* --- Header --- */
+        .hri-header {
+            height: 64px;
+            display: flex;
+            align-items: center;
+            padding: 0 20px;
+            border-bottom: 1px solid #eee;
+            position: sticky;
+            top: 0;
+            background: white;
+            z-index: 100;
+        }
+
+        /* --- Clickable Image Section --- */
+        .img-container {
+            width: 100%;
+            aspect-ratio: 1/1;
+            background: var(--gray-bg);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            overflow: hidden;
+        }
+
+        .img-container img {
+            width: 100%;
+            height: 100%;
+            object-fit: contain;
+        }
+
+        /* --- Lightbox / Modal (Separated View) --- */
+        .lightbox {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0,0,0,0.9);
+            display: none; /* Hidden by default */
+            justify-content: center;
+            align-items: center;
+            z-index: 2000;
+        }
+
+        .lightbox.open { display: flex; }
+
+        .lightbox img {
+            max-width: 90%;
+            max-height: 80%;
+            border-radius: 8px;
+        }
+
+        .close-lightbox {
+            position: absolute;
+            top: 20px;
+            right: 20px;
+            color: white;
+            cursor: pointer;
+        }
+
+        /* --- Info Section --- */
+        .content { padding: 25px 20px; }
+        .price { font-size: 28px; font-weight: 800; margin: 15px 0; }
+        
+        /* --- STICKY ACTION BAR --- */
+        .sticky-bar {
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            background: white;
+            padding: 15px 20px;
+            box-sizing: border-box;
+            display: flex;
+            gap: 12px;
+            box-shadow: 0 -10px 30px rgba(0,0,0,0.08);
+            z-index: 1000;
+        }
+
+        .btn-call {
+            width: 54px;
+            height: 54px;
+            background: var(--alice-blue);
+            color: var(--carbon-black);
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            text-decoration: none;
+        }
+
+        .action-wrapper {
+            flex-grow: 1;
+            height: 54px;
+            position: relative;
+            overflow: hidden;
+            border-radius: 12px;
+        }
+
+        .btn-acheter {
+            width: 100%;
+            height: 100%;
+            background: var(--princeton-orange);
+            color: white;
+            border: none;
+            font-weight: 800;
+            font-size: 16px;
+            cursor: pointer;
+            transition: transform 0.3s;
+        }
+
+        .qty-controls {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: var(--medium-jungle);
+            color: white;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            transform: translateY(100%);
+            transition: 0.3s ease;
+        }
+
+        .action-wrapper.active .btn-acheter { transform: translateY(-100%); }
+        .action-wrapper.active .qty-controls { transform: translateY(0); }
+
+        .qty-btn {
+            width: 50px;
+            height: 100%;
+            border: none;
+            background: rgba(0,0,0,0.1);
+            color: white;
+            font-size: 22px;
+            font-weight: 800;
+            cursor: pointer;
+        }
+    </style>
+</head>
+<body>
+
+    <header class="hri-header">
+        <div onclick="window.history.back()" style="cursor:pointer"><i data-lucide="arrow-left"></i></div>
+        <div style="flex-grow:1; text-align:center; font-weight:800;">Détails</div>
+        <div style="width:24px"></div>
+    </header>
+
+    <div class="img-container" onclick="openLightbox()">
+        <img id="mainImg" src="https://images.unsplash.com/photo-1550989460-0adf9ea622e2?w=800" alt="Produit">
+    </div>
+
+    <div id="lightbox" class="lightbox" onclick="closeLightbox()">
+        <div class="close-lightbox"><i data-lucide="x" size="32"></i></div>
+        <img id="lightboxImg" src="" alt="Zoom">
+    </div>
+
+    <div class="content">
+        <h1 style="font-weight: 800; font-size: 22px; margin: 0;">Huile d'Argan Bio - 250ml</h1>
+        <div class="price">85.00 DH</div>
+        <p style="color: #666; line-height: 1.6;">Produit naturel de Safi. Qualité supérieure garantie.</p>
+    </div>
+
+    <div class="sticky-bar">
+        <a href="tel:+212600000000" class="btn-call">
+            <i data-lucide="phone"></i>
+        </a>
+
+        <div class="action-wrapper" id="actionWrap">
+            <button class="btn-acheter" onclick="initAcheter()">Acheter</button>
+            <div class="qty-controls">
+                <button class="qty-btn" onclick="changeQty(-1)">−</button>
+                <span id="qty-display" style="font-weight:800;">1</span>
+                <button class="qty-btn" onclick="changeQty(1)">+</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        lucide.createIcons();
+
+        // Image Selection / Lightbox Logic
+        function openLightbox() {
+            const src = document.getElementById('mainImg').src;
+            document.getElementById('lightboxImg').src = src;
+            document.getElementById('lightbox').classList.add('open');
+            document.body.style.overflow = 'hidden'; // Stop scrolling
+        }
+
+        function closeLightbox() {
+            document.getElementById('lightbox').classList.remove('open');
+            document.body.style.overflow = 'auto';
+        }
+
+        // Increase/Decrease Logic
+        let quantity = 0;
+        const wrapper = document.getElementById('actionWrap');
+        const display = document.getElementById('qty-display');
+
+        function initAcheter() {
+            quantity = 1;
+            updateUI();
+        }
+
+        function changeQty(amt) {
+            quantity += amt;
+            if (quantity <= 0) quantity = 0;
+            updateUI();
+        }
+
+        function updateUI() {
+            if (quantity > 0) {
+                wrapper.classList.add('active');
+                display.innerText = quantity;
+            } else {
+                wrapper.classList.remove('active');
+            }
+        }
+    </script>
+</body>
+</html>

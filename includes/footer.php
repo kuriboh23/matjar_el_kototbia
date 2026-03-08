@@ -31,7 +31,9 @@ $current_year = date('Y');
                 <div class="col-lg-4 col-md-6">
                     <div class="footer-brand mb-3">
                         <img src="<?php echo SITE_URL; ?>/assets/images/logo/logo-white.png" alt="<?php echo htmlspecialchars($store_name); ?>" height="50" class="mb-2" onerror="this.style.display='none'">
-                        <h5 class="fw-bold"><?php echo htmlspecialchars($store_name); ?></h5>
+                        <h5 class="fw-bold"><a href="<?php echo SITE_URL; ?>/index.php" class="logo" style="color: white;">
+                    MATJAR<span>.</span>KOTOBIA
+                </a></h5>
                     </div>
                     <p class="text-light mb-3" style="opacity: 0.8;">
                         <?php echo ($current_language === 'ar') ? SITE_TAGLINE_AR : SITE_TAGLINE_FR; ?>
@@ -174,9 +176,6 @@ $current_year = date('Y');
             </div>
         </div>
     </footer>
-    
-    <!-- Spacer for mobile bottom nav -->
-    <div class="d-lg-none" style="height: 60px;"></div>
     
     <!-- JQuery 3.7.1 -->
     <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>

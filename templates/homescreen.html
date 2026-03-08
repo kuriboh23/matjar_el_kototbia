@@ -1,0 +1,232 @@
+<!DOCTYPE html>
+<html lang="fr" dir="ltr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Matjar El Kotobia — Accueil</title>
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;600;800&display=swap" rel="stylesheet">
+    <script src="https://unpkg.com/lucide@latest"></script>
+    <style>
+        :root {
+            --carbon-black: #171711;
+            --alice-blue: #eaf6ff;
+            --princeton-orange: #ff8200;
+            --medium-jungle: #089b43;
+            --deep-crimson: #90141e;
+            --white: #ffffff;
+            --header-h: 70px;
+        }
+
+        body {
+            margin: 0;
+            font-family: 'Plus Jakarta Sans', sans-serif;
+            background-color: #fcfcfc;
+            color: var(--carbon-black);
+            -webkit-tap-highlight-color: transparent;
+        }
+
+        /* --- Header & Perfectly Aligned Drawer --- */
+        .hri-layout-header {
+            height: var(--header-h);
+            display: flex;
+            align-items: center;
+            padding: 0 20px;
+            background: var(--white);
+            border-bottom: 1px solid #f0f0f0;
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+        }
+
+        .icon-box { width: 40px; display: flex; align-items: center; cursor: pointer; }
+        
+        .logo { 
+            font-weight: 800; font-size: 22px; text-decoration: none; color: var(--carbon-black);
+            display: flex; align-items: center; flex-grow: 1;
+        }
+        .logo span { color: var(--princeton-orange); }
+
+        #drawer-overlay {
+            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+            background: rgba(0,0,0,0.5); z-index: 1100; display: none;
+        }
+
+        #hri-drawer {
+            position: fixed; top: 0; left: 0; width: 300px; height: 100%;
+            background: var(--white); z-index: 1200; display: none;
+            box-shadow: 15px 0 30px rgba(0,0,0,0.1);
+        }
+
+        body.drawer-open { overflow: hidden; }
+        body.drawer-open #drawer-overlay, 
+        body.drawer-open #hri-drawer { display: block; }
+
+        /* --- Category List (Circles) --- */
+        .cat-section { display: flex; gap: 20px; padding: 25px 20px; overflow-x: auto; scrollbar-width: none; }
+        .cat-item { text-align: center; text-decoration: none; min-width: 80px; }
+        .cat-circle { 
+            width: 75px; height: 75px; border-radius: 50%; background: var(--alice-blue); 
+            margin-bottom: 8px; border: 2px solid transparent; transition: 0.2s;
+            display: flex; align-items: center; justify-content: center; overflow: hidden;
+        }
+        .cat-circle img { width: 100%; height: 100%; object-fit: cover; }
+        .cat-item:hover .cat-circle { border-color: var(--princeton-orange); }
+        .cat-item span { font-size: 13px; font-weight: 600; color: var(--carbon-black); }
+
+        /* --- Product Grid --- */
+        .main-content { max-width: 1200px; margin: 0 auto; padding: 0 20px; }
+        .section-title { font-weight: 800; font-size: 20px; margin: 20px 0; display: flex; justify-content: space-between; align-items: center; }
+        .view-all { font-size: 14px; color: var(--princeton-orange); text-decoration: none; }
+
+        .product-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(160px, 1fr)); gap: 15px; }
+
+        .product-card { background: var(--white); border-radius: 18px; padding: 12px; border: 1px solid #f0f0f0; position: relative; }
+        .p-img { width: 100%; aspect-ratio: 1/1; background: #f9f9f9; border-radius: 12px; margin-bottom: 10px; object-fit: cover; }
+        .p-title { font-size: 14px; font-weight: 600; margin: 0 0 5px 0; height: 38px; overflow: hidden; }
+        .p-price { font-weight: 800; font-size: 16px; margin-bottom: 12px; }
+
+        /* Action Area (Toggle Logic) */
+        .action-container { height: 40px; position: relative; overflow: hidden; border-radius: 10px; }
+        .btn-add { 
+            width: 100%; height: 100%; background: var(--princeton-orange); color: white; border: none; 
+            font-weight: 700; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 5px;
+        }
+        .qty-box { 
+            position: absolute; top: 0; left: 0; width: 100%; height: 100%; background: var(--alice-blue); 
+            display: flex; align-items: center; justify-content: space-between; transform: translateY(100%); transition: 0.3s;
+        }
+        .product-card.active .qty-box { transform: translateY(0); }
+        .qty-btn { width: 40px; height: 100%; border: none; background: transparent; cursor: pointer; font-weight: 800; }
+
+        /* --- Nos Services (Trust Signals) --- */
+        .services-grid { 
+            display: grid; grid-template-columns: repeat(2, 1fr); gap: 10px; margin: 40px 0; 
+            background: var(--alice-blue); padding: 20px; border-radius: 20px;
+        }
+        .service-card { text-align: center; }
+        .service-card i { margin-bottom: 5px; }
+        .service-card h4 { margin: 5px 0; font-size: 13px; }
+        .service-card p { font-size: 11px; margin: 0; opacity: 0.7; }
+
+    </style>
+</head>
+<body id="hri-body">
+
+    <header class="hri-layout-header">
+        <div class="icon-box" onclick="toggleDrawer()"><i data-lucide="menu"></i></div>
+        <a href="#" class="logo">MATJAR<span>.</span>KOTOBIA</a>
+        <div class="icon-box" style="justify-content: flex-end;"><i data-lucide="shopping-cart"></i></div>
+    </header>
+
+    <div id="drawer-overlay" onclick="toggleDrawer()"></div>
+    <div id="hri-drawer">
+        <div class="hri-layout-header">
+            <div class="icon-box" onclick="toggleDrawer()"><i data-lucide="x"></i></div>
+            <div class="logo">MATJAR<span>.</span>KOTOBIA</div>
+        </div>
+        <div style="padding: 20px;">
+            <div style="font-size: 12px; color: #999; margin-bottom: 20px;">MENU PRINCIPAL</div>
+            <a href="#" style="display: flex; align-items: center; padding: 15px 0; text-decoration: none; color: inherit; font-weight: 600;">
+                <i data-lucide="package" style="margin-right: 15px;"></i> Mes Commandes
+            </a>
+            <a href="#" style="display: flex; align-items: center; padding: 15px 0; text-decoration: none; color: inherit; font-weight: 600;">
+                <i data-lucide="heart" style="margin-right: 15px;"></i> Favoris
+            </a>
+        </div>
+    </div>
+
+    <div class="cat-section">
+        <a href="#" class="cat-item">
+            <div class="cat-circle"><img src="https://images.unsplash.com/photo-1542831371-29b0f74f9713?w=150"></div>
+            <span>Légumes</span>
+        </a>
+        <a href="#" class="cat-item">
+            <div class="cat-circle"><img src="https://images.unsplash.com/photo-1619566636858-adf3ef46400b?w=150"></div>
+            <span>Fruits</span>
+        </a>
+        <a href="#" class="cat-item">
+            <div class="cat-circle"><img src="https://images.unsplash.com/photo-1550583724-1255818c053b?w=150"></div>
+            <span>Laitage</span>
+        </a>
+        <a href="#" class="cat-item">
+            <div class="cat-circle"><img src="https://images.unsplash.com/photo-1628088062854-d1870b4553da?w=150"></div>
+            <span>Viandes</span>
+        </a>
+    </div>
+
+    <main class="main-content">
+        <div class="section-title">
+            <span>Nouveautés</span>
+            <a href="#" class="view-all">Voir tout</a>
+        </div>
+
+        <div class="product-grid">
+            <div class="product-card" id="p1">
+                <img src="https://images.unsplash.com/photo-1550989460-0adf9ea622e2?w=300" class="p-img">
+                <h3 class="p-title">Huile d'Argan Alimentaire 250ml</h3>
+                <div class="p-price">85 DH</div>
+                <div class="action-container">
+                    <button class="btn-add" onclick="updateQty('p1', 1)">Ajouter</button>
+                    <div class="qty-box">
+                        <button class="qty-btn" onclick="updateQty('p1', -1)">-</button>
+                        <span class="qty-num">1</span>
+                        <button class="qty-btn" onclick="updateQty('p1', 1)">+</button>
+                    </div>
+                </div>
+            </div>
+
+            <div class="product-card" id="p2">
+                <img src="https://images.unsplash.com/photo-1523381210434-271e8be1f52b?w=300" class="p-img">
+                <h3 class="p-title">Farine Fleur de Safi 5kg</h3>
+                <div class="p-price">45 DH</div>
+                <div class="action-container">
+                    <button class="btn-add" onclick="updateQty('p2', 1)">Ajouter</button>
+                    <div class="qty-box">
+                        <button class="qty-btn" onclick="updateQty('p2', -1)">-</button>
+                        <span class="qty-num">1</span>
+                        <button class="qty-btn" onclick="updateQty('p2', 1)">+</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="services-grid">
+            <div class="service-card">
+                <i data-lucide="truck"></i>
+                <h4>Livraison Safi</h4>
+                <p>Gratuite dès 500 DH</p>
+            </div>
+            <div class="service-card">
+                <i data-lucide="wallet" style="color: var(--medium-jungle);"></i>
+                <h4>Cash on Delivery</h4>
+                <p>Paiement à la livraison</p>
+            </div>
+        </div>
+    </main>
+
+    <script>
+        lucide.createIcons();
+
+        function toggleDrawer() {
+            document.getElementById('hri-body').classList.toggle('drawer-open');
+        }
+
+        const cart = {};
+        function updateQty(id, delta) {
+            if(!cart[id]) cart[id] = 0;
+            cart[id] += delta;
+            
+            const card = document.getElementById(id);
+            const numLabel = card.querySelector('.qty-num');
+            
+            if(cart[id] > 0) {
+                card.classList.add('active');
+                numLabel.innerText = cart[id];
+            } else {
+                card.classList.remove('active');
+                cart[id] = 0;
+            }
+        }
+    </script>
+</body>
+</html>

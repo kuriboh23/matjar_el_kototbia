@@ -1,0 +1,121 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Category List</title>
+    <style>
+        /* Integrating your color.css variables */
+        :root {
+            --carbon-black: #171711;
+            --alice-blue: #eaf6ff;
+            --princeton-orange: #ff8200;
+            --medium-jungle: #089b43;
+            --deep-crimson: #90141e;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: white;
+            padding: 50px;
+        }
+
+        /* Container for the list */
+        .category-container {
+            display: flex;
+            justify-content: center;
+            gap: 40px; /* Space between items */
+            flex-wrap: wrap;
+        }
+
+        /* Individual Item Wrapper */
+        .category-item {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            text-decoration: none;
+            transition: transform 0.3s ease;
+        }
+
+        .category-item:hover {
+            transform: translateY(-5px);
+        }
+
+        /* Circular Image Styling */
+        .image-wrapper {
+            width: 150px;
+            height: 150px;
+            border-radius: 50%;
+            overflow: hidden;
+            border: 4px solid transparent;
+            transition: border-color 0.3s ease;
+            /* Using alice-blue for a soft background if image fails */
+            background-color: var(--alice-blue); 
+            margin-bottom: 15px;
+        }
+
+        .category-item:hover .image-wrapper {
+            border-color: var(--princeton-orange);
+        }
+
+        .image-wrapper img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        /* Text Label Styling */
+        .category-label {
+            color: var(--carbon-black);
+            font-weight: 700;
+            font-size: 20px;
+            text-align: center;
+        }
+
+        /* Optional: Adding a small accent using another palette color */
+        .category-item:active .category-label {
+            color: var(--deep-crimson);
+        }
+    </style>
+</head>
+<body>
+
+<div class="category-container">
+    <a href="#" class="category-item">
+        <div class="image-wrapper">
+            <img src="https://images.unsplash.com/photo-1503342217505-b0a15ec3261c?auto=format&fit=crop&q=80&w=150" alt="Femme">
+        </div>
+        <span class="category-label">Femme</span>
+    </a>
+
+    <a href="#" class="category-item">
+        <div class="image-wrapper">
+            <img src="https://images.unsplash.com/photo-1488161628813-04466f872be2?auto=format&fit=crop&q=80&w=150" alt="Homme">
+        </div>
+        <span class="category-label">Homme</span>
+    </a>
+
+    <a href="#" class="category-item">
+        <div class="image-wrapper">
+            <img src="https://images.unsplash.com/photo-1519238263530-99bdd11df2ea?auto=format&fit=crop&q=80&w=150" alt="Fille">
+        </div>
+        <span class="category-label">Fille</span>
+    </a>
+
+    <a href="#" class="category-item">
+        <div class="image-wrapper">
+            <img src="https://images.unsplash.com/photo-1503945438517-f65904a5adc0?auto=format&fit=crop&q=80&w=150" alt="Garçon">
+        </div>
+        <span class="category-label">Garçon</span>
+    </a>
+
+    <a href="#" class="category-item">
+        <div class="image-wrapper">
+            <img src="https://images.unsplash.com/photo-1519689680058-324335c77eba?auto=format&fit=crop&q=80&w=150" alt="Bébé">
+        </div>
+        <span class="category-label">Bébé</span>
+    </a>
+</div>
+
+</body>
+</html>

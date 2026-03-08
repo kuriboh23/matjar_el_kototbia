@@ -1,7 +1,7 @@
 <?php
 /**
  * FILE: includes/header.php
- * PURPOSE: Global site header with Jumia-inspired layout and new brand identity.
+ * PURPOSE: Rebuilt header with Hero Loader and Search Overlay.
  */
 
 require_once __DIR__ . '/../config/config.php';
@@ -9,6 +9,7 @@ require_once __DIR__ . '/../config/config.php';
 global $current_language, $is_rtl, $lang;
 
 $cart_count = get_cart_item_count();
+$active_categories = get_active_categories();
 ?>
 <!DOCTYPE html>
 <html lang="<?php echo $current_language; ?>" dir="<?php echo $is_rtl ? 'rtl' : 'ltr'; ?>">
@@ -37,6 +38,7 @@ $cart_count = get_cart_item_count();
 
     <!-- Global App Configuration -->
     <script>
+        const SITE_URL = "<?php echo SITE_URL; ?>";
         const HriApp = {
             siteUrl: "<?php echo SITE_URL; ?>",
             ajaxUrl: "<?php echo SITE_URL; ?>/ajax",
@@ -46,143 +48,131 @@ $cart_count = get_cart_item_count();
         };
     </script>
 </head>
-<body class="<?php echo $is_rtl ? 'rtl-mode' : ''; ?>">
+<body id="hri-body" class="<?php echo $is_rtl ? 'is-rtl' : ''; ?>">
 
-    <!-- Drawer Overlay -->
-    <div id="hri-drawer-overlay" class="hri-drawer-overlay"></div>
-
-    <!-- Jumia-style Drawer -->
-    <div id="hri-drawer" class="hri-drawer">
-        <div class="hri-drawer-header">
-            <i data-lucide="x" class="hri-drawer-close" id="hri-drawer-close"></i>
-            <div class="hri-drawer-logo">
-                <img src="<?php echo SITE_URL; ?>/assets/images/logo/logo.png" alt="Logo" height="30" onerror="this.style.display='none'">
-            </div>
-        </div>
-
-        <div class="hri-drawer-content">
-            <a href="<?php echo SITE_URL; ?>/pages/contact.php" class="hri-drawer-item header-link">
-                <span class="label">BESOIN D'AIDE?</span>
-                <i data-lucide="chevron-right" class="chevron-right"></i>
-            </a>
-            <a href="<?php echo SITE_URL; ?>/pages/profile.php" class="hri-drawer-item header-link">
-                <span class="label">VOTRE COMPTE</span>
-                <i data-lucide="chevron-right" class="chevron-right"></i>
-            </a>
-
-            <div class="hri-drawer-list">
-                <a href="<?php echo SITE_URL; ?>/pages/order_history.php" class="hri-drawer-item"><i data-lucide="package"></i><span class="label">Vos commandes</span></a>
-                <a href="<?php echo SITE_URL; ?>/pages/profile.php" class="hri-drawer-item"><i data-lucide="heart"></i><span class="label">Favoris</span></a>
-            </div>
-
-            <div class="hri-drawer-section-title">
-                <span>NOS CATÉGORIES</span>
-                <a href="<?php echo SITE_URL; ?>/pages/products.php" class="view-more">Voir plus</a>
-            </div>
-
-            <div class="hri-drawer-list">
-                <?php 
-                $drawer_cats = get_active_categories();
-                foreach($drawer_cats as $cat): 
-                ?>
-                    <a href="<?php echo SITE_URL; ?>/pages/category.php?slug=<?php echo $cat['category_slug']; ?>" class="hri-drawer-item">
-                        <i class="<?php echo $cat['category_icon'] ?? 'bi-grid'; ?>"></i>
-                        <span class="label"><?php echo htmlspecialchars($current_language === 'ar' ? $cat['category_name_ar'] : $cat['category_name_fr']); ?></span>
-                    </a>
-                <?php endforeach; ?>
-            </div>
+    <!-- 1. HERO HOME LOADER (Initial Scan) -->
+    <div id="hri-home-loader">
+        <div class="barcode-wrap">
+            <div class="laser"></div>
+            <i data-lucide="barcode" size="64"></i>
+            <div style="margin-top:15px; font-weight:900; letter-spacing:1px;">MATJAR<span style="color:var(--princeton-orange)">.</span>KOTOBIA</div>
         </div>
     </div>
 
-    <!-- Flash Notification Bar -->
-    <div id="hri-flash-bar" class="hri-flash-bar">
-        <div class="container d-flex justify-content-center align-items-center position-relative">
-            <span><i class="bi bi-check-circle-fill me-2"></i> <?php echo $current_language === 'ar' ? 'تمت إضافة المنتج بنجاح' : 'Produit ajouté avec succès'; ?></span>
-            <button type="button" class="btn-close btn-close-white position-absolute end-0 me-3" onclick="this.closest('#hri-flash-bar').style.display='none'"></button>
+    <!-- 2. MICRO DATA LOADER (Processing State) -->
+    <div id="hri-data-handler">
+        <div class="loading-center-icon">
+            <div class="pulse-ring"></div>
+            <i id="dynamic-loader-icon" data-lucide="shopping-basket" size="32"></i>
+        </div>
+    </div>
+    
+    <!-- Top Progress Bar -->
+    <div id="hri-top-bar"></div>
+
+    <!-- 3. FULL-SCREEN SEARCH OVERLAY -->
+    <div id="hri-search-overlay">
+        <div class="container h-100 d-flex flex-column p-0">
+            <div class="search-top">
+                <div class="close-search" onclick="closeSearch()">
+                    <i data-lucide="arrow-left" size="28"></i>
+                </div>
+                <div class="flex-grow-1">
+                    <input type="text" id="main-search-input" class="full-search-input" placeholder="<?php echo $current_language === 'ar' ? 'أنا أبحث عن...' : 'Je cherche...'; ?>" autocomplete="off">
+                </div>
+            </div>
+
+            <div id="hri-search-loader">
+                <div style="position:relative; display:flex; align-items:center; justify-content:center;">
+                    <div style="position:absolute; width:60px; height:60px; border:2px solid var(--princeton-orange); border-radius:50%; animation: ring-pulse 1s infinite;"></div>
+                    <i data-lucide="refresh-cw" class="spin" style="color:var(--princeton-orange)"></i>
+                </div>
+            </div>
+
+            <div class="results-container" id="hri-search-results"></div>
         </div>
     </div>
 
-    <!-- Top Bar (Desktop Only) -->
-    <div class="hri-top-bar d-none d-lg-block py-1">
-        <div class="container d-flex justify-content-between align-items-center">
-            <div class="text-primary fw-bold">
-                <i class="bi bi-box-seam me-1"></i> <?php echo $current_language === 'ar' ? 'توصيل في آسفي' : 'Livraison à Safi'; ?>
-            </div>
-            <div class="store-name fw-bold text-dark">
-                <?php echo $lang['site_name']; ?>
-            </div>
-            <div class="language-switcher">
-                <a href="?lang=fr" class="text-decoration-none <?php echo $current_language === 'fr' ? 'fw-bold text-primary' : 'text-muted'; ?>">Français</a>
-                <span class="text-muted mx-1">|</span>
-                <a href="?lang=ar" class="text-decoration-none <?php echo $current_language === 'ar' ? 'fw-bold text-primary' : 'text-muted'; ?>">العربية</a>
+    <!-- Main Navigation & Content -->
+    <div id="hri-main-wrapper">
+        
+        <!-- Flash Notification Bar -->
+        <div id="hri-flash-bar" class="hri-flash-bar">
+            <div class="container d-flex justify-content-center align-items-center">
+                <span><?php echo $current_language === 'ar' ? 'تمت إضافة المنتج بنجاح' : 'Produit ajouté avec succès'; ?></span>
             </div>
         </div>
-    </div>
 
-    <!-- Main Navbar (Sticky) -->
-    <nav class="hri-navbar sticky-top shadow-sm">
-        <div class="container">
-            <div class="row align-items-center g-2 g-lg-3">
-                <!-- Toggle + Logo -->
-                <div class="col-auto d-flex align-items-center">
-                    <button id="hri-drawer-open" class="btn border-0 p-1 me-2" type="button">
-                        <i class="bi bi-list fs-2"></i>
+        <!-- Main Navbar (Sticky) -->
+        <nav class="hri-navbar sticky-top">
+            <div class="container d-flex align-items-center justify-content-between h-100">
+                <div class="d-flex align-items-center gap-2">
+                    <button id="hri-drawer-open" class="icon-trigger" type="button">
+                        <i data-lucide="menu"></i>
                     </button>
-                    <a href="<?php echo SITE_URL; ?>/index.php" class="navbar-brand m-0">
-                        <img src="<?php echo SITE_URL; ?>/assets/images/logo/logo.png" alt="Matjar El Kotobia" height="40" onerror="this.src='https://placehold.co/120x40/2E7D32/white?text=LOGO'">
+                    <a href="<?php echo SITE_URL; ?>/index.php" class="logo">
+                        MATJAR<span>.</span>KOTOBIA
                     </a>
                 </div>
 
-                <!-- Center: Search Bar -->
-                <div class="col col-lg-6 mx-lg-auto order-3 order-lg-2">
-                    <form action="<?php echo SITE_URL; ?>/pages/products.php" method="GET" class="hri-search-group shadow-sm">
-                        <input type="text" name="q" class="hri-search-input" placeholder="<?php echo $current_language === 'ar' ? 'ابحث عن منتج...' : 'Cherchez un produit...'; ?>" autocomplete="off" id="search-input">
-                        <button type="submit" class="hri-search-btn d-none d-md-block">
-                            <?php echo $current_language === 'ar' ? 'بحث' : 'Rechercher'; ?>
-                        </button>
-                        <button type="submit" class="btn border-0 d-md-none text-primary">
-                            <i class="bi bi-search fs-5"></i>
-                        </button>
-                    </form>
-                    <div id="search-results" class="position-absolute bg-white shadow-sm w-100 rounded-bottom d-none" style="z-index: 1050; max-height: 400px; overflow-y: auto; margin-top: -5px;"></div>
+                <!-- Search Trigger Bar -->
+                <div class="hri-search-trigger d-none d-md-flex" onclick="openSearch()">
+                    <i data-lucide="search" size="18"></i>
+                    <span><?php echo $current_language === 'ar' ? 'ابحث عن منتج...' : 'Rechercher un produit...'; ?></span>
                 </div>
 
-                <!-- Right: Icons/Links -->
-                <div class="col-auto ms-auto order-2 order-lg-3 d-flex align-items-center gap-2 gap-md-4">
-                    <!-- Help (Desktop) -->
-                    <div class="dropdown d-none d-xl-block">
-                        <a href="#" class="text-dark text-decoration-none dropdown-toggle" data-bs-toggle="dropdown">
-                            <i class="bi bi-question-circle fs-5"></i> <span class="ms-1">Aide</span>
-                        </a>
-                        <ul class="dropdown-menu dropdown-menu-end shadow border-0">
-                            <li><a class="dropdown-item" href="#">Centre d'assistance</a></li>
-                            <li><a class="dropdown-item" href="#">Suivre ma commande</a></li>
-                        </ul>
-                    </div>
-
-                    <!-- User Account (Desktop Only) -->
-                    <div class="dropdown d-none d-lg-block">
-                        <a href="#" class="text-dark text-decoration-none d-flex align-items-center" data-bs-toggle="dropdown">
-                            <i class="bi bi-person fs-4"></i>
-                            <span class="ms-1 d-none d-lg-inline"><?php echo $lang['login'] ?? 'Se connecter'; ?></span>
-                        </a>
-                        <ul class="dropdown-menu dropdown-menu-end shadow border-0">
-                            <li><a class="dropdown-item fw-bold text-primary" href="<?php echo SITE_URL; ?>/pages/login.php"><?php echo $lang['login']; ?></a></li>
-                            <li><hr class="dropdown-divider"></li>
-                            <li><a class="dropdown-item" href="<?php echo SITE_URL; ?>/pages/profile.php"><i class="bi bi-person me-2"></i> Mon Compte</a></li>
-                            <li><a class="dropdown-item" href="<?php echo SITE_URL; ?>/pages/order_history.php"><i class="bi bi-bag me-2"></i> Mes Commandes</a></li>
-                        </ul>
-                    </div>
-
-                    <!-- Cart -->
-                    <a href="<?php echo SITE_URL; ?>/pages/cart.php" class="text-dark text-decoration-none position-relative d-flex align-items-center">
-                        <i class="bi bi-cart3 fs-4"></i>
-                        <span class="ms-1 d-none d-lg-inline"><?php echo $lang['cart'] ?? 'Panier'; ?></span>
-                        <span id="hri-cart-badge" class="position-absolute top-0 start-0 translate-middle badge rounded-pill bg-warning text-dark <?php echo $cart_count > 0 ? '' : 'd-none'; ?>" style="font-size: 0.65rem;">
+                <!-- Icons Area -->
+                <div class="d-flex align-items-center gap-2">
+                    <button class="icon-trigger d-md-none" onclick="openSearch()">
+                        <i data-lucide="search"></i>
+                    </button>
+                    <a href="<?php echo SITE_URL; ?>/pages/cart.php" class="icon-trigger position-relative text-decoration-none">
+                        <i data-lucide="shopping-cart"></i>
+                        <span id="hri-cart-badge" class="badge-cart <?php echo $cart_count > 0 ? '' : 'd-none'; ?>">
                             <?php echo $cart_count; ?>
                         </span>
                     </a>
                 </div>
             </div>
+        </nav>
+
+        <!-- Sidebar Drawer -->
+        <div id="hri-drawer-overlay" class="hri-drawer-overlay"></div>
+        <div id="hri-drawer" class="hri-drawer">
+            <div class="hri-drawer-header">
+                <button id="hri-drawer-close" class="icon-trigger">
+                    <i data-lucide="x"></i>
+                </button>
+                <div class="logo">MATJAR<span>.</span>KOTOBIA</div>
+            </div>
+            <div class="hri-drawer-content">
+                <div class="hri-drawer-section-title"><?php echo $current_language === 'ar' ? 'القائمة الرئيسية' : 'MENU PRINCIPAL'; ?></div>
+                <nav class="drawer-links">
+                    <a href="<?php echo SITE_URL; ?>/index.php" class="hri-drawer-item">
+                        <i data-lucide="home"></i> <span class="label"><?php echo $lang['home']; ?></span>
+                    </a>
+                    <a href="<?php echo SITE_URL; ?>/pages/order_history.php" class="hri-drawer-item">
+                        <i data-lucide="package"></i> <span class="label"><?php echo $lang['order_history'] ?? 'Mes Commandes'; ?></span>
+                    </a>
+                    <a href="<?php echo SITE_URL; ?>/pages/profile.php" class="hri-drawer-item">
+                        <i data-lucide="user"></i> <span class="label"><?php echo $lang['my_account']; ?></span>
+                    </a>
+
+                    <div class="hri-drawer-section-title mt-4"><?php echo $lang['categories']; ?></div>
+                    <?php foreach($active_categories as $cat): ?>
+                        <a href="<?php echo SITE_URL; ?>/pages/category.php?slug=<?php echo $cat['category_slug']; ?>" class="hri-drawer-item">
+                            <i class="bi <?php echo $cat['category_icon'] ?? 'bi-grid'; ?>"></i> 
+                            <span class="label"><?php echo htmlspecialchars($current_language === 'ar' ? $cat['category_name_ar'] : $cat['category_name_fr']); ?></span>
+                        </a>
+                    <?php endforeach; ?>
+
+                    <div class="hri-drawer-section-title mt-4"><?php echo $lang['language']; ?></div>
+                    <a href="?lang=fr" class="hri-drawer-item <?php echo $current_language === 'fr' ? 'active' : ''; ?>">
+                        <i data-lucide="languages"></i> <span class="label">Français</span>
+                    </a>
+                    <a href="?lang=ar" class="hri-drawer-item <?php echo $current_language === 'ar' ? 'active' : ''; ?>">
+                        <i data-lucide="languages"></i> <span class="label">العربية</span>
+                    </a>
+                </nav>
+            </div>
         </div>
-    </nav>

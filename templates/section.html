@@ -1,0 +1,132 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Nos Services Section</title>
+    <script src="https://unpkg.com/lucide@latest"></script>
+    <style>
+        :root {
+            --carbon-black: #171711;
+            --alice-blue: #eaf6ff;
+            --princeton-orange: #ff8200;
+            --medium-jungle: #089b43;
+            --deep-crimson: #90141e;
+        }
+
+        body {
+            font-family: 'Segoe UI', sans-serif;
+            margin: 0;
+            padding: 40px 20px;
+            background-color: #fff;
+        }
+
+        .services-section {
+            max-width: 1000px;
+            margin: 0 auto;
+            text-align: center;
+        }
+
+        .services-header {
+            color: var(--carbon-black);
+            font-size: 24px;
+            font-weight: 800;
+            margin-bottom: 30px;
+        }
+
+        /* Grid for small items */
+        .services-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+            gap: 15px;
+        }
+
+        /* Individual Card */
+        .service-card {
+            background-color: var(--alice-blue);
+            padding: 20px 15px;
+            border-radius: 12px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            transition: all 0.3s ease;
+            cursor: default;
+        }
+
+        .service-card:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 4px 12px rgba(0,0,0,0.05);
+            background-color: #e2f0fb; /* Slightly darker shade of alice-blue */
+        }
+
+        /* Icon Styling */
+        .service-icon {
+            color: var(--carbon-black);
+            margin-bottom: 12px;
+            width: 28px;
+            height: 28px;
+        }
+
+        /* Text Styling */
+        .service-title {
+            color: var(--carbon-black);
+            font-weight: 700;
+            font-size: 14px;
+            margin-bottom: 5px;
+        }
+
+        .service-desc {
+            color: #555;
+            font-size: 12px;
+            margin: 0;
+        }
+
+        /* Icon color variants using your palette */
+        .icon-orange { color: var(--princeton-orange); }
+        .icon-green { color: var(--medium-jungle); }
+    </style>
+</head>
+<body>
+
+<section class="services-section">
+    <h2 class="services-header">Nos services</h2>
+    
+    <div class="services-grid">
+        <div class="service-card">
+            <i data-lucide="truck" class="service-icon"></i>
+            <span class="service-title">Livraison Gratuite</span>
+            <p class="service-desc">À partir de 500 DH d'achat</p>
+        </div>
+
+        <div class="service-card">
+            <i data-lucide="rotate-ccw" class="service-icon"></i>
+            <span class="service-title">Retours</span>
+            <p class="service-desc">Prolongés à 30 jours</p>
+        </div>
+
+        <div class="service-card">
+            <i data-lucide="shield-check" class="service-icon icon-green"></i>
+            <span class="service-title">Paiement Sécurisé</span>
+            <p class="service-desc">100% protégé</p>
+        </div>
+
+        <div class="service-card">
+            <i data-lucide="headset" class="service-icon icon-orange"></i>
+            <span class="service-title">Support 7j/7</span>
+            <p class="service-desc">Une équipe à votre écoute</p>
+        </div>
+
+        <div class="service-card">
+            <i data-lucide="map-pin" class="service-icon"></i>
+            <span class="service-title">Click & Collect</span>
+            <p class="service-desc">Retrait gratuit en magasin</p>
+        </div>
+    </div>
+</section>
+
+<script>
+    lucide.createIcons();
+</script>
+
+</body>
+</html>

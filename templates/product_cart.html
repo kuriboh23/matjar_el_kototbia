@@ -1,0 +1,196 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <script src="https://unpkg.com/lucide@latest"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;600;800&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --carbon-black: #171711;
+            --alice-blue: #eaf6ff;
+            --princeton-orange: #ff8200;
+            --medium-jungle: #089b43;
+            --white: #ffffff;
+        }
+
+        body {
+            font-family: 'Plus Jakarta Sans', sans-serif;
+            display: flex;
+            justify-content: center;
+            padding: 50px;
+            background-color: #f8f9fa;
+        }
+
+        .product-card {
+            background: var(--white);
+            width: 280px;
+            border-radius: 20px;
+            padding: 15px;
+            border: 1px solid #eee;
+            transition: all 0.3s ease;
+            position: relative;
+        }
+
+        .product-card:hover {
+            box-shadow: 0 15px 30px rgba(0,0,0,0.08);
+            transform: translateY(-5px);
+        }
+
+        /* Image Area */
+        .img-container {
+            width: 100%;
+            aspect-ratio: 1/1;
+            background: #f9f9f9;
+            border-radius: 15px;
+            overflow: hidden;
+            margin-bottom: 12px;
+        }
+
+        .img-container img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        /* Text & Price */
+        .product-info h3 {
+            margin: 0 0 8px 0;
+            font-size: 16px;
+            font-weight: 600;
+            color: var(--carbon-black);
+        }
+
+        .price-tag {
+            font-size: 20px;
+            font-weight: 800;
+            color: var(--carbon-black);
+            margin-bottom: 15px;
+        }
+
+        /* --- Dynamic Action Area --- */
+        .action-area {
+            height: 48px;
+            position: relative;
+            overflow: hidden;
+        }
+
+        /* "Ajouter" Button */
+        .btn-add {
+            width: 100%;
+            height: 100%;
+            background: var(--princeton-orange);
+            color: white;
+            border: none;
+            border-radius: 12px;
+            font-weight: 700;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            transition: transform 0.3s ease, opacity 0.2s;
+        }
+
+        /* Qty Controls */
+        .qty-controls {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: var(--alice-blue);
+            border-radius: 12px;
+            display: flex; /* Switched via JS */
+            align-items: center;
+            justify-content: space-between;
+            transform: translateY(100%); /* Start hidden below */
+            transition: transform 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+        }
+
+        /* Active State */
+        .action-area.in-cart .btn-add { transform: translateY(-100%); opacity: 0; pointer-events: none; }
+        .action-area.in-cart .qty-controls { transform: translateY(0); }
+
+        .qty-btn {
+            width: 48px;
+            height: 100%;
+            border: none;
+            background: transparent;
+            color: var(--carbon-black);
+            font-size: 20px;
+            font-weight: 800;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .qty-btn:hover { background: rgba(0,0,0,0.05); }
+        .qty-number { font-weight: 800; color: var(--carbon-black); }
+
+    </style>
+</head>
+<body>
+
+<div class="product-card">
+    <div class="img-container">
+        <img src="https://images.unsplash.com/photo-1523381210434-271e8be1f52b?w=400" alt="Product">
+    </div>
+    
+    <div class="product-info">
+        <h3>T-shirt Premium Coton</h3>
+        <div class="price-tag">199 DH</div>
+    </div>
+
+    <div class="action-area" id="action-container">
+        <button class="btn-add" onclick="addToCart()">
+            <i data-lucide="shopping-cart" size="18"></i>
+            Ajouter au panier
+        </button>
+
+        <div class="qty-controls">
+            <button class="qty-btn" onclick="changeQty(-1)">
+                <i data-lucide="minus" size="18"></i>
+            </button>
+            <span class="qty-number" id="qty-val">1</span>
+            <button class="qty-btn" onclick="changeQty(1)">
+                <i data-lucide="plus" size="18"></i>
+            </button>
+        </div>
+    </div>
+</div>
+
+<script>
+    let quantity = 0;
+    const container = document.getElementById('action-container');
+    const qtyDisplay = document.getElementById('qty-val');
+
+    function addToCart() {
+        quantity = 1;
+        updateUI();
+    }
+
+    function changeQty(amt) {
+        quantity += amt;
+        if (quantity < 1) {
+            quantity = 0;
+        }
+        updateUI();
+    }
+
+    function updateUI() {
+        if (quantity > 0) {
+            container.classList.add('in-cart');
+            qtyDisplay.innerText = quantity;
+        } else {
+            container.classList.remove('in-cart');
+        }
+    }
+
+    // Initialize Icons
+    lucide.createIcons();
+</script>
+
+</body>
+</html>

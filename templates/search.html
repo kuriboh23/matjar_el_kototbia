@@ -1,0 +1,222 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Search Experience — Matjar El Kotobia</title>
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;600;800&display=swap" rel="stylesheet">
+    <script src="https://unpkg.com/lucide@latest"></script>
+
+    <style>
+        :root {
+            --carbon-black: #171711;
+            --princeton-orange: #ff8200;
+            --alice-blue: #eaf6ff;
+            --white: #ffffff;
+        }
+
+        body { font-family: 'Plus Jakarta Sans', sans-serif; margin: 0; }
+
+        /* --- 1. THE TRIGGER BAR (In your Header) --- */
+        .header-search-trigger {
+            margin: 20px;
+            padding: 12px 20px;
+            background: var(--gray-bg, #f4f4f4);
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            color: #888;
+            cursor: pointer;
+        }
+
+        /* --- 2. THE FULL-SCREEN SEARCH OVERLAY --- */
+        #search-overlay {
+            position: fixed;
+            inset: 0;
+            background: rgba(255, 255, 255, 0.8);
+            backdrop-filter: blur(20px) saturate(180%);
+            -webkit-backdrop-filter: blur(20px) saturate(180%);
+            z-index: 15000;
+            display: none; /* Hidden by default */
+            flex-direction: column;
+            padding: 20px;
+            animation: fadeIn 0.3s ease;
+        }
+
+        #search-overlay.active { display: flex; }
+
+        .search-top {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            margin-bottom: 30px;
+        }
+
+        .search-input-wrapper {
+            flex-grow: 1;
+            position: relative;
+        }
+
+        .full-search-input {
+            width: 100%;
+            border: none;
+            background: transparent;
+            font-size: 24px;
+            font-weight: 800;
+            outline: none;
+            color: var(--carbon-black);
+        }
+
+        .close-search { cursor: pointer; color: var(--carbon-black); }
+
+        /* --- 3. AUTO-COMPLETE RESULTS --- */
+        .results-container {
+            flex-grow: 1;
+            overflow-y: auto;
+        }
+
+        .result-item {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            padding: 15px 0;
+            border-bottom: 1px solid rgba(0,0,0,0.05);
+            animation: slideUp 0.4s ease forwards;
+            opacity: 0;
+            cursor: pointer;
+            text-decoration: none;
+            color: inherit;
+        }
+
+        .result-img {
+            width: 50px;
+            height: 50px;
+            background: var(--alice-blue);
+            border-radius: 10px;
+            display: flex;
+            align-items: center; justify-content: center;
+        }
+
+        .result-info b { display: block; font-size: 16px; }
+        .result-info span { font-size: 13px; color: var(--princeton-orange); font-weight: 700; }
+
+        /* --- 4. DATA HANDLING LOADER (Middle) --- */
+        #search-loader {
+            position: absolute;
+            top: 50%; left: 50%;
+            transform: translate(-50%, -50%);
+            display: none;
+        }
+        #search-loader.visible { display: block; }
+
+        @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+        @keyframes slideUp { 
+            from { transform: translateY(20px); opacity: 0; } 
+            to { transform: translateY(0); opacity: 1; } 
+        }
+    </style>
+</head>
+<body>
+
+    <div class="header-search-trigger" onclick="openSearch()">
+        <i data-lucide="search" size="20"></i>
+        <span>Rechercher un produit...</span>
+    </div>
+
+    <div id="search-overlay">
+        <div class="search-top">
+            <div class="close-search" onclick="closeSearch()">
+                <i data-lucide="arrow-left" size="28"></i>
+            </div>
+            <div class="search-input-wrapper">
+                <input type="text" id="main-search-input" class="full-search-input" placeholder="Je cherche..." oninput="handleTyping(this.value)">
+            </div>
+        </div>
+
+        <div id="search-loader">
+            <div style="position:relative; display:flex; align-items:center; justify-content:center;">
+                <div style="position:absolute; width:60px; height:60px; border:2px solid var(--princeton-orange); border-radius:50%; animation: pulse 1s infinite;"></div>
+                <i data-lucide="refresh-cw" class="spin" style="color:var(--princeton-orange)"></i>
+            </div>
+        </div>
+
+        <div class="results-container" id="search-results">
+            </div>
+    </div>
+
+    <script>
+        lucide.createIcons();
+
+        const products = [
+            { name: "Huile d'Argan Bio", price: "85.00 DH", img: "droplets" },
+            { name: "Farine de Blé Safi", price: "45.00 DH", img: "wheat" },
+            { name: "Miel d'Eucalyptus", price: "120.00 DH", img: "flower" },
+            { name: "Thé Vert Premium", price: "35.00 DH", img: "leaf" }
+        ];
+
+        function openSearch() {
+            document.getElementById('search-overlay').classList.add('active');
+            document.getElementById('main-search-input').focus();
+        }
+
+        function closeSearch() {
+            document.getElementById('search-overlay').classList.remove('active');
+            document.getElementById('search-results').innerHTML = '';
+            document.getElementById('main-search-input').value = '';
+        }
+
+        let typingTimer;
+        function handleTyping(val) {
+            clearTimeout(typingTimer);
+            const resultsBox = document.getElementById('search-results');
+            const loader = document.getElementById('search-loader');
+            
+            resultsBox.innerHTML = '';
+            
+            if (val.length > 1) {
+                loader.classList.add('visible');
+                
+                typingTimer = setTimeout(() => {
+                    loader.classList.remove('visible');
+                    showResults(val);
+                }, 600); // Simulate "Handling Data" from DB
+            } else {
+                loader.classList.remove('visible');
+            }
+        }
+
+        function showResults(query) {
+            const resultsBox = document.getElementById('search-results');
+            const filtered = products.filter(p => p.name.toLowerCase().includes(query.toLowerCase()));
+            
+            if (filtered.length === 0) {
+                resultsBox.innerHTML = '<p style="text-align:center; color:#999; margin-top:40px;">Aucun produit trouvé pour "'+query+'"</p>';
+                return;
+            }
+
+            filtered.forEach((p, index) => {
+                const div = document.createElement('a');
+                div.className = 'result-item';
+                div.style.animationDelay = (index * 0.1) + 's';
+                div.href = "#"; // Link to product details
+                div.innerHTML = `
+                    <div class="result-img"><i data-lucide="${p.img}"></i></div>
+                    <div class="result-info">
+                        <b>${p.name}</b>
+                        <span>${p.price}</span>
+                    </div>
+                `;
+                resultsBox.appendChild(div);
+            });
+            lucide.createIcons();
+        }
+    </script>
+
+    <style>
+        @keyframes pulse { 0% { transform: scale(1); opacity: 1; } 100% { transform: scale(1.5); opacity: 0; } }
+        .spin { animation: rotate 2s linear infinite; }
+        @keyframes rotate { from { transform: rotate(0deg); } to { transform: rotate(360deg); } }
+    </style>
+</body>
+</html>

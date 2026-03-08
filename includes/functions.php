@@ -551,24 +551,56 @@ function get_sale_products(int $limit = 8): array
 }
 
 /**
- * Search products by name (French or Arabic).
- * Uses MySQL FULLTEXT or LIKE fallback.
+ * Improved Search products by name, description, or category.
+ * Not including price in search.
  *
  * @param  string $search_query  User search input
  * @return array                 Matching products
  */
 function search_products(string $search_query): array
 {
-    $search_term = '%' . $search_query . '%';
+    $words = explode(' ', $search_query);
+    $params = [];
+    $conditions = [];
+
+    foreach ($words as $index => $word) {
+        $word = trim($word);
+        if (empty($word)) continue;
+        
+        $term = '%' . $word . '%';
+        $p1 = ":nfr" . $index;
+        $p2 = ":nar" . $index;
+        $p3 = ":dfr" . $index;
+        $p4 = ":dar" . $index;
+        $p5 = ":cfr" . $index;
+        $p6 = ":car" . $index;
+
+        $conditions[] = "(p.product_name_fr LIKE $p1 
+                         OR p.product_name_ar LIKE $p2 
+                         OR p.product_description_fr LIKE $p3 
+                         OR p.product_description_ar LIKE $p4 
+                         OR c.category_name_fr LIKE $p5 
+                         OR c.category_name_ar LIKE $p6)";
+        
+        $params[$p1] = $term;
+        $params[$p2] = $term;
+        $params[$p3] = $term;
+        $params[$p4] = $term;
+        $params[$p5] = $term;
+        $params[$p6] = $term;
+    }
+
+    if (empty($conditions)) return [];
+
     $sql = "SELECT p.*, c.category_name_fr, c.category_name_ar
             FROM hri_product p
             LEFT JOIN hri_category c ON p.product_category_id = c.category_id
             WHERE p.product_is_active = 1
-            AND (p.product_name_fr LIKE :search1
-                 OR p.product_name_ar LIKE :search2)
-            ORDER BY p.product_name_fr ASC
-            LIMIT 20";
-    return fetch_all($sql, [':search1' => $search_term, ':search2' => $search_term]);
+            AND " . implode(' AND ', $conditions) . "
+            ORDER BY p.product_is_featured DESC, p.product_name_fr ASC
+            LIMIT 30";
+
+    return fetch_all($sql, $params);
 }
 
 /**
