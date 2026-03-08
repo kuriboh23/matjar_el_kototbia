@@ -64,36 +64,36 @@ text
 ```
 PRIMARY COLORS:
 ┌─────────────────────────────────────────────────┐
-│  Primary Green    : #2E7D32  (Moroccan fresh)   │
-│  Primary Dark     : #1B5E20  (Headers/nav)      │
-│  Primary Light    : #A5D6A7  (Backgrounds)      │
+│  Jumia Orange     : #F68B1E  (Brand Primary)    │
+│  Dark UI          : #313133  (Headers/nav)      │
+│  Light Gray BG    : #F5F5F5  (Backgrounds)      │
 │                                                   │
 │  SECONDARY COLORS:                                │
-│  Accent Orange    : #FF8F00  (Buttons/CTA)       │
-│  Accent Red       : #D32F2F  (Sale/badges)       │
+│  Accent Orange    : #F68B1E  (Buttons/CTA)       │
+│  Accent Red       : #DF3B3B  (Sale/badges)       │
 │                                                   │
 │  NEUTRALS:                                        │
 │  White            : #FFFFFF  (Background)         │
 │  Light Gray       : #F5F5F5  (Cards/sections)    │
-│  Medium Gray      : #9E9E9E  (Secondary text)    │
-│  Dark Gray        : #333333  (Primary text FR)    │
-│  Near Black       : #212121  (Primary text AR)    │
+│  Medium Gray      : #75757A  (Secondary text)    │
+│  Dark Gray        : #282828  (Primary text)      │
+│  Near Black       : #000000  (Headers)           │
 │                                                   │
 │  WHATSAPP:                                        │
 │  WhatsApp Green   : #25D366  (Checkout button)   │
 └─────────────────────────────────────────────────┘
 
 CSS VARIABLE NAMES (permanent):
---color-primary         : #2E7D32;
---color-primary-dark    : #1B5E20;
---color-primary-light   : #A5D6A7;
---color-accent-orange   : #FF8F00;
---color-accent-red      : #D32F2F;
+--color-primary         : #F68B1E;
+--color-primary-dark    : #313133;
+--color-primary-light   : #F5F5F5;
+--color-accent-orange   : #F68B1E;
+--color-accent-red      : #DF3B3B;
 --color-white           : #FFFFFF;
 --color-gray-light      : #F5F5F5;
---color-gray-medium     : #9E9E9E;
---color-text-dark       : #333333;
---color-text-darker     : #212121;
+--color-gray-medium     : #75757A;
+--color-text-dark       : #282828;
+--color-text-darker     : #000000;
 --color-whatsapp        : #25D366;
 ```
 
@@ -505,7 +505,7 @@ matjar_el_kotobia/
 │   └── uploads/
 │       └── products/
 │           ├── .htaccess              # Block PHP execution in uploads
-│           └── default_product.png    # Placeholder product image
+│           └── default_product.jpg    # Placeholder product image
 │
 ├── pages/
 │   ├── products.php                   # Browse all products (paginated)
@@ -644,7 +644,7 @@ define('PRODUCT_IMAGE_WIDTH', 600);  // Resize width in pixels
 define('PRODUCT_IMAGE_HEIGHT', 600); // Resize height in pixels
 define('PRODUCT_THUMB_WIDTH', 300);
 define('PRODUCT_THUMB_HEIGHT', 300);
-define('DEFAULT_PRODUCT_IMAGE', 'default_product.png');
+define('DEFAULT_PRODUCT_IMAGE', 'default_product.jpg');
 
 /* ============================================================
  * ORDER STATUS CONSTANTS
@@ -1100,7 +1100,7 @@ CREATE TABLE `hri_product` (
         COMMENT 'Quantity increment step (e.g., 0.5 for half kg)',
     `product_stock_quantity` INT          DEFAULT 0
         COMMENT 'Available stock quantity',
-    `product_image`         VARCHAR(255) DEFAULT 'default_product.png'
+    `product_image`         VARCHAR(255) DEFAULT 'default_product.jpg'
         COMMENT 'Main product image filename',
     `product_image_thumb`   VARCHAR(255) DEFAULT NULL
         COMMENT 'Thumbnail image filename',

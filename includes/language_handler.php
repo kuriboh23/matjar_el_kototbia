@@ -81,8 +81,11 @@ function set_language(string $language_code): void
  *
  * @return string  'rtl' or 'ltr'
  */
-function get_direction(): string
-{
-    global $text_direction;
-    return $text_direction;
-}
+
+/** 
+*function get_direction(): string
+*{
+  *  global $text_direction;
+ *   return $text_direction;
+*}
+*/

@@ -1,23 +1,18 @@
 <?php
 /**
  * FILE: admin/product_delete.php
- * PURPOSE: Handler to soft-delete or permanently delete a product by ID.
+ * PURPOSE: Delete a product from catalog.
  */
 require_once __DIR__ . '/../config/config.php';
 require_once __DIR__ . '/../includes/admin_auth_check.php';
 
-$admin_page_title = 'Product_delete';
+$product_id = isset($_GET['id']) ? (int)$_GET['id'] : 0;
 
-// TODO: Add product_delete logic here
+if ($product_id > 0) {
+    if (delete_product($product_id)) {
+        // Success
+    }
+}
 
-require_once __DIR__ . '/includes/admin_header.php';
-?>
-
-<div class="container-fluid">
-    <h2><?= htmlspecialchars($admin_page_title) ?></h2>
-    <p class="text-muted"><!-- Admin page: product_delete — Implement here --></p>
-</div>
-
-<?php
-require_once __DIR__ . '/includes/admin_footer.php';
-?>
+header('Location: products.php');
+exit;

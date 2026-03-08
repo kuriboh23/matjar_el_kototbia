@@ -707,6 +707,55 @@ function create_customer(array $customer_data): int
 }
 
 /**
+ * Update an existing customer account.
+ *
+ * @param  int   $customer_id    ID of customer to edit
+ * @param  array $customer_data  Updated data
+ * @return bool                  True if success
+ */
+function update_customer(int $customer_id, array $customer_data): bool
+{
+    $sql = "UPDATE hri_customer SET
+            customer_full_name = :name,
+            customer_phone = :phone,
+            customer_email = :email,
+            customer_address = :address,
+            customer_neighborhood = :neighborhood,
+            customer_city = :city
+            WHERE customer_id = :id";
+
+    try {
+        execute_query($sql, [
+            ':id'           => $customer_id,
+            ':name'         => sanitize_input($customer_data['customer_full_name']),
+            ':phone'        => clean_phone_number($customer_data['customer_phone']),
+            ':email'        => !empty($customer_data['customer_email']) ? sanitize_input($customer_data['customer_email']) : null,
+            ':address'      => !empty($customer_data['customer_address']) ? sanitize_input($customer_data['customer_address']) : null,
+            ':neighborhood' => !empty($customer_data['customer_neighborhood']) ? sanitize_input($customer_data['customer_neighborhood']) : null,
+            ':city'         => sanitize_input($customer_data['customer_city'] ?? DEFAULT_CITY)
+        ]);
+        return true;
+    } catch (PDOException $e) {
+        error_log("Update Customer Error: " . $e->getMessage());
+        return false;
+    }
+}
+
+/**
+ * Verify a customer's password (Alias for verify_password).
+ *
+ * @param  string $customer_phone   The raw phone
+ * @param  string $plain_password   The raw password
+ * @return bool                     True if matches
+ */
+function verify_customer_password(string $customer_phone, string $plain_password): bool
+{
+    $customer = get_customer_by_phone($customer_phone);
+    if (!$customer) return false;
+    return verify_password($plain_password, $customer['customer_password']);
+}
+
+/**
  * Check if a customer is currently logged in.
  *
  * @return bool  True if logged in
@@ -714,6 +763,78 @@ function create_customer(array $customer_data): int
 function is_customer_logged_in(): bool
 {
     return !empty($_SESSION[CUSTOMER_SESSION_KEY]);
+}
+
+/**
+ * Get today's order count.
+ *
+ * @return int
+ */
+function get_today_orders_count(): int
+{
+    $today_start = date('Y-m-d 00:00:00');
+    $today_end   = date('Y-m-d 23:59:59');
+    return count_rows(
+        "SELECT COUNT(*) FROM hri_order WHERE order_created_at BETWEEN :start AND :end",
+        [':start' => $today_start, ':end' => $today_end]
+    );
+}
+
+/**
+ * Get today's revenue.
+ *
+ * @return float
+ */
+function get_today_revenue(): float
+{
+    $today_start = date('Y-m-d 00:00:00');
+    $today_end   = date('Y-m-d 23:59:59');
+    $row = fetch_one(
+        "SELECT SUM(order_total) as revenue FROM hri_order WHERE order_created_at BETWEEN :start AND :end",
+        [':start' => $today_start, ':end' => $today_end]
+    );
+    return (float) ($row['revenue'] ?? 0);
+}
+
+/**
+ * Get pending orders count.
+ *
+ * @return int
+ */
+function get_pending_orders_count(): int
+{
+    return count_rows("SELECT COUNT(*) FROM hri_order WHERE order_status = 'pending'");
+}
+
+/**
+ * Get count of products with low stock.
+ *
+ * @param  int $threshold Stock level to consider "low"
+ * @return int
+ */
+function get_low_stock_products_count(int $threshold = 10): int
+{
+    return count_rows("SELECT COUNT(*) FROM hri_product WHERE product_stock_quantity <= :threshold AND product_is_active = 1", [':threshold' => $threshold]);
+}
+
+/**
+ * Get total count of all products.
+ *
+ * @return int
+ */
+function get_admin_total_products_count(): int
+{
+    return count_rows("SELECT COUNT(*) FROM hri_product");
+}
+
+/**
+ * Get total count of all customers.
+ *
+ * @return int
+ */
+function get_admin_total_customers_count(): int
+{
+    return count_rows("SELECT COUNT(*) FROM hri_customer");
 }
 
 /**
@@ -746,6 +867,49 @@ function login_customer_session(int $customer_id): void
 function logout_customer(): void
 {
     unset($_SESSION[CUSTOMER_SESSION_KEY]);
+    session_regenerate_id(true);
+}
+
+/**
+ * Check if an admin is currently logged in.
+ *
+ * @return bool  True if logged in
+ */
+function is_admin_logged_in(): bool
+{
+    return !empty($_SESSION[ADMIN_SESSION_KEY]);
+}
+
+/**
+ * Get the currently logged-in admin's ID.
+ *
+ * @return int|null  Admin ID or null
+ */
+function get_current_admin_id(): ?int
+{
+    return $_SESSION[ADMIN_SESSION_KEY] ?? null;
+}
+
+/**
+ * Log in an admin by setting session variables.
+ *
+ * @param  int $admin_id  The admin's ID
+ * @return void
+ */
+function login_admin_session(int $admin_id): void
+{
+    session_regenerate_id(true);
+    $_SESSION[ADMIN_SESSION_KEY] = $admin_id;
+}
+
+/**
+ * Log out the current admin.
+ *
+ * @return void
+ */
+function logout_admin(): void
+{
+    unset($_SESSION[ADMIN_SESSION_KEY]);
     session_regenerate_id(true);
 }
 
@@ -947,6 +1111,28 @@ function get_current_url(): string
 {
     $protocol = (!empty($_SERVER['HTTPS']) && $_SERVER['HTTPS'] !== 'off') ? 'https' : 'http';
     return $protocol . '://' . $_SERVER['HTTP_HOST'] . $_SERVER['REQUEST_URI'];
+}
+
+/**
+ * Get current language code.
+ *
+ * @return string
+ */
+function get_current_language(): string
+{
+    global $current_language;
+    return $current_language;
+}
+
+/**
+ * Get current text direction.
+ *
+ * @return string 'rtl' or 'ltr'
+ */
+function get_direction(): string
+{
+    global $is_rtl;
+    return $is_rtl ? 'rtl' : 'ltr';
 }
 
 /**

@@ -69,7 +69,7 @@ define('PRODUCT_IMAGE_WIDTH', 600);
 define('PRODUCT_IMAGE_HEIGHT', 600);
 define('PRODUCT_THUMB_WIDTH', 300);
 define('PRODUCT_THUMB_HEIGHT', 300);
-define('DEFAULT_PRODUCT_IMAGE', 'default_product.png');
+define('DEFAULT_PRODUCT_IMAGE', 'default_product.jpg');
 
 /* ============================================================
  * ORDER STATUS CONSTANTS

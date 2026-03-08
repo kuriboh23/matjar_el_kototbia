@@ -1,7 +1,7 @@
 <?php
 /**
  * FILE: ajax/cart_count.php
- * PURPOSE: AJAX: Returns JSON with current cart item count for badge update.
+ * PURPOSE: AJAX: Returns the total count of items in the session cart as JSON.
  */
 
 // Set JSON response header
@@ -11,15 +11,13 @@ header('Content-Type: application/json; charset=utf-8');
 require_once __DIR__ . '/../config/config.php';
 
 // Default response structure
-$response = ['success' => false, 'message' => '', 'data' => null];
+$response = ['success' => true, 'message' => 'OK', 'data' => ['count' => 0]];
 
 try {
-    // TODO: Implement cart_count logic
-
-    $response['success'] = true;
-    $response['message'] = 'OK';
+    $response['data']['count'] = get_cart_item_count();
 } catch (Exception $e) {
-    $response['message'] = translate('error_general');
+    $response['success'] = false;
+    $response['message'] = $e->getMessage();
     error_log('[HRI_AJAX_ERROR] cart_count: ' . $e->getMessage());
 }
 

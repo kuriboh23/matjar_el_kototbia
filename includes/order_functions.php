@@ -175,6 +175,20 @@ function build_whatsapp_url(string $phone_number, string $message): string
 }
 
 /**
+ * Get order by ID.
+ *
+ * @param  int        $order_id
+ * @return array|null
+ */
+function get_order_by_id(int $order_id): ?array
+{
+    return fetch_one(
+        "SELECT * FROM hri_order WHERE order_id = :id",
+        [':id' => $order_id]
+    );
+}
+
+/**
  * Get order by order number.
  *
  * @param  string     $order_number

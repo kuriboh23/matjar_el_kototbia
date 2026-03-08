@@ -1,26 +1,28 @@
 <?php
 /**
  * FILE: ajax/cart_update.php
- * PURPOSE: AJAX: Receives POST product_id + quantity, updates session cart, returns JSON.
+ * PURPOSE: AJAX: Update product quantity in session cart.
  */
 
-// Set JSON response header
 header('Content-Type: application/json; charset=utf-8');
-
-// Load configuration (DB, functions, session)
 require_once __DIR__ . '/../config/config.php';
 
-// Default response structure
 $response = ['success' => false, 'message' => '', 'data' => null];
 
 try {
-    // TODO: Implement cart_update logic
+    $product_id = isset($_POST['product_id']) ? (int)$_POST['product_id'] : 0;
+    $quantity   = isset($_POST['quantity'])   ? (float)$_POST['quantity'] : 1;
+
+    if ($product_id <= 0) throw new Exception('Invalid product');
+
+    update_cart_quantity($product_id, $quantity);
 
     $response['success'] = true;
-    $response['message'] = 'OK';
+    $response['data'] = [
+        'count' => get_cart_item_count()
+    ];
 } catch (Exception $e) {
-    $response['message'] = translate('error_general');
-    error_log('[HRI_AJAX_ERROR] cart_update: ' . $e->getMessage());
+    $response['message'] = $e->getMessage();
 }
 
 echo json_encode($response);

@@ -1,58 +1,66 @@
 <?php
 /**
  * FILE: pages/_product_card.php
- * PURPOSE: Reusable product card component (partial).
- *          Expects $product_data to be set before including.
- *          Used on homepage, products page, category page, search results.
- * NOTE: Filename starts with _ to indicate partial (not a standalone page).
+ * PURPOSE: Reusable product card component based on docs/Prompt.md.
  */
 
-// Calculate effective price
-$effective_price = get_product_effective_price($product_data);
-$is_on_sale = $product_data['product_is_on_sale'] && !empty($product_data['product_sale_price']);
+$p = $product_data;
+$product_id = (int)$p['product_id'];
+$product_name_fr = $p['product_name_fr'];
+$product_name_ar = $p['product_name_ar'];
+$product_image = $p['product_image'];
+$product_price = (float)$p['product_price'];
+$product_sale_price = (float)$p['product_sale_price'];
+$is_on_sale = (bool)$p['product_is_on_sale'] && $product_sale_price > 0 && $product_sale_price < $product_price;
+$display_price = $is_on_sale ? $product_sale_price : $product_price;
+
+// Check if item is in session cart to show qty controls instead of add button
+$cart = $_SESSION[CART_SESSION_KEY] ?? [];
+$in_cart = isset($cart[$product_id]);
+$current_qty = $in_cart ? $cart[$product_id] : 0;
 ?>
-<div class="hri-product-card card h-100 border-0 shadow-sm">
-    <!-- Product Image -->
-    <a href="<?= SITE_URL ?>/pages/product_detail.php?slug=<?= htmlspecialchars($product_data['product_slug']) ?>">
-        <div class="position-relative overflow-hidden">
-            <img src="<?= get_product_image_url($product_data['product_image']) ?>"
-                 alt="<?= htmlspecialchars(get_product_name($product_data)) ?>"
-                 class="card-img-top hri-product-card__image"
-                 loading="lazy"
-                 style="aspect-ratio:1/1;object-fit:cover;">
-            <?php if ($is_on_sale): ?>
-                <span class="hri-product-card__badge hri-product-card__badge--sale position-absolute top-0 start-0 m-2 badge bg-danger">
-                    <?= translate('on_sale') ?>
-                </span>
-            <?php endif; ?>
-        </div>
+
+<div class="hri-product-card shadow-sm" data-product-id="<?php echo $product_id; ?>">
+    <!-- Badge overlays -->
+    <?php if ($p['product_is_featured']): ?>
+        <span class="hri-badge-promo"><?php echo $current_language === 'ar' ? 'عرض خاص' : 'Offre Ramadan'; ?></span>
+    <?php endif; ?>
+
+    <?php if ($is_on_sale): ?>
+        <span class="hri-badge-discount">-<?php echo round((($product_price - $product_sale_price) / $product_price) * 100); ?>%</span>
+    <?php endif; ?>
+
+    <!-- Product image -->
+    <a href="<?php echo SITE_URL; ?>/pages/product_detail.php?slug=<?php echo $p['product_slug']; ?>" class="text-decoration-none">
+        <img src="<?php echo get_product_image_url($product_image); ?>" alt="<?php echo htmlspecialchars($product_name_fr); ?>" loading="lazy" onerror="this.src='https://placehold.co/200x200/f5f5f5/9e9e9e?text=No+Image'">
     </a>
 
-    <!-- Product Info -->
-    <div class="card-body p-2 d-flex flex-column">
-        <h6 class="hri-product-card__title card-title mb-1 small fw-semibold">
-            <a href="<?= SITE_URL ?>/pages/product_detail.php?slug=<?= htmlspecialchars($product_data['product_slug']) ?>"
-               class="text-decoration-none text-dark">
-                <?= htmlspecialchars(get_product_name($product_data)) ?>
-            </a>
-        </h6>
+    <!-- Wishlist heart icon -->
+    <button class="hri-wishlist-btn"><i class="bi bi-heart"></i></button>
 
-        <!-- Price -->
-        <div class="hri-product-card__price mb-2">
+    <!-- Card body -->
+    <div class="hri-card-body">
+        <a href="<?php echo SITE_URL; ?>/pages/product_detail.php?slug=<?php echo $p['product_slug']; ?>" class="hri-card-name">
+            <?php echo htmlspecialchars($current_language === 'ar' ? $product_name_ar : $product_name_fr); ?>
+        </a>
+        
+        <div class="hri-price-group">
+            <span class="hri-price-current"><?php echo format_price($display_price); ?></span>
             <?php if ($is_on_sale): ?>
-                <span class="text-danger fw-bold"><?= format_price($effective_price) ?></span>
-                <small class="text-muted text-decoration-line-through ms-1"><?= format_price($product_data['product_price']) ?></small>
-            <?php else: ?>
-                <span class="fw-bold" style="color:var(--color-primary);"><?= format_price($effective_price) ?></span>
+                <span class="hri-price-original"><?php echo format_price($product_price); ?></span>
             <?php endif; ?>
-            <small class="text-muted"> / <?= translate('unit_' . $product_data['product_unit']) ?></small>
         </div>
 
-        <!-- Add to Cart Button -->
-        <button class="btn btn-sm btn-success w-100 mt-auto hri-product-card__btn-cart"
-                onclick="addToCart(<?= $product_data['product_id'] ?>, 1)"
-                data-product-id="<?= $product_data['product_id'] ?>">
-            <i class="bi bi-cart-plus"></i> <?= translate('add_to_cart') ?>
+        <!-- If item already in cart: show –/qty/+ controls -->
+        <div class="hri-cart-control" style="<?php echo $in_cart ? 'display:flex;' : 'display:none;'; ?>">
+            <button class="hri-qty-btn hri-qty-minus" onclick="updateCardQty(<?php echo $product_id; ?>, -1)">−</button>
+            <span class="hri-qty-value"><?php echo $current_qty; ?></span>
+            <button class="hri-qty-btn hri-qty-plus" onclick="updateCardQty(<?php echo $product_id; ?>, 1)">+</button>
+        </div>
+        
+        <!-- Else: show "Ajouter au panier" orange button -->
+        <button class="hri-btn-add-cart btn w-100" style="<?php echo $in_cart ? 'display:none;' : 'display:block;'; ?>" onclick="addCardToCart(<?php echo $product_id; ?>)">
+            <?php echo $current_language === 'ar' ? 'أضف إلى السلة' : 'Ajouter au panier'; ?>
         </button>
     </div>
 </div>
