@@ -1,0 +1,36 @@
+/**
+ * FILE: assets/css/admin.css
+ * PURPOSE: Admin panel custom styles.
+ */
+
+.hri-admin-sidebar {
+    position: sticky;
+    top: 0;
+    height: 100vh;
+    overflow-y: auto;
+}
+
+.hri-admin-sidebar .nav-link {
+    padding: 10px 15px;
+    border-radius: 6px;
+    margin-bottom: 2px;
+    transition: background 0.2s;
+}
+
+.hri-admin-sidebar .nav-link:hover {
+    background: rgba(255,255,255,0.1);
+}
+
+.hri-admin-card {
+    border: none;
+    border-radius: 10px;
+    box-shadow: 0 2px 10px rgba(0,0,0,0.08);
+}
+
+.hri-admin-table th {
+    background-color: #f8f9fa;
+    font-weight: 600;
+    font-size: 0.85rem;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}

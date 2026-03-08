@@ -1,0 +1,23 @@
+/**
+ * FILE: assets/css/responsive.css
+ * PURPOSE: Additional responsive tweaks beyond Bootstrap defaults.
+ */
+
+/* Extra-small devices (phones, <576px) */
+@media (max-width: 575.98px) {
+    .hri-hero-banner__content h1 { font-size: 1.5rem; }
+    .hri-hero-banner__content p { font-size: 0.9rem; }
+    .hri-product-card__title { font-size: 0.8rem; }
+    .hri-section-title { font-size: 1.2rem; }
+}
+
+/* Hide desktop cart on mobile (shown in bottom nav) */
+@media (max-width: 991.98px) {
+    .d-lg-block { display: none !important; }
+}
+
+/* Desktop: No bottom nav padding needed */
+@media (min-width: 992px) {
+    body { padding-bottom: 0; }
+    .hri-mobile-nav { display: none !important; }
+}

@@ -1,0 +1,5 @@
+# Admin panel .htaccess
+# Add IP restrictions in production if needed
+# Order deny,allow
+# Deny from all
+# Allow from YOUR.IP.ADDRESS

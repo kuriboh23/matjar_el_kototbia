@@ -1,0 +1,23 @@
+<?php
+/**
+ * FILE: admin/settings.php
+ * PURPOSE: Store settings form: WhatsApp number, delivery fee, minimum order, hours.
+ */
+require_once __DIR__ . '/../config/config.php';
+require_once __DIR__ . '/../includes/admin_auth_check.php';
+
+$admin_page_title = 'Settings';
+
+// TODO: Add settings logic here
+
+require_once __DIR__ . '/includes/admin_header.php';
+?>
+
+<div class="container-fluid">
+    <h2><?= htmlspecialchars($admin_page_title) ?></h2>
+    <p class="text-muted"><!-- Admin page: settings — Implement here --></p>
+</div>
+
+<?php
+require_once __DIR__ . '/includes/admin_footer.php';
+?>

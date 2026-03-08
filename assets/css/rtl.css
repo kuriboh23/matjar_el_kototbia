@@ -1,0 +1,27 @@
+/**
+ * FILE: assets/css/rtl.css
+ * PURPOSE: Arabic RTL layout overrides. Loaded only when lang=ar.
+ */
+
+body.hri-rtl {
+    font-family: var(--font-family-ar) !important;
+}
+
+/* Mirror section title underline */
+.hri-rtl .hri-section-title::after {
+    left: auto;
+    right: 0;
+}
+
+/* Fix margins and padding direction */
+.hri-rtl .me-2 { margin-right: 0 !important; margin-left: 0.5rem !important; }
+.hri-rtl .ms-1 { margin-left: 0 !important; margin-right: 0.25rem !important; }
+.hri-rtl .ms-2 { margin-left: 0 !important; margin-right: 0.5rem !important; }
+
+/* Fix dropdown alignment */
+.hri-rtl .dropdown-menu-end { left: 0; right: auto; }
+
+/* Adjust mobile nav for RTL */
+.hri-rtl .hri-mobile-nav {
+    direction: rtl;
+}

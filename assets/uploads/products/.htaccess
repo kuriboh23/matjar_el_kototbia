@@ -1,0 +1,9 @@
+# Block execution of PHP files in uploads directory
+<FilesMatch "\.(php|phtml|php3|php4|php5|pl|py|jsp|asp|sh|cgi)$">
+    Order deny,allow
+    Deny from all
+</FilesMatch>
+# Also prevent script execution via handler
+RemoveHandler .php .phtml .php3 .php4 .php5
+RemoveType .php .phtml .php3 .php4 .php5
+php_flag engine off
