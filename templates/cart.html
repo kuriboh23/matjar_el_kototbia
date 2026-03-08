@@ -1,0 +1,229 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Mon Panier — Matjar El Kotobia</title>
+    
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;600;800&display=swap" rel="stylesheet">
+    <script src="https://unpkg.com/lucide@latest"></script>
+
+    <style>
+        :root {
+            --carbon-black: #171711;
+            --alice-blue: #eaf6ff;
+            --princeton-orange: #ff8200;
+            --medium-jungle: #089b43;
+            --white: #ffffff;
+            --gray-bg: #f8f9fa;
+        }
+
+        body {
+            margin: 0;
+            font-family: 'Plus Jakarta Sans', sans-serif;
+            background-color: var(--gray-bg);
+            color: var(--carbon-black);
+            overflow-x: hidden;
+            transition: filter 0.4s ease;
+        }
+
+        /* --- 1. HERO HOME LOADER (Initial) --- */
+        #hri-home-loader {
+            position: fixed; inset: 0; background: var(--white); z-index: 20000;
+            display: flex; align-items: center; justify-content: center;
+            transition: opacity 0.5s ease, visibility 0.5s;
+        }
+        .barcode-wrap { text-align: center; position: relative; }
+        .laser {
+            position: absolute; top: 0; left: -10%; width: 120%; height: 3px;
+            background: var(--princeton-orange); box-shadow: 0 0 12px var(--princeton-orange);
+            animation: scan-loop 0.8s infinite alternate ease-in-out;
+        }
+        @keyframes scan-loop { from { top: 0%; } to { top: 100%; } }
+
+        /* --- 2. DATA HANDLING LOADER (Middle + Blur) --- */
+        #hri-data-handler {
+            position: fixed; inset: 0; z-index: 15000;
+            display: none; align-items: center; justify-content: center;
+            pointer-events: none;
+        }
+        #hri-data-handler.active { display: flex; }
+        .loader-center-box {
+            background: var(--white); width: 80px; height: 80px; border-radius: 50%;
+            display: flex; align-items: center; justify-content: center;
+            box-shadow: 0 10px 40px rgba(0,0,0,0.15); color: var(--princeton-orange);
+            position: relative;
+        }
+        .pulse-ring {
+            position: absolute; inset: 0; border: 2px solid var(--princeton-orange);
+            border-radius: 50%; animation: ring-pulse 1s infinite;
+        }
+        #hri-top-bar {
+            position: fixed; top: 0; left: 0; height: 4px; width: 0%;
+            background: var(--princeton-orange); z-index: 16000; transition: width 0.4s ease;
+        }
+        body.is-processing #main-wrapper { filter: blur(12px); pointer-events: none; }
+
+        @keyframes ring-pulse { 0% { transform: scale(1); opacity: 1; } 100% { transform: scale(1.6); opacity: 0; } }
+
+        /* --- 3. CART UI ELEMENTS --- */
+        #main-wrapper { padding-bottom: 120px; transition: filter 0.4s ease; }
+        
+        .hri-header {
+            height: 64px; background: white; display: flex; align-items: center;
+            padding: 0 20px; position: sticky; top: 0; z-index: 100;
+            border-bottom: 1px solid #eee;
+        }
+
+        .delivery-card {
+            background: white; margin: 15px; padding: 15px; border-radius: 16px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.03);
+        }
+        .progress-track { height: 6px; background: var(--alice-blue); border-radius: 10px; margin: 10px 0; }
+        .progress-fill { height: 100%; background: var(--medium-jungle); border-radius: 10px; width: 65%; transition: 0.5s; }
+
+        .cart-item {
+            background: white; margin: 0 15px 12px; padding: 12px; border-radius: 16px;
+            display: flex; gap: 12px; align-items: center;
+        }
+        .item-thumb { width: 70px; height: 70px; background: var(--gray-bg); border-radius: 12px; }
+        .item-details { flex-grow: 1; }
+        .item-name { font-weight: 800; font-size: 14px; margin-bottom: 4px; display: block; }
+        .item-price { color: var(--princeton-orange); font-weight: 800; font-size: 15px; }
+
+        .qty-picker {
+            display: flex; align-items: center; background: var(--alice-blue);
+            border-radius: 10px; padding: 3px; gap: 12px;
+        }
+        .qty-btn {
+            width: 30px; height: 30px; border: none; background: white;
+            border-radius: 8px; font-weight: 800; cursor: pointer;
+        }
+
+        /* --- 4. STICKY ACTION BAR --- */
+        .cart-footer {
+            position: fixed; bottom: 0; left: 0; width: 100%; background: rgba(255,255,255,0.85);
+            backdrop-filter: blur(15px); -webkit-backdrop-filter: blur(15px);
+            padding: 15px 20px; box-sizing: border-box; display: flex;
+            align-items: center; justify-content: space-between; border-top: 1px solid #eee;
+        }
+        .btn-order {
+            background: var(--princeton-orange); color: white; border: none;
+            padding: 14px 28px; border-radius: 14px; font-weight: 800;
+            box-shadow: 0 5px 15px rgba(255,130,0,0.3);
+        }
+
+        .loader-hidden { opacity: 0; visibility: hidden; }
+        .spin { animation: rotate 2s linear infinite; }
+        @keyframes rotate { from { transform: rotate(0deg); } to { transform: rotate(360deg); } }
+    </style>
+</head>
+<body id="hri-body">
+
+    <div id="hri-home-loader">
+        <div class="barcode-wrap">
+            <div class="laser"></div>
+            <i data-lucide="barcode" size="64"></i>
+            <div style="margin-top:15px; font-weight:900;">MATJAR<span style="color:var(--princeton-orange)">.</span>KOTOBIA</div>
+        </div>
+    </div>
+
+    <div id="hri-data-handler">
+        <div class="loader-center-box">
+            <div class="pulse-ring"></div>
+            <i id="handler-icon" data-lucide="refresh-cw" class="spin"></i>
+        </div>
+    </div>
+    <div id="hri-top-bar"></div>
+
+    <div id="main-wrapper">
+        <header class="hri-header">
+            <i data-lucide="chevron-left"></i>
+            <div style="flex-grow:1; text-align:center; font-weight:800;">Panier (3)</div>
+            <i data-lucide="trash-2" style="color:#ff4444" onclick="handleData('trash-2')"></i>
+        </header>
+
+        <div class="delivery-card">
+            <div style="display:flex; justify-content:space-between; font-size:12px; font-weight:800;">
+                <span>Livraison Gratuite (Safi)</span>
+                <span style="color:var(--medium-jungle)">80%</span>
+            </div>
+            <div class="progress-track"><div class="progress-fill"></div></div>
+            <div style="font-size:11px; color:#666;">Ajoutez <b>45.00 DH</b> pour la livraison gratuite !</div>
+        </div>
+
+        <div class="cart-item">
+            <div class="item-thumb"></div>
+            <div class="item-details">
+                <span class="item-name">Huile d'Argan Bio</span>
+                <span class="item-price">85.00 DH</span>
+            </div>
+            <div class="qty-picker">
+                <button class="qty-btn" onclick="handleData('minus')">−</button>
+                <span style="font-weight:800; font-size:14px;">1</span>
+                <button class="qty-btn" onclick="handleData('plus')">+</button>
+            </div>
+        </div>
+
+        <div class="cart-item">
+            <div class="item-thumb"></div>
+            <div class="item-details">
+                <span class="item-name">Miel de Safi Pure</span>
+                <span class="item-price">120.00 DH</span>
+            </div>
+            <div class="qty-picker">
+                <button class="qty-btn" onclick="handleData('minus')">−</button>
+                <span style="font-weight:800; font-size:14px;">2</span>
+                <button class="qty-btn" onclick="handleData('plus')">+</button>
+            </div>
+        </div>
+    </div>
+
+    <footer class="cart-footer">
+        <div>
+            <div style="font-size:12px; color:#666;">Total</div>
+            <div style="font-weight:900; font-size:20px;">325.00 DH</div>
+        </div>
+        <button class="btn-order" onclick="handleData('send')">Commander</button>
+    </footer>
+
+    <script>
+        lucide.createIcons();
+
+        // 1. Initial Hero Loader
+        window.addEventListener('load', () => {
+            setTimeout(() => {
+                document.getElementById('hri-home-loader').classList.add('loader-hidden');
+            }, 800);
+        });
+
+        // 2. Data Handler Logic
+        function handleData(iconType) {
+            const body = document.getElementById('hri-body');
+            const handler = document.getElementById('hri-data-handler');
+            const topBar = document.getElementById('hri-top-bar');
+            const hIcon = document.getElementById('handler-icon');
+
+            // Change icon based on action
+            hIcon.setAttribute('data-lucide', iconType);
+            lucide.createIcons();
+
+            // Start Loading State
+            body.classList.add('is-processing');
+            handler.classList.add('active');
+            topBar.style.width = "40%";
+
+            // Simulate Handling Data (AJAX feel)
+            setTimeout(() => {
+                topBar.style.width = "100%";
+                setTimeout(() => {
+                    // Reset
+                    body.classList.remove('is-processing');
+                    handler.classList.remove('active');
+                    topBar.style.width = "0%";
+                }, 300);
+            }, 600);
+        }
+    </script>
+</body>
+</html>

@@ -80,6 +80,20 @@ $(document).ready(function() {
     // --- 4. Product Card Actions ---
     const processingCards = new Set();
 
+    window.refreshCartPage = function() {
+        const $cartPage = $('#hri-cart-page-content');
+        if ($cartPage.length) {
+            $.ajax({
+                url: HriApp.ajaxUrl + '/get_cart_html.php',
+                type: 'GET',
+                success: function(html) {
+                    $cartPage.html(html);
+                    if (typeof lucide !== 'undefined') lucide.createIcons();
+                }
+            });
+        }
+    };
+
     window.addCardToCart = function(productId) {
         if (processingCards.has(productId)) return;
         
@@ -100,6 +114,7 @@ $(document).ready(function() {
                     $qtyNum.text(1);
                     showFlashBar();
                     updateHeaderCartCount(response.data.count);
+                    window.refreshCartPage();
                 }
             },
             complete: function() {
@@ -133,6 +148,7 @@ $(document).ready(function() {
                         $card.removeClass('is-active');
                         $qtyNum.text(0);
                         updateHeaderCartCount(response.data.count);
+                        window.refreshCartPage();
                     }
                 },
                 complete: function() {
@@ -151,10 +167,79 @@ $(document).ready(function() {
                     if (response.success) {
                         $qtyNum.text(newQty);
                         updateHeaderCartCount(response.data.count);
+                        window.refreshCartPage();
                     }
                 },
                 complete: function() {
                     processingCards.delete(productId);
+                    endProcessing();
+                }
+            });
+        }
+    };
+
+    // Dedicated Cart Page Functions
+    window.updateCartItemQty = function(productId, delta) {
+        if (processingCards.has(productId)) return;
+        
+        const $itemRow = $(`.hri-cart-item[data-product-id="${productId}"]`);
+        const $qtyNum = $itemRow.find('.fw-bold.small');
+        
+        let currentQty = parseInt($qtyNum.text()) || 0;
+        let newQty = currentQty + delta;
+
+        startProcessing(delta > 0 ? 'plus' : 'minus');
+
+        if (newQty <= 0) {
+            $.ajax({
+                url: HriApp.ajaxUrl + '/cart_remove.php',
+                type: 'POST',
+                data: { product_id: productId },
+                dataType: 'json',
+                success: function(response) {
+                    if (response.success) {
+                        updateHeaderCartCount(response.data.count);
+                        window.refreshCartPage();
+                    }
+                },
+                complete: function() {
+                    endProcessing();
+                }
+            });
+        } else {
+            $.ajax({
+                url: HriApp.ajaxUrl + '/cart_update.php',
+                type: 'POST',
+                data: { product_id: productId, quantity: newQty },
+                dataType: 'json',
+                success: function(response) {
+                    if (response.success) {
+                        updateHeaderCartCount(response.data.count);
+                        window.refreshCartPage();
+                    }
+                },
+                complete: function() {
+                    endProcessing();
+                }
+            });
+        }
+    };
+
+    window.clearCartConfirm = function() {
+        const msg = HriApp.currentLanguage === 'ar' ? 'هل تريد إفراغ السلة؟' : 'Voulez-vous vider votre panier ?';
+        if (confirm(msg)) {
+            startProcessing('trash-2');
+            $.ajax({
+                url: HriApp.ajaxUrl + '/cart_clear.php',
+                type: 'POST',
+                dataType: 'json',
+                success: function(response) {
+                    if (response.success) {
+                        updateHeaderCartCount(0);
+                        window.refreshCartPage();
+                    }
+                },
+                complete: function() {
                     endProcessing();
                 }
             });
