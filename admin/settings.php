@@ -40,8 +40,7 @@ require_once __DIR__ . '/includes/admin_header.php';
                     <form action="" method="POST">
                         <div class="row g-4">
                             <?php foreach ($settings as $s): 
-                                $label = str_replace('_', ' ', $s['setting_key']);
-                                $label = ucwords($label);
+                                $label = ($current_language === 'ar' && !empty($s['setting_label_ar'])) ? $s['setting_label_ar'] : (!empty($s['setting_label_fr']) ? $s['setting_label_fr'] : ucwords(str_replace('_', ' ', $s['setting_key'])));
                             ?>
                                 <div class="col-md-6">
                                     <label class="form-label fw-bold small text-uppercase"><?= $label ?></label>

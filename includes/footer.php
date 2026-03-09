@@ -173,14 +173,15 @@ $current_year = date('Y');
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
     
     <!-- Custom JavaScript -->
-    <script src="<?php echo SITE_URL; ?>/assets/js/script.js"></script>
-    <script src="<?php echo SITE_URL; ?>/assets/js/cart.js"></script>
-    <script src="<?php echo SITE_URL; ?>/assets/js/search.js"></script>
+    <?php $asset_version = get_setting('css_version') ?? '1.0.0'; ?>
+    <script src="<?php echo SITE_URL; ?>/assets/js/script.js?v=<?php echo $asset_version; ?>"></script>
+    <script src="<?php echo SITE_URL; ?>/assets/js/cart.js?v=<?php echo $asset_version; ?>"></script>
+    <script src="<?php echo SITE_URL; ?>/assets/js/search.js?v=<?php echo $asset_version; ?>"></script>
     
     <?php if (isset($page_scripts) && !empty($page_scripts)): ?>
         <!-- Page-specific Scripts -->
         <?php foreach ($page_scripts as $script): ?>
-            <script src="<?php echo SITE_URL; ?>/assets/js/<?php echo htmlspecialchars($script); ?>"></script>
+            <script src="<?php echo SITE_URL; ?>/assets/js/<?php echo htmlspecialchars($script); ?>?v=<?php echo $asset_version; ?>"></script>
         <?php endforeach; ?>
     <?php endif; ?>
 </body>

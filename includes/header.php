@@ -28,9 +28,10 @@ $active_categories = get_active_categories();
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css">
     
     <!-- Custom CSS -->
-    <link rel="stylesheet" href="<?php echo SITE_URL; ?>/assets/css/style.css">
+    <?php $css_version = get_setting('css_version') ?? '1.0.0'; ?>
+    <link rel="stylesheet" href="<?php echo SITE_URL; ?>/assets/css/style.css?v=<?php echo $css_version; ?>">
     <?php if ($is_rtl): ?>
-        <link rel="stylesheet" href="<?php echo SITE_URL; ?>/assets/css/rtl.css">
+        <link rel="stylesheet" href="<?php echo SITE_URL; ?>/assets/css/rtl.css?v=<?php echo $css_version; ?>">
     <?php endif; ?>
 
     <!-- Lucide Icons -->

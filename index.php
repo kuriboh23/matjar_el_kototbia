@@ -57,29 +57,52 @@ include_once __DIR__ . '/includes/header.php';
         <?php endforeach; ?>
     </div>
 
-    <!-- Services Grid (Nos Services) -->
-    <section class="hri-services-section shadow-sm">
-        <h2 class="hri-services-section__header"><?php echo $current_language === 'ar' ? 'خدماتنا' : 'Nos services'; ?></h2>
-        <div class="hri-services-grid">
-            <div class="hri-service-card">
-                <i data-lucide="truck"></i>
-                <span class="hri-service-title"><?php echo $current_language === 'ar' ? 'توصيل في آسفي' : 'Livraison Safi'; ?></span>
-                <p class="hri-service-desc"><?php echo $current_language === 'ar' ? 'توصيل سريع لباب منزلك' : 'Livraison rapide à domicile'; ?></p>
+    <!-- Services Grid (Nos Services) - New Design -->
+    <section class="hri-services-wrapper">
+        <div class="hri-services-header">
+            <span class="hri-services-badge"><?php echo $current_language === 'ar' ? 'التزام بالتميز' : 'Engagement Excellence'; ?></span>
+            <h2 class="hri-services-title"><?php echo $current_language === 'ar' ? 'خدماتنا الحصرية' : 'Nos services exclusifs'; ?></h2>
+        </div>
+
+        <div class="hri-services-grid-new">
+            <div class="hri-service-card-new">
+                <div class="hri-service-icon">
+                    <i data-lucide="truck"></i>
+                </div>
+                <div class="hri-service-info">
+                    <h3><?php echo $current_language === 'ar' ? 'توصيل في آسفي' : 'Livraison Safi'; ?></h3>
+                    <p><?php echo $current_language === 'ar' ? 'سوقك المحلي بين يديك' : 'Votre marché local livré directement chez vous.'; ?></p>
+                </div>
             </div>
-            <div class="hri-service-card">
-                <i data-lucide="wallet" class="icon-green"></i>
-                <span class="hri-service-title"><?php echo $current_language === 'ar' ? 'الدفع عند الاستلام' : 'Cash on Delivery'; ?></span>
-                <p class="hri-service-desc"><?php echo $current_language === 'ar' ? 'ادفع عند استلام طلبك' : 'Paiement à la livraison'; ?></p>
+
+            <div class="hri-service-card-new">
+                <div class="hri-service-icon">
+                    <i data-lucide="banknote"></i>
+                </div>
+                <div class="hri-service-info">
+                    <h3><?php echo $current_language === 'ar' ? 'الدفع نقداً' : 'Paiement Cash'; ?></h3>
+                    <p><?php echo $current_language === 'ar' ? 'اطلب الآن وادفع عند الاستلام' : 'Commandez maintenant et payez à la réception.'; ?></p>
+                </div>
             </div>
-            <div class="hri-service-card">
-                <i data-lucide="shield-check"></i>
-                <span class="hri-service-title"><?php echo $current_language === 'ar' ? 'جودة مضمونة' : 'Qualité Garantie'; ?></span>
-                <p class="hri-service-desc"><?php echo $current_language === 'ar' ? 'منتجات طازجة ومختارة' : 'Produits frais et sélectionnés'; ?></p>
+
+            <div class="hri-service-card-new">
+                <div class="hri-service-icon">
+                    <i data-lucide="award"></i>
+                </div>
+                <div class="hri-service-info">
+                    <h3><?php echo $current_language === 'ar' ? 'جودة عالية' : 'Qualité Bio'; ?></h3>
+                    <p><?php echo $current_language === 'ar' ? 'اختيار دقيق لأفضل المنتجات المحلية' : 'Sélection rigoureuse des meilleurs produits locaux.'; ?></p>
+                </div>
             </div>
-            <div class="hri-service-card">
-                <i data-lucide="headset" class="icon-orange"></i>
-                <span class="hri-service-title"><?php echo $current_language === 'ar' ? 'دعم 7/7' : 'Support 7j/7'; ?></span>
-                <p class="hri-service-desc"><?php echo $current_language === 'ar' ? 'فريقنا في خدمتكم' : 'Notre équipe à votre écoute'; ?></p>
+
+            <div class="hri-service-card-new">
+                <div class="hri-service-icon">
+                    <i data-lucide="heart-handshake"></i>
+                </div>
+                <div class="hri-service-info">
+                    <h3><?php echo $current_language === 'ar' ? 'دعم 7/7' : 'Support 7j/7'; ?></h3>
+                    <p><?php echo $current_language === 'ar' ? 'فريق مخصص لخدمتكم كل يوم' : 'Une équipe dévouée pour vous servir chaque jour.'; ?></p>
+                </div>
             </div>
         </div>
     </section>
