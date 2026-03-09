@@ -38,7 +38,15 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         if ($customer && verify_password($password, $customer['customer_password'])) {
             // Success
             login_customer_session($customer['customer_id']);
-            redirect(SITE_URL . '/pages/profile.php');
+            
+            // Handle redirect
+            $target = SITE_URL . '/pages/profile.php';
+            if (!empty($_GET['redirect'])) {
+                if ($_GET['redirect'] === 'checkout') {
+                    $target = SITE_URL . '/pages/checkout.php';
+                }
+            }
+            redirect($target);
         } else {
             $errors[] = translate('error_login_failed');
         }

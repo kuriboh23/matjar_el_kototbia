@@ -1,7 +1,7 @@
 <?php
 /**
  * FILE: pages/order_history.php
- * PURPOSE: List of customer past orders with status. Requires login.
+ * PURPOSE: List of customer past orders with New Design.
  */
 
 // Load master configuration
@@ -10,10 +10,32 @@ require_once __DIR__ . '/../config/config.php';
 // Auth Check
 require_once __DIR__ . '/../includes/auth_check.php';
 
-global $lang;
+global $lang, $current_language;
 $customer_id = get_current_customer_id();
 $customer = get_customer_by_id($customer_id);
-$orders = get_orders_by_customer($customer_id);
+$all_orders = get_orders_by_customer($customer_id);
+
+// Status Filter Logic
+$current_filter = $_GET['status'] ?? 'all';
+$filtered_orders = [];
+
+foreach ($all_orders as $order) {
+    if ($current_filter === 'all') {
+        $filtered_orders[] = $order;
+    } elseif ($current_filter === 'in_progress') {
+        if (in_array($order['order_status'], ['pending', 'confirmed', 'preparing', 'out_for_delivery'])) {
+            $filtered_orders[] = $order;
+        }
+    } elseif ($current_filter === 'delivered') {
+        if ($order['order_status'] === 'delivered') {
+            $filtered_orders[] = $order;
+        }
+    } elseif ($current_filter === 'cancelled') {
+        if ($order['order_status'] === 'cancelled') {
+            $filtered_orders[] = $order;
+        }
+    }
+}
 
 // Page title
 $page_title = translate('order_history') . ' - ' . $lang['site_name'];
@@ -22,94 +44,93 @@ $page_title = translate('order_history') . ' - ' . $lang['site_name'];
 require_once __DIR__ . '/../includes/header.php';
 ?>
 
-<div class="container py-5">
-    <div class="row g-4">
-        <!-- Sidebar Navigation -->
-        <div class="col-md-3">
-            <div class="card border-0 shadow-sm rounded-4 overflow-hidden">
-                <div class="card-body p-0">
-                    <div class="p-4 text-center border-bottom bg-light">
-                        <div class="avatar-circle mx-auto mb-3" style="width: 80px; height: 80px; background: var(--color-primary); color: white; font-size: 2rem; border-radius: 50%; display: flex; align-items: center; justify-content: center;">
-                            <?= strtoupper(substr($customer['customer_full_name'], 0, 1)) ?>
-                        </div>
-                        <h6 class="fw-bold mb-0"><?= htmlspecialchars($customer['customer_full_name']) ?></h6>
-                        <small class="text-muted"><?= htmlspecialchars($customer['customer_phone']) ?></small>
-                    </div>
-                    <div class="list-group list-group-flush">
-                        <a href="<?= SITE_URL ?>/pages/profile.php" class="list-group-item list-group-item-action border-0 d-flex align-items-center">
-                            <i class="bi bi-person-circle me-3 fs-5"></i> <?= translate('profile') ?>
-                        </a>
-                        <a href="<?= SITE_URL ?>/pages/order_history.php" class="list-group-item list-group-item-action border-0 active d-flex align-items-center">
-                            <i class="bi bi-bag-check me-3 fs-5"></i> <?= translate('order_history') ?>
-                        </a>
-                        <a href="<?= SITE_URL ?>/pages/logout.php" class="list-group-item list-group-item-action border-0 d-flex align-items-center text-danger">
-                            <i class="bi bi-box-arrow-right me-3 fs-5"></i> <?= translate('logout') ?>
-                        </a>
-                    </div>
+<div id="hri-orders-page">
+    <header class="hri-profile-hero" style="border-radius: 0; padding-top: 20px; padding-bottom: 20px; margin-bottom: 0;">
+        <h1 class="header-title" style="margin: 0; font-weight: 900; font-size: 22px;"><?= translate('order_history') ?></h1>
+    </header>
+
+    <div class="container py-4 mb-5 pb-5">
+        <!-- Filter Tabs -->
+        <div class="hri-tabs-container px-2">
+            <a href="?status=all" class="hri-tab-item text-decoration-none <?= $current_filter === 'all' ? 'is-active' : '' ?>">
+                <?= translate('order_all') ?>
+            </a>
+            <a href="?status=in_progress" class="hri-tab-item text-decoration-none <?= $current_filter === 'in_progress' ? 'is-active' : '' ?>">
+                <?= translate('order_in_progress') ?>
+            </a>
+            <a href="?status=delivered" class="hri-tab-item text-decoration-none <?= $current_filter === 'delivered' ? 'is-active' : '' ?>">
+                <?= translate('order_delivered') ?>
+            </a>
+            <a href="?status=cancelled" class="hri-tab-item text-decoration-none <?= $current_filter === 'cancelled' ? 'is-active' : '' ?>">
+                <?= translate('order_cancelled') ?>
+            </a>
+        </div>
+
+        <?php if (empty($filtered_orders)): ?>
+            <div class="text-center py-5">
+                <div class="mb-3 text-muted" style="opacity: 0.3;">
+                    <i data-lucide="package-x" size="64"></i>
                 </div>
+                <p class="text-muted fw-bold"><?= translate('no_orders') ?></p>
+                <a href="<?= SITE_URL ?>/index.php" class="btn hri-btn-orange text-white fw-bold px-4 rounded-4 mt-2" style="background-color: var(--princeton-orange);">
+                    <?= translate('continue_shopping') ?>
+                </a>
             </div>
-        </div>
-
-        <!-- Orders List -->
-        <div class="col-md-9">
-            <div class="card border-0 shadow-sm rounded-4 p-4">
-                <h1 class="h4 fw-bold mb-4"><?= translate('order_history') ?></h1>
-
-                <?php if (empty($orders)): ?>
-                    <div class="text-center py-5">
-                        <i class="bi bi-bag-x text-muted" style="font-size: 4rem;"></i>
-                        <p class="mt-3 text-muted">Aucune commande trouvée.</p>
-                        <a href="<?= SITE_URL ?>/index.php" class="btn hri-btn-orange text-white fw-bold px-4">
-                            Commencer mes achats
+        <?php else: ?>
+            <div class="px-2">
+                <?php foreach ($filtered_orders as $order): 
+                    $order_items = get_order_items($order['order_id']);
+                    $first_item = $order_items[0] ?? null;
+                    $other_count = count($order_items) - 1;
+                    
+                    // Status Badge Class
+                    $status_class = 'hri-status-pending';
+                    if ($order['order_status'] === 'delivered') $status_class = 'hri-status-delivered';
+                    if ($order['order_status'] === 'cancelled') $status_class = 'hri-status-cancelled';
+                    if ($order['order_status'] === 'out_for_delivery') $status_class = 'hri-status-shipped';
+                ?>
+                    <div class="hri-order-card">
+                        <div class="hri-order-header">
+                            <span class="hri-order-id"><?= translate('order_number') ?> #<?= $order['order_number'] ?></span>
+                            <span class="hri-order-date"><?= date('d/m/Y', strtotime($order['order_created_at'])) ?></span>
+                        </div>
+                        <div class="hri-order-body">
+                            <div class="hri-item-stack">
+                                <div class="hri-item-thumb">
+                                    <i data-lucide="package" size="20" color="#ccc"></i>
+                                </div>
+                                <?php if ($other_count > 0): ?>
+                                    <span class="hri-stack-count">+<?= $other_count ?></span>
+                                <?php endif; ?>
+                            </div>
+                            <div class="hri-order-info">
+                                <span class="hri-order-total"><?= format_price($order['order_total']) ?></span>
+                                <span class="hri-order-items-summary">
+                                    <?php if ($first_item): ?>
+                                        <?= htmlspecialchars($current_language === 'ar' ? $first_item['order_item_name_ar'] : $first_item['order_item_name_fr']) ?>
+                                        <?php if ($other_count > 0): ?>
+                                            + <?= $other_count ?> <?= $current_language === 'ar' ? 'منتجات أخرى' : 'autres articles' ?>
+                                        <?php endif; ?>
+                                    <?php endif; ?>
+                                </span>
+                            </div>
+                            <span class="hri-status-badge <?= $status_class ?>">
+                                <?= translate('status_' . $order['order_status']) ?>
+                            </span>
+                        </div>
+                        <a href="<?= SITE_URL ?>/pages/order_detail.php?number=<?= $order['order_number'] ?>" class="hri-order-footer">
+                            <span class="hri-details-link">
+                                <?= translate('view_details') ?> 
+                                <i data-lucide="<?= $current_language === 'ar' ? 'chevron-left' : 'chevron-right' ?>" size="14"></i>
+                            </span>
+                            <div class="hri-brand-footer d-none d-md-flex">
+                                MATJAR <span style="color:var(--princeton-orange)">⚡ <?= translate('matjar_express') ?></span>
+                            </div>
                         </a>
                     </div>
-                <?php else: ?>
-                    <div class="table-responsive">
-                        <table class="table table-hover align-middle">
-                            <thead class="table-light">
-                                <tr>
-                                    <th><?= translate('order_number') ?></th>
-                                    <th><?= translate('order_date') ?></th>
-                                    <th><?= translate('order_total') ?></th>
-                                    <th><?= translate('order_status') ?></th>
-                                    <th class="text-end">Action</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                <?php foreach ($orders as $order): ?>
-                                    <tr>
-                                        <td class="fw-bold">#<?= $order['order_number'] ?></td>
-                                        <td class="small"><?= date('d/m/Y H:i', strtotime($order['order_created_at'])) ?></td>
-                                        <td class="fw-bold text-primary"><?= format_price($order['order_total']) ?></td>
-                                        <td>
-                                            <?php 
-                                            $status_class = 'bg-secondary';
-                                            switch($order['order_status']) {
-                                                case 'pending': $status_class = 'bg-warning text-dark'; break;
-                                                case 'confirmed': $status_class = 'bg-info text-white'; break;
-                                                case 'preparing': $status_class = 'bg-primary text-white'; break;
-                                                case 'out_for_delivery': $status_class = 'bg-info text-white'; break;
-                                                case 'delivered': $status_class = 'bg-success text-white'; break;
-                                                case 'cancelled': $status_class = 'bg-danger text-white'; break;
-                                            }
-                                            ?>
-                                            <span class="badge <?= $status_class ?> rounded-pill small px-3">
-                                                <?= translate('status_' . $order['order_status']) ?>
-                                            </span>
-                                        </td>
-                                        <td class="text-end">
-                                            <a href="<?= SITE_URL ?>/pages/order_detail.php?number=<?= $order['order_number'] ?>" class="btn btn-sm btn-outline-primary rounded-pill px-3">
-                                                Détails
-                                            </a>
-                                        </td>
-                                    </tr>
-                                <?php endforeach; ?>
-                            </tbody>
-                        </table>
-                    </div>
-                <?php endif; ?>
+                <?php endforeach; ?>
             </div>
-        </div>
+        <?php endif; ?>
     </div>
 </div>
 

@@ -350,3 +350,14 @@ CREATE TABLE IF NOT EXISTS `hri_guest_info` (
 --   SELECT table_name, table_comment FROM information_schema.tables
 --   WHERE table_schema = 'matjar_el_kotobia_db';
 -- ================================================================
+-- ================================================================
+-- 9. SEED DATA: Settings
+-- ================================================================
+INSERT INTO hri_settings (setting_key, setting_value, setting_type, setting_group, setting_label_fr, setting_label_ar) VALUES
+('store_whatsapp_number', '212600000000', 'text', 'contact', 'Numéro WhatsApp', 'رقم الواتساب'),
+('store_phone_display', '06 00 00 00 08', 'text', 'contact', 'Téléphone (Affichage)', 'رقم الهاتف (للعرض)'),
+('store_address', 'Safi, Morocco', 'text', 'contact', 'Adresse du magasin', 'عنوان المتجر'),
+('delivery_fee', '10.00', 'number', 'payment', 'Frais de livraison', 'مصاريف التوصيل'),
+('min_order_amount', '50.00', 'number', 'payment', 'Montant minimum de commande', 'الحد الأدنى للطلب'),
+('free_delivery_threshold', '200.00', 'number', 'payment', 'Seuil de livraison gratuite', 'الحد الأدنى للتوصيل المجاني')
+ON DUPLICATE KEY UPDATE setting_value = VALUES(setting_value);

@@ -1,0 +1,204 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Mes Commandes — Matjar El Kotobia</title>
+    
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;600;800&display=swap" rel="stylesheet">
+    <script src="https://unpkg.com/lucide@latest"></script>
+
+    <style>
+        :root {
+            --carbon-black: #171711;
+            --princeton-orange: #ff8200;
+            --alice-blue: #eaf6ff;
+            --white: #ffffff;
+            --gray-light: #f4f6f8;
+            --text-muted: #717171;
+            --border-color: #eeeeee;
+            --success-green: #089b43;
+            --pending-blue: #007aff;
+        }
+
+        body {
+            margin: 0;
+            font-family: 'Plus Jakarta Sans', sans-serif;
+            background-color: var(--gray-light);
+            color: var(--carbon-black);
+            -webkit-tap-highlight-color: transparent;
+        }
+
+        /* --- HEADER --- */
+        .hri-header {
+            height: 70px; background: white; display: flex; align-items: center;
+            padding: 0 20px; position: sticky; top: 0; z-index: 100;
+            justify-content: space-between; border-bottom: 1px solid var(--border-color);
+        }
+
+        .header-title { font-weight: 900; font-size: 18px; }
+
+        /* --- CONTENT --- */
+        .content-container { padding: 20px 15px 100px; }
+
+        /* Filter Tabs */
+        .tabs-container {
+            display: flex; gap: 10px; margin-bottom: 20px;
+            overflow-x: auto; padding-bottom: 5px;
+            scrollbar-width: none;
+        }
+        .tabs-container::-webkit-scrollbar { display: none; }
+
+        .tab-item {
+            padding: 10px 20px; border-radius: 12px; background: white;
+            font-size: 13px; font-weight: 800; color: var(--text-muted);
+            white-space: nowrap; border: 1px solid var(--border-color);
+            cursor: pointer;
+        }
+        .tab-item.active {
+            background: var(--carbon-black); color: white; border-color: var(--carbon-black);
+        }
+
+        /* Order Cards */
+        .order-card {
+            background: white; border-radius: 20px; overflow: hidden;
+            margin-bottom: 16px; box-shadow: 0 4px 12px rgba(0,0,0,0.03);
+            border: 1px solid var(--border-color);
+        }
+
+        .order-header {
+            padding: 15px 20px; border-bottom: 1px solid #f9f9f9;
+            display: flex; justify-content: space-between; align-items: center;
+        }
+
+        .order-id { font-size: 12px; font-weight: 800; color: var(--text-muted); }
+        .order-date { font-size: 12px; color: var(--text-muted); }
+
+        .order-body { padding: 15px 20px; display: flex; gap: 15px; align-items: center; }
+
+        .item-stack {
+            display: flex; position: relative; width: 60px; height: 60px;
+        }
+        .item-thumb {
+            width: 50px; height: 50px; background: var(--alice-blue);
+            border-radius: 12px; border: 2px solid white;
+            display: flex; align-items: center; justify-content: center;
+        }
+        .stack-count {
+            position: absolute; bottom: 0; right: 0;
+            background: var(--carbon-black); color: white;
+            font-size: 10px; font-weight: 800; padding: 2px 6px; border-radius: 8px;
+        }
+
+        .order-info { flex-grow: 1; }
+        .order-total { font-weight: 900; font-size: 16px; display: block; }
+        .order-items-summary { font-size: 12px; color: var(--text-muted); }
+
+        /* Status Badges */
+        .status-badge {
+            font-size: 11px; font-weight: 800; padding: 6px 12px; border-radius: 10px;
+            text-transform: uppercase; letter-spacing: 0.5px;
+        }
+        .status-delivered { background: #eefdf3; color: var(--success-green); }
+        .status-pending { background: #eaf6ff; color: var(--pending-blue); }
+        .status-shipped { background: #fff9f2; color: var(--princeton-orange); }
+
+        /* Action Link */
+        .order-footer {
+            padding: 12px 20px; background: #fafafa;
+            display: flex; justify-content: space-between; align-items: center;
+        }
+        .details-link {
+            font-size: 13px; font-weight: 800; color: var(--princeton-orange);
+            display: flex; align-items: center; gap: 4px; text-decoration: none;
+        }
+
+    </style>
+</head>
+<body>
+
+    <header class="hri-header">
+        <i data-lucide="arrow-left" onclick="window.history.back()" style="cursor: pointer;"></i>
+        <div class="header-title">Mes Commandes</div>
+        <div style="width: 24px;"></div> </header>
+
+    <div class="content-container">
+        <div class="tabs-container">
+            <div class="tab-item active">Toutes</div>
+            <div class="tab-item">En cours</div>
+            <div class="tab-item">Livrées</div>
+            <div class="tab-item">Annulées</div>
+        </div>
+
+        <div class="order-card">
+            <div class="order-header">
+                <span class="order-id">COMMANDE #MK-8842</span>
+                <span class="order-date">Aujourd'hui, 14:20</span>
+            </div>
+            <div class="order-body">
+                <div class="item-stack">
+                    <div class="item-thumb"><i data-lucide="package" size="20" color="#ccc"></i></div>
+                    <span class="stack-count">+2</span>
+                </div>
+                <div class="order-info">
+                    <span class="order-total">345.00 DH</span>
+                    <span class="order-items-summary">Huile d'Argan + 2 autres articles</span>
+                </div>
+                <span class="status-badge status-shipped">Expédiée</span>
+            </div>
+            <a href="#" class="order-footer">
+                <span class="details-link">Voir les détails <i data-lucide="chevron-right" size="14"></i></span>
+                <div style="display: flex; align-items: center; gap: 4px; font-size: 11px; font-weight: 800; font-style: italic;">
+                    MATJAR <span style="color:var(--princeton-orange)">⚡ EXPRESS</span>
+                </div>
+            </a>
+        </div>
+
+        <div class="order-card">
+            <div class="order-header">
+                <span class="order-id">COMMANDE #MK-7120</span>
+                <span class="order-date">12 Mars 2024</span>
+            </div>
+            <div class="order-body">
+                <div class="item-stack">
+                    <div class="item-thumb"><i data-lucide="package" size="20" color="#ccc"></i></div>
+                </div>
+                <div class="order-info">
+                    <span class="order-total">190.00 DH</span>
+                    <span class="order-items-summary">Miel d'Eucalyptus (1kg)</span>
+                </div>
+                <span class="status-badge status-delivered">Livrée</span>
+            </div>
+            <a href="#" class="order-footer">
+                <span class="details-link">Recommander <i data-lucide="refresh-cw" size="14"></i></span>
+            </a>
+        </div>
+
+        <div class="order-card">
+            <div class="order-header">
+                <span class="order-id">COMMANDE #MK-6501</span>
+                <span class="order-date">05 Mars 2024</span>
+            </div>
+            <div class="order-body">
+                <div class="item-stack">
+                    <div class="item-thumb"><i data-lucide="package" size="20" color="#ccc"></i></div>
+                    <span class="stack-count">+1</span>
+                </div>
+                <div class="order-info">
+                    <span class="order-total">420.00 DH</span>
+                    <span class="order-items-summary">Pack Cosmétique Safi...</span>
+                </div>
+                <span class="status-badge status-pending">En attente</span>
+            </div>
+            <a href="#" class="order-footer">
+                <span class="details-link">Suivre le colis <i data-lucide="map-pin" size="14"></i></span>
+            </a>
+        </div>
+
+    </div>
+
+    <script>
+        lucide.createIcons();
+    </script>
+</body>
+</html>

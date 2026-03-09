@@ -103,6 +103,10 @@ $active_categories = get_active_categories();
             </div>
         </div>
 
+        <div class="container mt-3">
+            <?php echo render_flash_messages(); ?>
+        </div>
+
         <!-- Main Navbar (Sticky) -->
         <nav class="hri-navbar sticky-top">
             <div class="container d-flex align-items-center justify-content-between h-100">

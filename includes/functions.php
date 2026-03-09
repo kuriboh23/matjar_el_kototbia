@@ -980,6 +980,21 @@ function update_setting(string $setting_key, string $setting_value): void
     );
 }
 
+/**
+ * Get all site settings as an associative array.
+ *
+ * @return array
+ */
+function get_all_settings(): array
+{
+    $rows = fetch_all("SELECT setting_key, setting_value FROM hri_settings");
+    $settings = [];
+    foreach ($rows as $row) {
+        $settings[$row['setting_key']] = $row['setting_value'];
+    }
+    return $settings;
+}
+
 
 /* ================================================================
  * 8. FORMATTING & DISPLAY

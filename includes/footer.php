@@ -14,10 +14,18 @@ if (!defined('SITE_ROOT')) {
 // Global language variables
 global $current_language, $is_rtl, $lang, $category_list;
 
-// Store info from constants
+// Store info from constants and DB settings
 $store_name = ($current_language === 'ar') ? SITE_NAME_AR : SITE_NAME_FR;
-$store_phone = STORE_WHATSAPP_NUMBER;
-$store_address = DEFAULT_CITY . ', ' . DEFAULT_COUNTRY;
+
+// Fetch phone numbers from DB with fallback to constants
+$db_whatsapp = get_setting('store_whatsapp');
+$store_phone = !empty($db_whatsapp) ? $db_whatsapp : STORE_WHATSAPP_NUMBER;
+
+$db_phone = get_setting('store_phone');
+$store_phone_display = !empty($db_phone) ? $db_phone : STORE_PHONE_DISPLAY;
+
+$db_address = get_setting('store_address');
+$store_address = !empty($db_address) ? $db_address : (DEFAULT_CITY . ', ' . DEFAULT_COUNTRY);
 $current_year = date('Y');
 ?>
 
@@ -31,11 +39,11 @@ $current_year = date('Y');
                 <div class="col-lg-4 col-md-6">
                     <div class="footer-brand mb-3">
                         <img src="<?php echo SITE_URL; ?>/assets/images/logo/logo-white.png" alt="<?php echo htmlspecialchars($store_name); ?>" height="50" class="mb-2" onerror="this.style.display='none'">
-                        <h5 class="fw-bold"><a href="<?php echo SITE_URL; ?>/index.php" class="logo" style="color: white;">
+                        <h5 class="fw-bold"><a href="<?php echo SITE_URL; ?>/index.php" class="logo" style="color: white; font-size: 1.5rem;">
                     MATJAR<span>.</span>KOTOBIA
                 </a></h5>
                     </div>
-                    <p class="text-light mb-3" style="opacity: 0.8;">
+                    <p class="text-light mb-3">
                         <?php echo ($current_language === 'ar') ? SITE_TAGLINE_AR : SITE_TAGLINE_FR; ?>
                     </p>
                     
@@ -47,8 +55,8 @@ $current_year = date('Y');
                         </li>
                         <li class="mb-2">
                             <i class="bi bi-telephone-fill me-2 text-success"></i>
-                            <a href="tel:<?php echo preg_replace('/[^0-9+]/', '', STORE_PHONE_DISPLAY); ?>" class="text-white text-decoration-none">
-                                <?php echo htmlspecialchars(STORE_PHONE_DISPLAY); ?>
+                            <a href="tel:<?php echo preg_replace('/[^0-9+]/', '', $store_phone_display); ?>" class="text-white text-decoration-none">
+                                <?php echo htmlspecialchars($store_phone_display); ?>
                             </a>
                         </li>
                         <li class="mb-2">
@@ -88,25 +96,6 @@ $current_year = date('Y');
                                 <?php echo $lang['profile'] ?? $lang['my_account']; ?>
                             </a>
                         </li>
-                    </ul>
-                </div>
-                
-                <!-- Categories Column -->
-                <div class="col-lg-3 col-md-6">
-                    <h6 class="text-uppercase fw-bold mb-3"><?php echo $lang['categories']; ?></h6>
-                    <ul class="list-unstyled footer-links">
-                        <?php 
-                        // Display first 6 categories in footer
-                        $footer_categories = array_slice($category_list ?? [], 0, 6);
-                        foreach ($footer_categories as $cat): 
-                        ?>
-                            <li class="mb-2">
-                                <a href="<?php echo SITE_URL; ?>/pages/category.php?slug=<?php echo urlencode($cat['category_slug']); ?>" class="text-light text-decoration-none">
-                                    <i class="bi bi-chevron-right me-1 small"></i>
-                                    <?php echo htmlspecialchars($is_rtl ? $cat['category_name_ar'] : $cat['category_name_fr']); ?>
-                                </a>
-                            </li>
-                        <?php endforeach; ?>
                     </ul>
                 </div>
                 

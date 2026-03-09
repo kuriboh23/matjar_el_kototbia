@@ -110,7 +110,7 @@ $missing_for_free = max(0, $free_delivery_threshold - $subtotal);
     </footer>
 
 <?php else: ?>
-    <div class="hri-cart-empty">
+    <div class="hri-cart-empty text-center mt-5">
         <i data-lucide="shopping-cart" size="80"></i>
         <h4 class="fw-bold"><?php echo $lang['cart_empty']; ?></h4>
         <p class="text-muted small"><?php echo $current_language === 'ar' ? 'سلة مشترياتك فارغة حاليا.' : 'Votre panier est vide pour le moment.'; ?></p>

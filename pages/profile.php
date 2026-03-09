@@ -1,7 +1,7 @@
 <?php
 /**
  * FILE: pages/profile.php
- * PURPOSE: View and edit customer profile info. Requires login.
+ * PURPOSE: View and edit customer profile info with New Design.
  */
 
 // Load master configuration
@@ -10,7 +10,7 @@ require_once __DIR__ . '/../config/config.php';
 // Auth Check (must be logged in)
 require_once __DIR__ . '/../includes/auth_check.php';
 
-global $lang;
+global $lang, $current_language;
 $customer_id = get_current_customer_id();
 $customer = get_customer_by_id($customer_id);
 
@@ -56,95 +56,100 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['update_profile'])) {
 // Page title
 $page_title = translate('profile') . ' - ' . $lang['site_name'];
 
+// Formatting "Member since"
+$member_since_date = date('F Y', strtotime($customer['customer_created_at']));
+if ($current_language === 'ar') {
+    // Basic translation for months could be added if needed, but for now we'll use numeric date for Arabic or keep it simple
+    $member_since_date = date('m/Y', strtotime($customer['customer_created_at']));
+}
+
 // Include header
 require_once __DIR__ . '/../includes/header.php';
 ?>
 
-<div class="container py-5">
-    <div class="row g-4">
-        <!-- Sidebar Navigation -->
-        <div class="col-md-3">
-            <div class="card border-0 shadow-sm rounded-4 overflow-hidden">
-                <div class="card-body p-0">
-                    <div class="p-4 text-center border-bottom bg-light">
-                        <div class="avatar-circle mx-auto mb-3" style="width: 80px; height: 80px; background: var(--color-primary); color: white; font-size: 2rem; border-radius: 50%; display: flex; align-items: center; justify-content: center;">
-                            <?= strtoupper(substr($customer['customer_full_name'], 0, 1)) ?>
-                        </div>
-                        <h6 class="fw-bold mb-0"><?= htmlspecialchars($customer['customer_full_name']) ?></h6>
-                        <small class="text-muted"><?= htmlspecialchars($customer['customer_phone']) ?></small>
+<div id="hri-profile-page">
+    <div class="hri-profile-hero">
+        <div class="hri-avatar-container">
+            <?= strtoupper(substr($customer['customer_full_name'], 0, 1)) ?>
+            <div class="hri-edit-badge">
+                <i data-lucide="camera" size="14"></i>
+            </div>
+        </div>
+        <h1 style="margin: 0; font-weight: 900; font-size: 24px;"><?= htmlspecialchars($customer['customer_full_name']) ?></h1>
+        <p style="margin: 5px 0 0; color: #717171; font-size: 14px;">
+            <?= translate('member_since') ?> <?= $member_since_date ?>
+        </p>
+    </div>
+
+    <div class="container pb-5 mb-5">
+        <?php if (!empty($errors)): ?>
+            <div class="alert alert-danger mx-2 rounded-4 shadow-sm border-0 mb-4">
+                <ul class="mb-0">
+                    <?php foreach ($errors as $err): ?>
+                        <li><?= $err ?></li>
+                    <?php endforeach; ?>
+                </ul>
+            </div>
+        <?php endif; ?>
+
+        <?php if ($success): ?>
+            <div class="alert alert-success mx-2 rounded-4 shadow-sm border-0 mb-4"><?= $success ?></div>
+        <?php endif; ?>
+
+        <form action="" method="POST" id="profile-form">
+            <?= csrf_input_field() ?>
+            <input type="hidden" name="update_profile" value="1">
+
+            <div class="hri-summary-card mx-2">
+                <div class="hri-summary-header"><?= translate('personal_information') ?></div>
+                <div class="hri-summary-body">
+                    <div class="hri-info-row">
+                        <span class="hri-row-label"><?= translate('full_name') ?></span>
+                        <input type="text" name="full_name" class="hri-row-input" value="<?= htmlspecialchars($customer['customer_full_name']) ?>" required>
                     </div>
-                    <div class="list-group list-group-flush">
-                        <a href="<?= SITE_URL ?>/pages/profile.php" class="list-group-item list-group-item-action border-0 active d-flex align-items-center">
-                            <i class="bi bi-person-circle me-3 fs-5"></i> <?= translate('profile') ?>
-                        </a>
-                        <a href="<?= SITE_URL ?>/pages/order_history.php" class="list-group-item list-group-item-action border-0 d-flex align-items-center">
-                            <i class="bi bi-bag-check me-3 fs-5"></i> <?= translate('order_history') ?>
-                        </a>
-                        <a href="<?= SITE_URL ?>/pages/logout.php" class="list-group-item list-group-item-action border-0 d-flex align-items-center text-danger">
-                            <i class="bi bi-box-arrow-right me-3 fs-5"></i> <?= translate('logout') ?>
-                        </a>
+                    <div class="hri-info-row">
+                        <span class="hri-row-label"><?= translate('phone_number') ?></span>
+                        <input type="tel" name="phone" class="hri-row-input" value="<?= htmlspecialchars($customer['customer_phone']) ?>" required>
+                    </div>
+                    <div class="hri-info-row">
+                        <span class="hri-row-label"><?= translate('email') ?></span>
+                        <input type="email" name="email" class="hri-row-input" value="<?= htmlspecialchars($customer['customer_email'] ?? '') ?>">
                     </div>
                 </div>
             </div>
-        </div>
 
-        <!-- Main Profile Form -->
-        <div class="col-md-9">
-            <div class="card border-0 shadow-sm rounded-4 p-4">
-                <h1 class="h4 fw-bold mb-4"><?= translate('edit_profile') ?></h1>
-
-                <?php if (!empty($errors)): ?>
-                    <div class="alert alert-danger">
-                        <ul class="mb-0">
-                            <?php foreach ($errors as $err): ?>
-                                <li><?= $err ?></li>
-                            <?php endforeach; ?>
-                        </ul>
+            <div class="hri-summary-card mx-2">
+                <div class="hri-summary-header"><?= translate('delivery_details') ?></div>
+                <div class="hri-summary-body">
+                    <div class="hri-info-row">
+                        <span class="hri-row-label"><?= translate('delivery_address') ?></span>
+                        <input type="text" name="address" class="hri-row-input" value="<?= htmlspecialchars($customer['customer_address'] ?? '') ?>">
                     </div>
-                <?php endif; ?>
-
-                <?php if ($success): ?>
-                    <div class="alert alert-success"><?= $success ?></div>
-                <?php endif; ?>
-
-                <form action="" method="POST">
-                    <?= csrf_input_field() ?>
-
-                    <div class="row g-3">
-                        <div class="col-md-6">
-                            <label class="form-label small fw-bold"><?= translate('full_name') ?> *</label>
-                            <input type="text" name="full_name" class="form-control" value="<?= htmlspecialchars($customer['customer_full_name']) ?>" required>
-                        </div>
-                        <div class="col-md-6">
-                            <label class="form-label small fw-bold"><?= translate('phone_number') ?> *</label>
-                            <input type="tel" name="phone" class="form-control" value="<?= htmlspecialchars($customer['customer_phone']) ?>" required>
-                        </div>
-                        <div class="col-md-12">
-                            <label class="form-label small fw-bold"><?= translate('email') ?></label>
-                            <input type="email" name="email" class="form-control" value="<?= htmlspecialchars($customer['customer_email'] ?? '') ?>">
-                        </div>
-                        <div class="col-md-12">
-                            <label class="form-label small fw-bold"><?= translate('delivery_address') ?></label>
-                            <input type="text" name="address" class="form-control" value="<?= htmlspecialchars($customer['customer_address'] ?? '') ?>">
-                        </div>
-                        <div class="col-md-6">
-                            <label class="form-label small fw-bold"><?= translate('neighborhood') ?></label>
-                            <input type="text" name="neighborhood" class="form-control" value="<?= htmlspecialchars($customer['customer_neighborhood'] ?? '') ?>">
-                        </div>
-                        <div class="col-md-6">
-                            <label class="form-label small fw-bold"><?= translate('city') ?></label>
-                            <input type="text" name="city" class="form-control" value="<?= htmlspecialchars($customer['customer_city'] ?? DEFAULT_CITY) ?>" readonly>
-                        </div>
+                    <div class="hri-info-row">
+                        <span class="hri-row-label"><?= translate('neighborhood') ?></span>
+                        <input type="text" name="neighborhood" class="hri-row-input" value="<?= htmlspecialchars($customer['customer_neighborhood'] ?? '') ?>">
                     </div>
-
-                    <div class="mt-4 pt-3 border-top text-end">
-                        <button type="submit" name="update_profile" class="btn hri-btn-orange text-white px-5 fw-bold py-2">
-                            <?= translate('save_changes') ?>
-                        </button>
+                    <div class="hri-info-row">
+                        <span class="hri-row-label"><?= translate('city') ?></span>
+                        <input type="text" name="city" class="hri-row-input" value="<?= htmlspecialchars($customer['customer_city'] ?? DEFAULT_CITY) ?>" readonly>
                     </div>
-                </form>
+                </div>
+                <div class="hri-express-widget">
+                    <div class="hri-express-text">
+                        <?= translate('profile_priority_msg') ?>
+                    </div>
+                    <div class="hri-brand-footer">
+                        MATJAR <span style="color:var(--princeton-orange)">⚡ <?= translate('matjar_express') ?></span>
+                    </div>
+                </div>
             </div>
-        </div>
+        </form>
+    </div>
+
+    <div class="hri-action-bar">
+        <button type="submit" form="profile-form" class="hri-btn-save">
+            <?= translate('save_changes') ?>
+        </button>
     </div>
 </div>
 

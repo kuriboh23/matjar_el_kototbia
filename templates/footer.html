@@ -1,0 +1,215 @@
+<style>
+    :root {
+        --carbon-black: #171711;
+        --princeton-orange: #ff8200;
+        --whatsapp-green: #25D366;
+        --white: #ffffff;
+        --gray-muted: #a0a0a0;
+        --glass: rgba(255, 255, 255, 0.05);
+    }
+
+    .awesome-footer {
+        background-color: var(--carbon-black);
+        color: var(--white);
+        padding: 60px 20px 40px;
+        font-family: 'Plus Jakarta Sans', sans-serif;
+        border-radius: 40px 40px 0 0; /* Premium curved top */
+        margin-top: 50px;
+    }
+
+    .footer-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+        gap: 40px;
+        max-width: 1200px;
+        margin: 0 auto;
+    }
+
+    /* Brand Section */
+    .footer-brand .logo {
+        font-weight: 900;
+        font-size: 24px;
+        letter-spacing: -1px;
+        color: var(--white);
+        text-decoration: none;
+        display: flex;
+        align-items: center;
+        gap: 8px;
+    }
+    .footer-brand .logo span { color: var(--princeton-orange); }
+
+    .footer-tagline {
+        color: var(--gray-muted);
+        font-size: 14px;
+        line-height: 1.6;
+        margin: 15px 0 25px;
+        max-width: 300px;
+    }
+
+    /* Links Section */
+    .footer-title {
+        font-weight: 800;
+        font-size: 15px;
+        margin-bottom: 20px;
+        text-transform: uppercase;
+        letter-spacing: 1px;
+        color: var(--white);
+    }
+
+    .footer-links {
+        list-style: none;
+        padding: 0;
+        margin: 0;
+    }
+    .footer-links li { margin-bottom: 12px; }
+    .footer-links a {
+        color: var(--gray-muted);
+        text-decoration: none;
+        font-size: 14px;
+        font-weight: 600;
+        transition: 0.3s;
+    }
+    .footer-links a:hover { color: var(--princeton-orange); }
+
+    /* WhatsApp & Socials */
+    .contact-box {
+        display: flex;
+        flex-direction: column;
+        gap: 15px;
+    }
+
+    .footer-whatsapp-btn {
+        background: var(--whatsapp-green);
+        color: white;
+        padding: 15px 20px;
+        border-radius: 16px;
+        text-decoration: none;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        gap: 10px;
+        font-weight: 800;
+        font-size: 14px;
+        transition: 0.3s;
+    }
+    .footer-whatsapp-btn:hover { transform: translateY(-3px); box-shadow: 0 10px 20px rgba(37, 211, 102, 0.2); }
+
+    .social-row {
+        display: flex;
+        gap: 12px;
+        margin-top: 10px;
+    }
+    .social-circle {
+        width: 40px;
+        height: 40px;
+        background: var(--glass);
+        border-radius: 12px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        color: white;
+        transition: 0.3s;
+        text-decoration: none;
+    }
+    .social-circle:hover { background: var(--princeton-orange); }
+
+    /* Bottom Bar */
+    .footer-bottom {
+        border-top: 1px solid rgba(255, 255, 255, 0.05);
+        margin-top: 50px;
+        padding-top: 25px;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        flex-wrap: wrap;
+        gap: 20px;
+        max-width: 1200px;
+        margin-inline: auto;
+    }
+
+    .express-badge {
+        display: flex;
+        align-items: center;
+        gap: 5px;
+        font-weight: 900;
+        font-style: italic;
+        font-size: 12px;
+    }
+
+    @media (max-width: 768px) {
+        .awesome-footer { padding-bottom: 110px; /* Space for sticky mobile buttons */ }
+        .footer-grid { text-align: center; }
+        .footer-brand .logo, .social-row { justify-content: center; }
+        .footer-bottom { justify-content: center; text-align: center; }
+        .footer-tagline { margin-inline: auto; }
+    }
+</style>
+
+<footer class="awesome-footer">
+    <div class="footer-grid">
+        <div class="footer-brand">
+            <a href="index.php" class="logo">MATJAR<span>.</span>KOTOBIA</a>
+            <p class="footer-tagline">
+                Produits du terroir et fraîcheur de Safi livrés à votre porte.
+            </p>
+            <div class="social-row">
+                <a href="#" class="social-circle"><i data-lucide="facebook" size="18"></i></a>
+                <a href="#" class="social-circle"><i data-lucide="instagram" size="18"></i></a>
+            </div>
+        </div>
+
+        <div>
+            <h4 class="footer-title">Navigation</h4>
+            <ul class="footer-links">
+                <li><a href="index.php">Accueil</a></li>
+                <li><a href="shop.php">Boutique</a></li>
+                <li><a href="profile.php">Mon Compte</a></li>
+                <li><a href="cart.php">Panier</a></li>
+            </ul>
+        </div>
+
+        <div>
+            <h4 class="footer-title">Support</h4>
+            <ul class="footer-links">
+                <li><a href="#">FAQ</a></li>
+                <li><a href="#">Livraison</a></li>
+                <li><a href="#">Conditions d'utilisation</a></li>
+                <li><a href="#">Politique de confidentialité</a></li>
+            </ul>
+        </div>
+
+        <div class="contact-box">
+            <h4 class="footer-title">Besoin d'aide ?</h4>
+            <p style="font-size: 13px; color: var(--gray-muted); margin-bottom: 5px;">Notre équipe est disponible sur WhatsApp pour vous assister.</p>
+            
+            <a href="https://wa.me/212600000000" class="footer-whatsapp-btn" target="_blank">
+                <i data-lucide="message-circle" size="20"></i>
+                Contactez-nous
+            </a>
+        </div>
+    </div>
+
+    <div class="footer-bottom">
+        <div style="font-size: 12px; color: var(--gray-muted);">
+            &copy; <?php echo date('Y'); ?> Matjar El Kotobia. Tous droits réservés.
+        </div>
+        
+        <div class="express-badge">
+            MATJAR <span style="color:var(--princeton-orange)">⚡ EXPRESS</span>
+        </div>
+    </div>
+</footer>
+
+<script>
+    // Initialize icons if not already globally loaded
+    if(typeof lucide !== 'undefined') {
+        lucide.createIcons();
+    }
+
+    /* PHP DATA FETCHING HINT:
+       ----------------------
+       $whatsapp = defined('STORE_WHATSAPP_NUMBER') ? STORE_WHATSAPP_NUMBER : '212600000000';
+       $year = date('Y');
+       $brand_name = defined('SITE_NAME') ? SITE_NAME : 'Matjar El Kotobia';
+    */
+</script>

@@ -1,0 +1,200 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Mon Profil — Matjar El Kotobia</title>
+    
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;600;800&display=swap" rel="stylesheet">
+    <script src="https://unpkg.com/lucide@latest"></script>
+
+    <style>
+        :root {
+            --carbon-black: #171711;
+            --princeton-orange: #ff8200;
+            --alice-blue: #eaf6ff;
+            --white: #ffffff;
+            --gray-light: #f4f6f8;
+            --text-muted: #717171;
+            --border-color: #eeeeee;
+        }
+
+        body {
+            margin: 0;
+            font-family: 'Plus Jakarta Sans', sans-serif;
+            background-color: var(--gray-light);
+            color: var(--carbon-black);
+            -webkit-tap-highlight-color: transparent;
+        }
+
+        /* --- 1. PREMIUM PROFILE HEADER --- */
+        .profile-hero {
+            background: var(--white);
+            padding: 40px 20px 30px;
+            text-align: center;
+            border-bottom: 1px solid var(--border-color);
+            border-radius: 0 0 30px 30px;
+            margin-bottom: 25px;
+        }
+
+        .avatar-container {
+            width: 100px; height: 100px;
+            background: var(--alice-blue);
+            /* Organic Blob Shape */
+            border-radius: 35% 65% 60% 40% / 40% 35% 65% 60%;
+            margin: 0 auto 15px;
+            display: flex; align-items: center; justify-content: center;
+            color: var(--princeton-orange);
+            font-weight: 800;
+            font-size: 32px;
+            position: relative;
+            box-shadow: 0 10px 20px rgba(0,0,0,0.05);
+        }
+
+        .edit-badge {
+            position: absolute; bottom: 0; right: 0;
+            background: var(--princeton-orange); color: white;
+            width: 32px; height: 32px; border-radius: 50%;
+            display: flex; align-items: center; justify-content: center;
+            border: 3px solid white;
+        }
+
+        /* --- 2. SUMMARY CARD (Inspired by Jumia reference) --- */
+        .content-container { padding: 0 15px 120px; }
+
+        .summary-card {
+            background: white; border-radius: 12px; overflow: hidden;
+            margin-bottom: 25px; box-shadow: 0 2px 10px rgba(0,0,0,0.04);
+            border: 1px solid var(--border-color);
+        }
+
+        .summary-header {
+            background: #f8f8f8; padding: 12px 20px; 
+            font-size: 13px; font-weight: 800; color: var(--text-muted);
+            text-transform: uppercase; border-bottom: 1px solid var(--border-color);
+            letter-spacing: 0.5px;
+        }
+
+        .summary-body { padding: 0; }
+
+        /* Form Row Item */
+        .info-row {
+            display: flex; flex-direction: column;
+            padding: 15px 20px;
+            border-bottom: 1px solid #f9f9f9;
+        }
+
+        .info-row:last-child { border-bottom: none; }
+
+        .row-label {
+            font-size: 11px; font-weight: 800; color: var(--text-muted);
+            text-transform: uppercase; margin-bottom: 4px;
+        }
+
+        .row-input {
+            border: none; padding: 0; font-family: inherit;
+            font-size: 16px; font-weight: 600; color: var(--carbon-black);
+            width: 100%; outline: none; background: transparent;
+        }
+
+        /* --- 3. LOYALTY / EXPRESS WIDGET --- */
+        .express-widget {
+            background: #fff9f2; padding: 15px 20px;
+            border-top: 1px solid #ffe8d1;
+        }
+
+        .express-text { font-size: 13px; font-weight: 600; color: #444; margin-bottom: 5px; }
+        .express-text span { color: var(--princeton-orange); }
+        
+        .brand-footer {
+            display: flex; align-items: center; gap: 6px;
+            font-weight: 900; font-size: 12px; font-style: italic;
+        }
+
+        /* --- 4. ACTION BAR --- */
+        .action-bar {
+            position: fixed; bottom: 0; left: 0; width: 100%;
+            background: white; padding: 20px; box-sizing: border-box;
+            box-shadow: 0 -10px 30px rgba(0,0,0,0.05);
+            display: flex; justify-content: center;
+        }
+
+        .btn-save {
+            background: var(--princeton-orange); color: white; border: none;
+            width: 100%; max-width: 400px; padding: 16px; border-radius: 14px;
+            font-weight: 800; font-size: 16px; box-shadow: 0 4px 12px rgba(255,130,0,0.25);
+        }
+
+        .btn-save:active { transform: scale(0.98); opacity: 0.9; }
+    </style>
+</head>
+<body>
+
+    <div id="main-app">
+        <div class="profile-hero">
+            <div class="avatar-container">
+                A
+                <div class="edit-badge">
+                    <i data-lucide="camera" size="14"></i>
+                </div>
+            </div>
+            <h1 style="margin: 0; font-weight: 900; font-size: 24px;">Amine Safi</h1>
+            <p style="margin: 5px 0 0; color: var(--text-muted); font-size: 14px;">Membre depuis Mars 2024</p>
+        </div>
+
+        <div class="content-container">
+            <div class="summary-card">
+                <div class="summary-header">Informations Personnelles</div>
+                <div class="summary-body">
+                    <div class="info-row">
+                        <span class="row-label">Nom Complet</span>
+                        <input type="text" class="row-input" value="Amine Safi">
+                    </div>
+                    <div class="info-row">
+                        <span class="row-label">Téléphone</span>
+                        <input type="tel" class="row-input" value="+212 600-000000">
+                    </div>
+                    <div class="info-row">
+                        <span class="row-label">E-mail</span>
+                        <input type="email" class="row-input" value="amine.safi@email.com">
+                    </div>
+                </div>
+            </div>
+
+            <div class="summary-card">
+                <div class="summary-header">Détails de Livraison</div>
+                <div class="summary-body">
+                    <div class="info-row">
+                        <span class="row-label">Adresse</span>
+                        <input type="text" class="row-input" value="Rue 15, Appartement 4">
+                    </div>
+                    <div class="info-row">
+                        <span class="row-label">Quartier</span>
+                        <input type="text" class="row-input" value="Plateau">
+                    </div>
+                    <div class="info-row">
+                        <span class="row-label">Ville</span>
+                        <input type="text" class="row-input" value="Safi" readonly>
+                    </div>
+                </div>
+                <div class="express-widget">
+                    <div class="express-text">
+                        Complétez votre profil pour un <span>traitement prioritaire</span>
+                    </div>
+                    <div class="brand-footer">
+                        MATJAR <span style="color:var(--princeton-orange)">⚡ EXPRESS</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="action-bar">
+        <button class="btn-save">Enregistrer les modifications</button>
+    </div>
+
+    <script>
+        lucide.createIcons();
+    </script>
+</body>
+</html>

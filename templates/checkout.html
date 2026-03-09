@@ -1,0 +1,297 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Validation de Commande — Matjar El Kotobia</title>
+    
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;600;700;800&display=swap" rel="stylesheet">
+    <script src="https://unpkg.com/lucide@latest"></script>
+
+    <style>
+        :root {
+            --carbon-black: #171711;
+            --princeton-orange: #ff8200;
+            --whatsapp-green: #25D366;
+            --alice-blue: #eaf6ff;
+            --white: #ffffff;
+            --gray-light: #f4f6f8;
+            --text-muted: #717171;
+            --border-color: #eeeeee;
+        }
+
+        body {
+            margin: 0;
+            font-family: 'Plus Jakarta Sans', sans-serif;
+            background-color: var(--gray-light);
+            color: var(--carbon-black);
+            overflow-x: hidden;
+        }
+
+        /* --- Header & Layout --- */
+        .checkout-header {
+            background: var(--white);
+            padding: 20px;
+            text-align: center;
+            border-bottom: 1px solid var(--border-color);
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+
+        .logo {
+            font-weight: 900;
+            font-size: 18px;
+            text-decoration: none;
+            color: var(--carbon-black);
+        }
+        .logo span { color: var(--princeton-orange); }
+
+        .container {
+            max-width: 1100px;
+            margin: 0 auto;
+            padding: 20px 16px 140px;
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: 20px;
+        }
+
+        @media (min-width: 992px) {
+            .container { grid-template-columns: 1fr 380px; padding-top: 40px; }
+        }
+
+        /* --- Premium Cards --- */
+        .awesome-card {
+            background: white;
+            border-radius: 24px;
+            border: 1px solid var(--border-color);
+            overflow: hidden;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.02);
+            margin-bottom: 20px;
+        }
+
+        .card-header {
+            background: #fafafa;
+            padding: 15px 20px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            border-bottom: 1px solid var(--border-color);
+        }
+
+        .step-pill {
+            background: var(--carbon-black);
+            color: white;
+            width: 22px;
+            height: 22px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 11px;
+            font-weight: 800;
+        }
+
+        .card-title {
+            font-weight: 800;
+            font-size: 13px;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        /* --- Form Fields --- */
+        .input-group {
+            padding: 16px 20px;
+            border-bottom: 1px solid #f9f9f9;
+        }
+        .input-group:last-child { border-bottom: none; }
+
+        .label-text {
+            display: block;
+            font-size: 10px;
+            font-weight: 800;
+            color: var(--text-muted);
+            text-transform: uppercase;
+            margin-bottom: 4px;
+        }
+
+        .clean-input {
+            width: 100%;
+            border: none;
+            padding: 4px 0;
+            font-size: 16px;
+            font-weight: 600;
+            font-family: inherit;
+            color: var(--carbon-black);
+            outline: none;
+            background: transparent;
+        }
+
+        /* --- Order Summary --- */
+        .summary-row {
+            display: flex;
+            justify-content: space-between;
+            padding: 12px 20px;
+            font-size: 14px;
+        }
+
+        .item-qty {
+            color: var(--princeton-orange);
+            font-weight: 800;
+            margin-right: 8px;
+        }
+
+        .total-box {
+            background: var(--carbon-black);
+            color: white;
+            padding: 20px;
+            margin-top: 10px;
+        }
+
+        /* --- Brand Badge --- */
+        .express-badge {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            font-weight: 900;
+            font-style: italic;
+            font-size: 12px;
+            padding: 15px 20px;
+            background: #fff9f2;
+            border-top: 1px solid #ffe8d1;
+        }
+
+        /* --- Sticky Bottom Bar --- */
+        .bottom-action-bar {
+            position: fixed;
+            bottom: 0; left: 0;
+            width: 100%;
+            background: white;
+            padding: 16px 20px;
+            box-shadow: 0 -10px 30px rgba(0,0,0,0.08);
+            z-index: 1000;
+            box-sizing: border-box;
+            display: flex;
+            justify-content: center;
+        }
+
+        .btn-confirm {
+            background: var(--princeton-orange);
+            color: white;
+            border: none;
+            width: 100%;
+            max-width: 500px;
+            padding: 18px;
+            border-radius: 20px;
+            font-weight: 800;
+            font-size: 16px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+            box-shadow: 0 8px 25px rgba(255,130,0,0.3);
+        }
+    </style>
+</head>
+<body>
+
+    <header class="checkout-header">
+        <a href="cart.php" class="logo">MATJAR<span>.</span>KOTOBIA</a>
+    </header>
+
+    <div class="container">
+        <main>
+            <div class="awesome-card">
+                <div class="card-header">
+                    <div class="step-pill">1</div>
+                    <span class="card-title">Informations de Livraison</span>
+                </div>
+                <div class="input-group">
+                    <span class="label-text">Nom Complet</span>
+                    <input type="text" class="clean-input" placeholder="Votre nom et prénom" required>
+                </div>
+                <div class="input-group">
+                    <span class="label-text">Téléphone WhatsApp</span>
+                    <input type="tel" class="clean-input" placeholder="06XXXXXXXX" required>
+                </div>
+                <div class="input-group">
+                    <span class="label-text">Adresse exacte</span>
+                    <input type="text" class="clean-input" placeholder="N°, Rue, Quartier..." required>
+                </div>
+                <div class="input-group" style="background: #fcfcfc;">
+                    <span class="label-text">Ville</span>
+                    <input type="text" class="clean-input" value="Safi" readonly style="color: var(--text-muted);">
+                </div>
+            </div>
+
+            <div class="awesome-card">
+                <div class="card-header">
+                    <div class="step-pill">2</div>
+                    <span class="card-title">Notes Additionnelles</span>
+                </div>
+                <div class="input-group">
+                    <textarea class="clean-input" rows="2" placeholder="Instructions pour le livreur..." style="resize: none;"></textarea>
+                </div>
+            </div>
+        </main>
+
+        <aside>
+            <div class="awesome-card">
+                <div class="card-header">
+                    <span class="card-title">Résumé de la commande</span>
+                </div>
+                <div style="padding: 10px 0;">
+                    <div class="summary-row">
+                        <span><span class="item-qty">1x</span> Huile d'Argan Bio</span>
+                        <span class="fw-bold">145.00 Dhs</span>
+                    </div>
+                    <div class="summary-row">
+                        <span><span class="item-qty">2x</span> Miel d'Eucalyptus</span>
+                        <span class="fw-bold">120.00 Dhs</span>
+                    </div>
+                </div>
+
+                <div style="border-top: 1px solid #f9f9f9; padding-top: 10px;">
+                    <div class="summary-row" style="color: var(--text-muted); font-size: 13px;">
+                        <span>Sous-total</span>
+                        <span>265.00 Dhs</span>
+                    </div>
+                    <div class="summary-row" style="color: #00a650; font-weight: 700;">
+                        <span>Livraison</span>
+                        <span>Gratuite</span>
+                    </div>
+                </div>
+
+                <div class="total-box">
+                    <div class="d-flex" style="display: flex; justify-content: space-between; align-items: center;">
+                        <span style="font-weight: 800; font-size: 16px;">TOTAL</span>
+                        <span style="font-weight: 900; font-size: 22px; color: var(--princeton-orange);">265.00 Dhs</span>
+                    </div>
+                </div>
+
+                <div class="express-badge">
+                    MATJAR <span style="color:var(--princeton-orange)">⚡ EXPRESS</span>
+                    <span style="margin-left: auto; font-weight: 400; font-style: normal; color: var(--text-muted); font-size: 10px;">Paiement Cash</span>
+                </div>
+            </div>
+            
+            <p style="text-align: center; font-size: 11px; color: var(--text-muted); padding: 0 20px;">
+                <i data-lucide="shield-check" size="12" style="vertical-align: middle;"></i>
+                En cliquant sur confirmer, votre commande sera envoyée sur WhatsApp pour validation.
+            </p>
+        </aside>
+    </div>
+
+    <div class="bottom-action-bar">
+        <button class="btn-confirm">
+            <i data-lucide="message-circle" size="20"></i>
+            CONFIRMER MA COMMANDE
+        </button>
+    </div>
+
+    <script>
+        lucide.createIcons();
+    </script>
+</body>
+</html>

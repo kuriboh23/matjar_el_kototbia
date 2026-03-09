@@ -43,7 +43,6 @@ require_once __DIR__ . '/../includes/header.php';
     <div class="d-flex justify-content-between align-items-center mb-4">
         <h1 class="h3 fw-bold mb-0">
             <?= htmlspecialchars($category_name) ?>
-            <span class="text-muted small fw-normal ms-2">(<?= $total_items ?>)</span>
         </h1>
     </div>
 

@@ -90,7 +90,7 @@ require_once __DIR__ . '/../includes/header.php';
         <!-- Product Grid (75%) -->
         <div class="col-lg-9 col-12">
             <div class="d-flex justify-content-between align-items-center mb-3">
-                <h1 class="h5 fw-bold mb-0"><?php echo $page_title; ?> (<?php echo $total_items; ?>)</h1>
+                <h1 class="h5 fw-bold mb-0"><?php echo $page_title; ?></h1>
                 <div class="d-none d-lg-block">
                     <select class="form-select form-select-sm" style="width: 200px;">
                         <option>Trier par: Popularité</option>
@@ -129,52 +129,6 @@ require_once __DIR__ . '/../includes/header.php';
                 <?php endif; ?>
             <?php endif; ?>
         </div>
-    </div>
-</div>
-
-<!-- Mobile Bottom Bar -->
-<div class="hri-mobile-bottom d-lg-none">
-    <a href="#" data-bs-toggle="offcanvas" data-bs-target="#sortOffcanvas">
-        <i class="bi bi-sort-down fs-5"></i> Trier par
-    </a>
-    <a href="#" data-bs-toggle="offcanvas" data-bs-target="#filterOffcanvas">
-        <i class="bi bi-sliders fs-5"></i> Filtrer
-    </a>
-</div>
-
-<!-- Offcanvas for Sorting -->
-<div class="offcanvas offcanvas-bottom" tabindex="-1" id="sortOffcanvas" style="height: auto; border-radius: 15px 15px 0 0;">
-    <div class="offcanvas-header border-bottom">
-        <h5 class="offcanvas-title fw-bold">Trier par</h5>
-        <button type="button" class="btn-close" data-bs-dismiss="offcanvas"></button>
-    </div>
-    <div class="offcanvas-body p-0">
-        <div class="list-group list-group-flush">
-            <a href="#" class="list-group-item list-group-item-action py-3">Popularité</a>
-            <a href="#" class="list-group-item list-group-item-action py-3">Prix: Le moins cher</a>
-            <a href="#" class="list-group-item list-group-item-action py-3">Prix: Le plus cher</a>
-            <a href="#" class="list-group-item list-group-item-action py-3">Nouveautés</a>
-        </div>
-    </div>
-</div>
-
-<!-- Offcanvas for Filtering -->
-<div class="offcanvas offcanvas-end" tabindex="-1" id="filterOffcanvas">
-    <div class="offcanvas-header border-bottom">
-        <h5 class="offcanvas-title fw-bold">Filtrer</h5>
-        <button type="button" class="btn-close" data-bs-dismiss="offcanvas"></button>
-    </div>
-    <div class="offcanvas-body">
-        <!-- Re-use filter content here or include it -->
-        <h6 class="fw-bold text-uppercase mb-3">MARQUE</h6>
-        <div class="mb-4">
-            <input type="text" class="form-control form-control-sm mb-2" placeholder="Chercher une marque...">
-            <div class="form-check small">
-                <input class="form-check-input" type="checkbox" value="" id="brandM1">
-                <label class="form-check-label" for="brandM1">Centrale Danone</label>
-            </div>
-        </div>
-        <button class="btn hri-btn-orange text-white w-100 mt-4 py-2 fw-bold" data-bs-dismiss="offcanvas">APPLIQUER</button>
     </div>
 </div>
 
