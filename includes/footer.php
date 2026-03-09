@@ -32,7 +32,7 @@ $current_year = date('Y');
     </main><!-- End Main Content Wrapper -->
     
     <!-- Footer -->
-    <footer class="footer bg-dark text-white pt-4 pb-3">
+    <footer class="hri-footer text-white pt-4 pb-3">
         <div class="container">
             <div class="row g-4">
                 <!-- Store Info Column -->

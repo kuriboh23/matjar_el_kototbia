@@ -54,6 +54,11 @@ body {
     z-index: 1000;
 }
 
+.hri-btn-orange{
+    background: var(--princeton-orange);
+    color: var(--white);
+}
+
 #hri-main-wrapper {
     transition: filter 0.4s ease, transform 0.4s ease;
     min-height: calc(100vh - var(--header-h));
@@ -152,7 +157,7 @@ body.is-processing #hri-main-wrapper {
 
 /* --- Layout Components --- */
 .icon-trigger { width: 40px; height: 40px; display: flex; align-items: center; justify-content: center; cursor: pointer; background: none; border: none; padding: 0; color: var(--carbon-black); }
-.logo { font-weight: 800; font-size: 22px; text-decoration: none; color: var(--carbon-black); display: flex; align-items: center; }
+.logo { font-weight: 800; font-size: 20px; text-decoration: none; color: var(--carbon-black); display: flex; align-items: center; }
 .logo span { color: var(--princeton-orange); }
 
 /* Drawer */
@@ -201,7 +206,7 @@ body.drawer-open .hri-drawer { left: 0; }
 .hri-product-card__badge--featured { background: var(--princeton-orange); color: white; }
 
 /* Product Detail Specifics */
-.hri-product-img-container { width: 100%; aspect-ratio: 1/1; background: #f8f9fa; border-radius: 12px; display: flex; align-items: center; justify-content: center; cursor: pointer; overflow: hidden; }
+.hri-product-img-container { width: 100%; aspect-ratio: 0.7/0.7; background: #f8f9fa; border-radius: 12px; display: flex; align-items: center; justify-content: center; cursor: pointer; overflow: hidden; }
 .hri-product-img-container img { width: 100%; height: 100%; object-fit: contain; }
 .hri-lightbox { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.9); display: none; justify-content: center; align-items: center; z-index: 2100; }
 .hri-lightbox.open { display: flex; }
@@ -234,7 +239,7 @@ body.drawer-open .hri-drawer { left: 0; }
 .hri-service-desc { font-size: 11px; color: #666; margin: 0; }
 
 /* Footer */
-.hri-footer { background: #1a1a1a; color: var(--white); padding: 50px 0 30px; margin-top: 50px; }
+.hri-footer { background: #171711; color: var(--white); padding: 50px 0 30px; margin-top: 50px; }
 .footer-links { list-style: none; padding: 0; margin: 0; }
 .footer-links a { color: #ccc; text-decoration: none; transition: 0.2s; font-size: 0.85rem; }
 .footer-links a:hover { color: var(--princeton-orange); }
@@ -288,7 +293,7 @@ body.drawer-open .hri-drawer { left: 0; }
 }
 .hri-cart-btn-order {
     background: var(--princeton-orange); color: white; border: none;
-    padding: 14px 28px; border-radius: 14px; font-weight: 800;
+    padding: 14px 10px; border-radius: 14px; font-weight: 800;
     box-shadow: 0 5px 15px rgba(255,130,0,0.3); text-decoration: none;
 }
 /* --- PRD Section 6.5: Profile & Orders (New Design) --- */
@@ -302,11 +307,6 @@ body.drawer-open .hri-drawer { left: 0; }
     display: flex; align-items: center; justify-content: center;
     color: var(--princeton-orange); font-weight: 800; font-size: 32px;
     position: relative; box-shadow: 0 10px 20px rgba(0,0,0,0.05);
-}
-.hri-edit-badge {
-    position: absolute; bottom: 0; right: 0; background: var(--princeton-orange);
-    color: white; width: 32px; height: 32px; border-radius: 50%;
-    display: flex; align-items: center; justify-content: center; border: 3px solid white;
 }
 .hri-summary-card {
     background: white; border-radius: 12px; overflow: hidden;

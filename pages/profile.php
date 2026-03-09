@@ -71,9 +71,7 @@ require_once __DIR__ . '/../includes/header.php';
     <div class="hri-profile-hero">
         <div class="hri-avatar-container">
             <?= strtoupper(substr($customer['customer_full_name'], 0, 1)) ?>
-            <div class="hri-edit-badge">
-                <i data-lucide="camera" size="14"></i>
-            </div>
+        
         </div>
         <h1 style="margin: 0; font-weight: 900; font-size: 24px;"><?= htmlspecialchars($customer['customer_full_name']) ?></h1>
         <p style="margin: 5px 0 0; color: #717171; font-size: 14px;">

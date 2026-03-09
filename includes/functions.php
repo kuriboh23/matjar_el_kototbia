@@ -570,24 +570,12 @@ function search_products(string $search_query): array
         $term = '%' . $word . '%';
         $p1 = ":nfr" . $index;
         $p2 = ":nar" . $index;
-        $p3 = ":dfr" . $index;
-        $p4 = ":dar" . $index;
-        $p5 = ":cfr" . $index;
-        $p6 = ":car" . $index;
 
         $conditions[] = "(p.product_name_fr LIKE $p1 
-                         OR p.product_name_ar LIKE $p2 
-                         OR p.product_description_fr LIKE $p3 
-                         OR p.product_description_ar LIKE $p4 
-                         OR c.category_name_fr LIKE $p5 
-                         OR c.category_name_ar LIKE $p6)";
+                         OR p.product_name_ar LIKE $p2 )";
         
         $params[$p1] = $term;
         $params[$p2] = $term;
-        $params[$p3] = $term;
-        $params[$p4] = $term;
-        $params[$p5] = $term;
-        $params[$p6] = $term;
     }
 
     if (empty($conditions)) return [];

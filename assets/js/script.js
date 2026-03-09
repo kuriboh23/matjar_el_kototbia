@@ -337,7 +337,6 @@ $(document).ready(function() {
                     </div>
                     <div class="result-info">
                         <b>${p.product_name}</b>
-                        <span>${p.price_display}</span>
                     </div>
                 </a>
             `);

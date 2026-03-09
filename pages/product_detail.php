@@ -63,12 +63,12 @@ require_once __DIR__ . '/../includes/header.php';
         <span class="badge bg-light text-dark border rounded-pill px-3 ms-1"><?php echo translate('unit_' . $product['product_unit']); ?></span>
     </div>
 
-    <h1 style="font-weight: 800; font-size: 24px; margin: 0;"><?php echo htmlspecialchars($product_name); ?></h1>
+    <h1 style="font-size: 22px; margin: 0;"><?php echo htmlspecialchars($product_name); ?></h1>
     
     <div class="hri-product-card__price mt-3 mb-4" style="font-size: 28px;">
         <span class="current text-dark"><?php echo format_price($display_price); ?></span>
         <?php if ($is_on_sale): ?>
-            <span class="original fs-5 text-muted ms-2"><?php echo format_price($product_price); ?></span>
+            <span class="original fs-6 ms-2"><?php echo format_price($product_price); ?></span>
         <?php endif; ?>
     </div>
 
