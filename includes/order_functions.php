@@ -121,44 +121,42 @@ function create_order(array $order_data, array $order_items): int
 function build_whatsapp_message(array $order_data, array $order_items): string
 {
     $msg  = "🛒 *طلب جديد — Nouvelle Commande*\n";
-    $msg .= "━━━━━━━━━━━━━━━━━━━\n";
+    $msg .= "━━━━━━━━━━━━━━━━\n";
     $msg .= "📋 *رقم الطلب — N° Commande:* #" . $order_data['order_number'] . "\n\n";
-    $msg .= "👤 *الاسم — Nom:* " . $order_data['order_customer_name'] . "\n";
-    $msg .= "📞 *الهاتف — Tél:* " . $order_data['order_customer_phone'] . "\n";
-    $msg .= "📍 *العنوان — Adresse:* " . $order_data['order_customer_address'] . "\n";
+   $msg .= "👤 *الاسم:* " . $order_data['order_customer_name'] . "\n";
+    $msg .= "📞 *الهات:* " . $order_data['order_customer_phone'] . "\n";
+    $msg .= "📍 *العنوان:* " . $order_data['order_customer_address'] . "\n";
 
     if (!empty($order_data['order_customer_neighborhood'])) {
-        $msg .= "🏘️ *الحي — Quartier:* " . $order_data['order_customer_neighborhood'] . "\n";
+        $msg .= "🏘️ *الحي:* " . $order_data['order_customer_neighborhood'] . "\n";
     }
 
-    $msg .= "🏙️ *المدينة — Ville:* " . ($order_data['order_customer_city'] ?? DEFAULT_CITY) . "\n";
-    $msg .= "\n━━━━━━━━━━━━━━━━━━━\n";
-    $msg .= "📦 *المنتجات — Produits:*\n\n";
+    $msg .= "🏙️ *المدينة:* " . ($order_data['order_customer_city'] ?? DEFAULT_CITY) . "\n";
+    $msg .= "\n━━━━━━━━━━━━━━━━\n";
+    $msg .= "📦 *المنتجات:*\n\n";
 
     // List each item with number emoji
     $number_emojis = ['1️⃣','2️⃣','3️⃣','4️⃣','5️⃣','6️⃣','7️⃣','8️⃣','9️⃣','🔟'];
     $index = 0;
     foreach ($order_items as $item) {
         $emoji = $number_emojis[$index] ?? '▪️';
-        $msg .= $emoji . " " . $item['product_name_fr'] . " / " . $item['product_name_ar'] . "\n";
+        $msg .= $emoji . " " . $item['product_name_ar'] . "\n";
         $msg .= "   🔢 Qté: " . $item['quantity'] . " " . $item['unit'] . "\n";
         $msg .= "   💰 Prix: " . format_price($item['subtotal']) . "\n\n";
         $index++;
     }
 
-    $msg .= "━━━━━━━━━━━━━━━━━━━\n";
-    $msg .= "💰 *الإجمالي — Sous-total:* " . format_price($order_data['order_subtotal']) . "\n";
-    $msg .= "🚚 *التوصيل — Livraison:* " . format_price($order_data['order_delivery_fee']) . "\n";
-    $msg .= "💵 *المجموع — Total:* " . format_price($order_data['order_total']) . "\n";
+    $msg .= "\n━━━━━━━━━━━━━━━━\n";
+    $msg .= "💰 *الإجمالي:* " . format_price($order_data['order_subtotal']) . "\n";
+    $msg .= "🚚 *التوصيل:* " . format_price($order_data['order_delivery_fee']) . "\n";
+    $msg .= "💵 *المجموع:* " . format_price($order_data['order_total']) . "\n";
 
     if (!empty($order_data['order_notes'])) {
-        $msg .= "\n📝 *ملاحظات — Notes:* " . $order_data['order_notes'] . "\n";
+        $msg .= "\n📝 *ملاحظات:* " . $order_data['order_notes'] . "\n";
     }
 
-    $msg .= "\n━━━━━━━━━━━━━━━━━━━\n";
-    $msg .= "✅ الدفع عند الاستلام — Paiement à la livraison\n";
-    $msg .= "🕐 وقت الطلب — Heure: " . date('Y-m-d H:i') . "\n";
-
+    $msg .= "\n━━━━━━━━━━━━━━━━\n";
+    $msg .= "✅ الدفع عند الاستلام\n";
     return $msg;
 }
 
