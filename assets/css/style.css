@@ -133,7 +133,11 @@ body.is-processing #hri-main-wrapper {
 #hri-search-overlay.is-active { display: flex; }
 
 .search-top { display: flex; align-items: center; gap: 15px; margin-bottom: 30px; }
-.full-search-input { width: 100%; border: none; background: transparent; font-size: 24px; font-weight: 800; outline: none; color: var(--carbon-black); }
+.full-search-input { width: 100%; border: none; background: transparent; font-size: 24px; font-weight: 800; outline: none; color: var(--carbon-black); padding-right: 40px; }
+[dir="rtl"] .full-search-input { padding-right: 0; padding-left: 40px; }
+.search-action-btn { position: absolute; right: 0; cursor: pointer; color: var(--princeton-orange); transition: transform 0.2s; }
+[dir="rtl"] .search-action-btn { right: auto; left: 0; }
+.search-action-btn:hover { transform: scale(1.1); }
 .close-search { cursor: pointer; color: var(--carbon-black); }
 
 .results-container { flex-grow: 1; overflow-y: auto; padding-bottom: 40px; }

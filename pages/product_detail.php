@@ -15,23 +15,23 @@ if (!$product) {
     redirect(SITE_URL . '/pages/products.php');
 }
 
-$product_id = (int)$product['product_id'];
-$product_name = get_product_name($product);
-$product_desc = ($current_language === 'ar') ? $product['product_description_ar'] : $product['product_description_fr'];
-$product_price = (float)$product['product_price'];
-$product_sale_price = (float)$product['product_sale_price'];
-$is_on_sale = (bool)$product['product_is_on_sale'] && $product_sale_price > 0 && $product_sale_price < $product_price;
-$display_price = $is_on_sale ? $product_sale_price : $product_price;
+$main_product_id = (int)$product['product_id'];
+$main_product_name = get_product_name($product);
+$main_product_desc = ($current_language === 'ar') ? $product['product_description_ar'] : $product['product_description_fr'];
+$main_product_price = (float)$product['product_price'];
+$main_product_sale_price = (float)$product['product_sale_price'];
+$main_is_on_sale = (bool)$product['product_is_on_sale'] && $main_product_sale_price > 0 && $main_product_sale_price < $main_product_price;
+$main_display_price = $main_is_on_sale ? $main_product_sale_price : $main_product_price;
 
 // Related products
 $related_products = get_products_by_category((int)$product['product_category_id'], 1, 6);
 
 // Check if item is in session cart
 $cart = $_SESSION[CART_SESSION_KEY] ?? [];
-$in_cart = isset($cart[$product_id]);
-$current_qty = $in_cart ? $cart[$product_id] : 0;
+$main_in_cart = isset($cart[$main_product_id]);
+$main_current_qty = $main_in_cart ? $cart[$main_product_id] : 0;
 
-$page_title = $product_name . ' - ' . $lang['site_name'];
+$page_title = $main_product_name . ' - ' . $lang['site_name'];
 require_once __DIR__ . '/../includes/header.php';
 ?>
 
@@ -45,7 +45,7 @@ require_once __DIR__ . '/../includes/header.php';
 
 <!-- Clickable Image Section -->
 <div class="hri-product-img-container" onclick="openLightbox()">
-    <img id="mainImg" src="<?php echo get_product_image_url($product['product_image']); ?>" alt="<?php echo htmlspecialchars($product_name); ?>">
+    <img id="mainImg" src="<?php echo get_product_image_url($product['product_image']); ?>" alt="<?php echo htmlspecialchars($main_product_name); ?>">
 </div>
 
 <!-- Lightbox -->
@@ -57,35 +57,35 @@ require_once __DIR__ . '/../includes/header.php';
 <!-- Product Info -->
 <div class="container py-4">
     <div class="mb-2">
-        <?php if ($is_on_sale): ?>
-            <span class="badge bg-danger rounded-pill px-3">-<?php echo round((($product_price - $product_sale_price) / $product_price) * 100); ?>%</span>
+        <?php if ($main_is_on_sale): ?>
+            <span class="badge bg-danger rounded-pill px-3">-<?php echo round((($main_product_price - $main_product_sale_price) / $main_product_price) * 100); ?>%</span>
         <?php endif; ?>
         <span class="badge bg-light text-dark border rounded-pill px-3 ms-1"><?php echo translate('unit_' . $product['product_unit']); ?></span>
     </div>
 
-    <h1 style="font-size: 22px; margin: 0;"><?php echo htmlspecialchars($product_name); ?></h1>
+    <h1 style="font-size: 22px; margin: 0;"><?php echo htmlspecialchars($main_product_name); ?></h1>
     
     <div class="hri-product-card__price mt-3 mb-4" style="font-size: 28px;">
-        <span class="current text-dark"><?php echo format_price($display_price); ?></span>
-        <?php if ($is_on_sale): ?>
-            <span class="original fs-6 ms-2"><?php echo format_price($product_price); ?></span>
+        <span class="current text-dark"><?php echo format_price($main_display_price); ?></span>
+        <?php if ($main_is_on_sale): ?>
+            <span class="original fs-6 ms-2"><?php echo format_price($main_product_price); ?></span>
         <?php endif; ?>
     </div>
 
     <div class="product-description mb-5">
         <h6 class="fw-bold text-uppercase small text-muted mb-3"><?php echo $current_language === 'ar' ? 'الوصف' : 'Description'; ?></h6>
         <div style="color: #555; line-height: 1.7; font-size: 15px;">
-            <?php echo !empty($product_desc) ? nl2br(htmlspecialchars($product_desc)) : ( $current_language === 'ar' ? 'لا يوجد وصف متاح.' : 'Aucune description disponible.' ); ?>
+            <?php echo !empty($main_product_desc) ? nl2br(htmlspecialchars($main_product_desc)) : ( $current_language === 'ar' ? 'لا يوجد وصف متاح.' : 'Aucune description disponible.' ); ?>
         </div>
     </div>
 
     <!-- Related Products -->
     <div class="mt-5 pt-4 border-top">
         <h4 class="fw-bold mb-4"><?php echo $lang['related_products'] ?? 'Produits similaires'; ?></h4>
-        <div class="row g-2 g-md-3">
+        <div class="row g-2 g-md-3 flex-nowrap overflow-auto pb-3 no-scrollbar">
             <?php foreach ($related_products as $product_data): ?>
-                <?php if ($product_data['product_id'] == $product_id) continue; ?>
-                <div class="col-6 col-md-4 col-lg-2">
+                <?php if ($product_data['product_id'] == $main_product_id) continue; ?>
+                <div class="col-6 col-md-4 col-lg-2 flex-shrink-0">
                     <?php include __DIR__ . '/_product_card.php'; ?>
                 </div>
             <?php endforeach; ?>
@@ -99,18 +99,16 @@ require_once __DIR__ . '/../includes/header.php';
         <i data-lucide="phone"></i>
     </a>
 
-    <div class="hri-detail-action-wrapper <?php echo $in_cart ? 'is-active' : ''; ?>" id="actionWrap">
-        <button class="hri-btn-acheter" onclick="initAcheterDetail(<?php echo $product_id; ?>)">
+    <div class="hri-detail-action-wrapper <?php echo $main_in_cart ? 'is-active' : ''; ?>" id="actionWrap">
+        <button class="hri-btn-acheter" onclick="initAcheterDetail(<?php echo $main_product_id; ?>)">
             <?php echo $current_language === 'ar' ? 'شراء الآن' : 'Acheter'; ?>
         </button>
         <div class="hri-detail-qty-controls">
-            <button class="hri-detail-qty-btn" onclick="changeQtyDetail(<?php echo $product_id; ?>, -1)">−</button>
-            <span id="qty-display" class="hri-detail-qty-num"><?php echo $current_qty; ?></span>
-            <button class="hri-detail-qty-btn" onclick="changeQtyDetail(<?php echo $product_id; ?>, 1)">+</button>
+            <button class="hri-detail-qty-btn" onclick="changeQtyDetail(<?php echo $main_product_id; ?>, -1)">−</button>
+            <span id="qty-display" class="hri-detail-qty-num"><?php echo $main_current_qty; ?></span>
+            <button class="hri-detail-qty-btn" onclick="changeQtyDetail(<?php echo $main_product_id; ?>, 1)">+</button>
         </div>
     </div>
 </div>
-
-<div class="bottom-spacer" style="height: 100px;"></div>
 
 <?php require_once __DIR__ . '/../includes/footer.php'; ?>

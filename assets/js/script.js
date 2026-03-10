@@ -20,6 +20,15 @@ if (document.readyState === 'complete') {
     window.addEventListener('load', hideHeroLoader);
 }
 
+// Force reload on back button to sync session state
+window.addEventListener("pageshow", function (event) {
+    const nav = performance.getEntriesByType("navigation")[0];
+
+    if (event.persisted || nav.type === "back_forward") {
+        window.location.reload();
+    }
+});
+
 $(document).ready(function() {
     
     // Safety fallback for loader
@@ -111,7 +120,7 @@ $(document).ready(function() {
             success: function(response) {
                 if (response.success) {
                     $card.addClass('is-active');
-                    $qtyNum.text(1);
+                    $qtyNum.text(response.data.product_qty || 1);
                     showFlashBar();
                     updateHeaderCartCount(response.data.count);
                     window.refreshCartPage();
@@ -300,22 +309,39 @@ $(document).ready(function() {
             }
 
             $searchLoader.addClass('is-visible');
-            
             typingTimer = setTimeout(() => {
-                $.ajax({
-                    url: HriApp.ajaxUrl + '/search_products.php',
-                    type: 'GET',
-                    data: { q: query },
-                    dataType: 'json',
-                    success: function(response) {
-                        $searchLoader.removeClass('is-visible');
-                        renderSearchResults(response.data, query);
-                    },
-                    error: function() {
-                        $searchLoader.removeClass('is-visible');
-                    }
-                });
-            }, 500);
+                performAjaxSearch(query);
+            }, 600);
+        });
+
+        // Support Enter Key
+        $searchInput.on('keypress', function(e) {
+            if (e.which === 13) {
+                triggerSearch();
+            }
+        });
+    }
+
+    window.triggerSearch = function() {
+        const query = $searchInput.val().trim();
+        if (query.length >= 2) {
+            window.location.href = HriApp.siteUrl + '/pages/products.php?q=' + encodeURIComponent(query);
+        }
+    };
+
+    function performAjaxSearch(query) {
+        $.ajax({
+            url: HriApp.ajaxUrl + '/search_products.php',
+            type: 'GET',
+            data: { q: query },
+            dataType: 'json',
+            success: function(response) {
+                $searchLoader.removeClass('is-visible');
+                renderSearchResults(response.data, query);
+            },
+            error: function() {
+                $searchLoader.removeClass('is-visible');
+            }
         });
     }
 
@@ -382,10 +408,10 @@ $(document).ready(function() {
             success: function(response) {
                 if (response.success) {
                     $wrapper.addClass('is-active');
-                    $qtyNum.text(1);
+                    $qtyNum.text(response.data.product_qty || 1);
                     showFlashBar();
                     updateHeaderCartCount(response.data.count);
-                    $(`.hri-product-card[data-product-id="${productId}"]`).addClass('is-active').find('.qty-num').text(1);
+                    $(`.hri-product-card[data-product-id="${productId}"]`).addClass('is-active').find('.qty-num').text(response.data.product_qty || 1);
                 }
             },
             complete: function() {

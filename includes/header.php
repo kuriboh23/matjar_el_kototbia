@@ -78,8 +78,11 @@ $active_categories = get_active_categories();
                 <div class="close-search" onclick="closeSearch()">
                     <i data-lucide="arrow-left" size="28"></i>
                 </div>
-                <div class="flex-grow-1">
+                <div class="flex-grow-1 position-relative d-flex align-items-center">
                     <input type="text" id="main-search-input" class="full-search-input" placeholder="<?php echo $current_language === 'ar' ? 'أنا أبحث عن...' : 'Je cherche...'; ?>" autocomplete="off">
+                    <div class="search-action-btn" onclick="triggerSearch()">
+                        <i data-lucide="search" size="24"></i>
+                    </div>
                 </div>
             </div>
 

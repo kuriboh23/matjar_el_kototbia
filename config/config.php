@@ -40,6 +40,54 @@ require_once __DIR__ . '/database.php';
 // 3. Helper functions (sanitize, validate, format, etc.)
 require_once dirname(__DIR__) . '/includes/functions.php';
 
+/* ----------------------------------------------------------------
+ * INITIALIZE DYNAMIC CONSTANTS (DB Overrides)
+ * ---------------------------------------------------------------- */
+try {
+    $db_settings = get_all_settings();
+    
+    // Mapping DB keys to Constant names
+    $hri_mapping = [
+        'store_name_fr'           => 'SITE_NAME_FR',
+        'store_name_ar'           => 'SITE_NAME_AR',
+        'store_tagline_fr'        => 'SITE_TAGLINE_FR',
+        'store_tagline_ar'        => 'SITE_TAGLINE_AR',
+        'store_city'              => 'DEFAULT_CITY',
+        'store_whatsapp'          => 'STORE_WHATSAPP_NUMBER',
+        'store_whatsapp_number'   => 'STORE_WHATSAPP_NUMBER',
+        'store_phone'             => 'STORE_PHONE_DISPLAY',
+        'store_phone_display'     => 'STORE_PHONE_DISPLAY',
+        'minimum_order_amount'    => 'MINIMUM_ORDER_AMOUNT',
+        'min_order_amount'        => 'MINIMUM_ORDER_AMOUNT',
+        'delivery_fee'            => 'DELIVERY_FEE',
+        'free_delivery_threshold' => 'FREE_DELIVERY_THRESHOLD',
+        'default_language'        => 'DEFAULT_LANGUAGE'
+    ];
+
+    foreach ($hri_mapping as $db_key => $const_name) {
+        if (!defined($const_name)) {
+            $val = $db_settings[$db_key] ?? $hri_defaults[$const_name] ?? null;
+            if ($val !== null) {
+                // Type conversion for numbers
+                if (in_array($const_name, ['MINIMUM_ORDER_AMOUNT', 'DELIVERY_FEE', 'FREE_DELIVERY_THRESHOLD'])) {
+                    $val = (float)$val;
+                }
+                define($const_name, $val);
+            }
+        }
+    }
+} catch (Exception $e) {
+    // Fallback to defaults if DB fails
+    error_log("Settings init error: " . $e->getMessage());
+}
+
+// Define any remaining defaults that weren't in mapping or DB
+foreach ($hri_defaults as $const_name => $default_val) {
+    if (!defined($const_name)) {
+        define($const_name, $default_val);
+    }
+}
+
 // 4. Cart functions (add, remove, calculate)
 require_once dirname(__DIR__) . '/includes/cart_functions.php';
 

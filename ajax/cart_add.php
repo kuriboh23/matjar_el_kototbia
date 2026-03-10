@@ -35,7 +35,8 @@ try {
     $response['success'] = true;
     $response['message'] = translate('added_to_cart') ?? 'Ajouté au panier';
     $response['data'] = [
-        'count' => get_cart_item_count()
+        'count' => get_cart_item_count(),
+        'product_qty' => $_SESSION[CART_SESSION_KEY][$product_id] ?? 0
     ];
 
 } catch (Exception $e) {
