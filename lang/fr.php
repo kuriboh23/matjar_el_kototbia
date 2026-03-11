@@ -80,7 +80,7 @@ $lang = [
     'status_pending'        => 'En attente',
     'status_confirmed'      => 'Confirmée',
     'status_preparing'      => 'En préparation',
-    'status_out_delivery'   => 'En livraison',
+    'status_out_for_delivery'   => 'En livraison',
     'status_delivered'      => 'Livrée',
     'status_cancelled'      => 'Annulée',
     'about_us'              => 'À propos',
@@ -130,4 +130,5 @@ $lang = [
     'faq'                   => 'FAQ',
     'tos'                   => "Conditions d'utilisation",
     'privacy_policy'        => 'Politique de confidentialité',
+    'contact_support'       => 'Contacter le support',
 ];

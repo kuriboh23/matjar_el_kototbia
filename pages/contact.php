@@ -53,8 +53,8 @@ require_once __DIR__ . '/../includes/header.php';
 
                         <div class="mt-auto">
                             <h6 class="fw-bold mb-3">Horaires</h6>
-                            <p class="small mb-0">Lun - Sam : 08:00 - 22:00</p>
-                            <p class="small mb-0">Dimanche : 09:00 - 18:00</p>
+                            <p class="small mb-0">Lun - Sam : 08:00 - 23:00</p>
+                            <p class="small mb-0">Dimanche : 09:00 - 23:00</p>
                         </div>
                     </div>
 

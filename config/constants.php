@@ -44,7 +44,7 @@ define('ORDER_STATUS_CANCELLED', 'cancelled');
 define('PRODUCTS_PER_PAGE', 12);
 define('ORDERS_PER_PAGE_ADMIN', 20);
 define('CUSTOMERS_PER_PAGE_ADMIN', 20);
-define('ORDER_NUMBER_PREFIX', 'MATJAR-KOTOBIA');
+define('ORDER_NUMBER_PREFIX', 'MK');
 
 /* ============================================================
  * SITE SETTING DEFAULTS (Used if DB is empty)
