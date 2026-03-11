@@ -10,7 +10,7 @@
  * ENVIRONMENT SETTINGS
  * Set to 'development' locally, 'production' on live server.
  * ---------------------------------------------------------------- */
-define('ENVIRONMENT', 'development'); // Change to 'production' when live
+define('ENVIRONMENT', 'production'); // Change to 'production' when live
 
 /* ----------------------------------------------------------------
  * ERROR REPORTING (based on environment)

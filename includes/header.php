@@ -16,6 +16,27 @@ $active_categories = get_active_categories();
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    
+    <!-- SEO Meta Tags -->
+    <meta name="description" content="<?= $current_language === 'ar' ? SITE_NAME_AR . ' - ' . SITE_TAGLINE_AR : SITE_NAME_FR . ' - ' . SITE_TAGLINE_FR ?>">
+    <meta name="keywords" content="supermarché, safi, morocco, épicerie, en ligne, matjar el kotobia, matjar kotobia, livraison, matjar, kotobia, هري, آسفي, بقالة">
+    <meta name="author" content="Matjar El Kotobia">
+    <link rel="canonical" href="<?= get_current_url() ?>">
+
+    <!-- Open Graph / Facebook -->
+    <meta property="og:type" content="website">
+    <meta property="og:url" content="<?= get_current_url() ?>">
+    <meta property="og:title" content="<?= isset($page_title) ? $page_title : ($current_language === 'ar' ? SITE_NAME_AR : SITE_NAME_FR) ?>">
+    <meta property="og:description" content="<?= $current_language === 'ar' ? SITE_TAGLINE_AR : SITE_TAGLINE_FR ?>">
+    <meta property="og:image" content="<?= SITE_URL ?>/assets/images/logo/logo.png">
+
+    <!-- Twitter -->
+    <meta property="twitter:card" content="summary_large_image">
+    <meta property="twitter:url" content="<?= get_current_url() ?>">
+    <meta property="twitter:title" content="<?= isset($page_title) ? $page_title : ($current_language === 'ar' ? SITE_NAME_AR : SITE_NAME_FR) ?>">
+    <meta property="twitter:description" content="<?= $current_language === 'ar' ? SITE_TAGLINE_AR : SITE_TAGLINE_FR ?>">
+    <meta property="twitter:image" content="<?= SITE_URL ?>/assets/images/logo/logo.png">
+
     <title><?php echo isset($page_title) ? $page_title : $lang['site_name']; ?></title>
     
     <!-- Google Fonts -->

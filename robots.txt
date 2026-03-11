@@ -4,6 +4,10 @@ Disallow: /admin/
 Disallow: /ajax/
 Disallow: /config/
 Disallow: /includes/
-Disallow: /sql/
-Disallow: /docs/
 Disallow: /lang/
+Disallow: /sql/
+Disallow: /pages/order_detail.php
+Disallow: /pages/order_history.php
+Disallow: /pages/profile.php
+Disallow: /pages/order_success.php
+Disallow: /pages/search_results.php
