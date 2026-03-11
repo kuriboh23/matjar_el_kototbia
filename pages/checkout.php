@@ -99,9 +99,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['submit_order'])) {
 
         if ($saved_order_id > 0) {
             clear_cart();
-            $whatsapp_msg = build_whatsapp_message($order_header, $line_items);
-            $whatsapp_url = build_whatsapp_url($store_whatsapp, $whatsapp_msg);
-            redirect($whatsapp_url);
+            // Redirect to success page with image generation
+            redirect(SITE_URL . '/pages/order_success.php?id=' . $saved_order_id);
         } else {
             $errors[] = translate('error_general');
         }

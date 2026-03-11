@@ -63,7 +63,48 @@ require_once __DIR__ . '/../includes/header.php';
             <?= $current_language === 'ar' ? 'تم تقديم الطلب في ' : 'Commandé le ' ?> 
             <?= date('d/m/Y à H:i', strtotime($order['order_created_at'])) ?>
         </div>
+
+        <div class="mt-4 d-flex gap-2 justify-content-center">
+            <a href="<?= SITE_URL ?>/pages/order_success.php?id=<?= $order['order_id'] ?>" class="btn btn-sm btn-outline-light rounded-pill px-3 fw-bold">
+                <i data-lucide="file-text" size="14" class="me-1"></i>
+                <?php if ($order['order_status'] !== ORDER_STATUS_PENDING): ?>
+                     <?= translate('show_receipt') ?>
+            <?php endif; ?>
+            </a>
+            
+            <?php if ($order['order_status'] === ORDER_STATUS_PENDING): ?>
+                <button type="button" class="btn btn-sm btn-outline-danger rounded-pill px-3 fw-bold" 
+                        onclick="confirmDeleteOrder(<?= $order['order_id'] ?>)">
+                    <i data-lucide="trash-2" size="14" class="me-1"></i> <?= translate('delete_order') ?>
+                </button>
+            <?php endif; ?>
+        </div>
     </div>
+
+    <script>
+    function confirmDeleteOrder(orderId) {
+        if (confirm("<?= translate('confirm_delete_order') ?>")) {
+            const form = document.createElement('form');
+            form.method = 'POST';
+            form.action = '<?= SITE_URL ?>/pages/order_delete.php';
+            
+            const idInput = document.createElement('input');
+            idInput.type = 'hidden';
+            idInput.name = 'order_id';
+            idInput.value = orderId;
+            form.appendChild(idInput);
+            
+            const csrfInput = document.createElement('input');
+            csrfInput.type = 'hidden';
+            csrfInput.name = '<?= CSRF_TOKEN_NAME ?>';
+            csrfInput.value = '<?= generate_csrf_token() ?>';
+            form.appendChild(csrfInput);
+            
+            document.body.appendChild(form);
+            form.submit();
+        }
+    }
+    </script>
 
     <!-- Items List Card -->
     <div class="hri-summary-card mb-4">

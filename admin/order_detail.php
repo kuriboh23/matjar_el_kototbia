@@ -162,9 +162,9 @@ require_once __DIR__ . '/includes/admin_header.php';
             <h3 style="margin: 0 0 10px 0; font-weight: 800; font-size: 16px; display: flex; align-items: center; gap: 8px;">
                 <i data-lucide="printer" size="18"></i> Impression
             </h3>
-            <button onclick="window.print()" class="btn btn-light" style="width: 100%; justify-content: center;">
+            <a href="order_print.php?id=<?= $order['order_id'] ?>" class="btn btn-light" style="width: 100%; justify-content: center;">
                 Imprimer le Bon de Livraison
-            </button>
+            </a>
         </div>
     </div>
 </div>

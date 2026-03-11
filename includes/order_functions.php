@@ -15,19 +15,9 @@
 function generate_order_number(): string
 {
     $date_part = date('Ymd');
-    $prefix = ORDER_NUMBER_PREFIX . '-' . $date_part . '-';
-
-    // Count today's orders to generate sequential number
-    $today_start = date('Y-m-d 00:00:00');
-    $today_end   = date('Y-m-d 23:59:59');
-    $count = count_rows(
-        "SELECT COUNT(*) FROM hri_order
-         WHERE order_created_at BETWEEN :start AND :end",
-        [':start' => $today_start, ':end' => $today_end]
-    );
-
-    $sequence = str_pad($count + 1, 3, '0', STR_PAD_LEFT);
-    return $prefix . $sequence;
+    // Using microtime and a random suffix for better uniqueness
+    $unique_suffix = strtoupper(substr(uniqid(), -4));
+    return ORDER_NUMBER_PREFIX . '-' . $date_part . '-' . $unique_suffix;
 }
 
 /**
@@ -41,74 +31,67 @@ function create_order(array $order_data, array $order_items): int
 {
     global $db_connection;
 
-    try {
-        $db_connection->beginTransaction();
+    $db_connection->beginTransaction();
 
-        // Insert order header
-        $sql = "INSERT INTO hri_order
-                (order_number, order_customer_id, order_customer_name,
-                 order_customer_phone, order_customer_address,
-                 order_customer_neighborhood, order_customer_city,
-                 order_notes, order_subtotal, order_delivery_fee,
-                 order_total, order_item_count, order_status,
-                 order_payment_method, order_language, order_ip_address)
-                VALUES
-                (:number, :customer_id, :name, :phone, :address,
-                 :neighborhood, :city, :notes, :subtotal, :delivery_fee,
-                 :total, :item_count, :status, :payment, :lang, :ip)";
+    // Insert order header
+    $sql = "INSERT INTO hri_order
+            (order_number, order_customer_id, order_customer_name,
+             order_customer_phone, order_customer_address,
+             order_customer_neighborhood, order_customer_city,
+             order_notes, order_subtotal, order_delivery_fee,
+             order_total, order_item_count, order_status,
+             order_payment_method, order_language, order_ip_address)
+            VALUES
+            (:number, :customer_id, :name, :phone, :address,
+             :neighborhood, :city, :notes, :subtotal, :delivery_fee,
+             :total, :item_count, :status, :payment, :lang, :ip)";
 
-        execute_query($sql, [
-            ':number'       => $order_data['order_number'],
-            ':customer_id'  => $order_data['order_customer_id'],
-            ':name'         => $order_data['order_customer_name'],
-            ':phone'        => $order_data['order_customer_phone'],
-            ':address'      => $order_data['order_customer_address'],
-            ':neighborhood' => $order_data['order_customer_neighborhood'] ?? null,
-            ':city'         => $order_data['order_customer_city'] ?? DEFAULT_CITY,
-            ':notes'        => $order_data['order_notes'] ?? null,
-            ':subtotal'     => $order_data['order_subtotal'],
-            ':delivery_fee' => $order_data['order_delivery_fee'],
-            ':total'        => $order_data['order_total'],
-            ':item_count'   => $order_data['order_item_count'],
-            ':status'       => ORDER_STATUS_PENDING,
-            ':payment'      => 'cod',
-            ':lang'         => $order_data['order_language'] ?? DEFAULT_LANGUAGE,
-            ':ip'           => $_SERVER['REMOTE_ADDR'] ?? null,
+    execute_query($sql, [
+        ':number'       => $order_data['order_number'],
+        ':customer_id'  => $order_data['order_customer_id'],
+        ':name'         => $order_data['order_customer_name'],
+        ':phone'        => $order_data['order_customer_phone'],
+        ':address'      => $order_data['order_customer_address'],
+        ':neighborhood' => $order_data['order_customer_neighborhood'] ?? null,
+        ':city'         => $order_data['order_customer_city'] ?? DEFAULT_CITY,
+        ':notes'        => $order_data['order_notes'] ?? null,
+        ':subtotal'     => $order_data['order_subtotal'],
+        ':delivery_fee' => $order_data['order_delivery_fee'],
+        ':total'        => $order_data['order_total'],
+        ':item_count'   => $order_data['order_item_count'],
+        ':status'       => ORDER_STATUS_PENDING,
+        ':payment'      => 'cod',
+        ':lang'         => $order_data['order_language'] ?? DEFAULT_LANGUAGE,
+        ':ip'           => $_SERVER['REMOTE_ADDR'] ?? null,
+    ]);
+
+    $order_id = (int) get_last_insert_id();
+
+    // Insert each order item
+    $item_sql = "INSERT INTO hri_order_item
+                 (order_item_order_id, order_item_product_id,
+                  order_item_name_fr, order_item_name_ar,
+                  order_item_unit_price, order_item_quantity,
+                  order_item_unit, order_item_subtotal)
+                 VALUES
+                 (:order_id, :product_id, :name_fr, :name_ar,
+                  :unit_price, :quantity, :unit, :subtotal)";
+
+    foreach ($order_items as $item) {
+        execute_query($item_sql, [
+            ':order_id'   => $order_id,
+            ':product_id' => $item['product_id'],
+            ':name_fr'    => $item['product_name_fr'],
+            ':name_ar'    => $item['product_name_ar'],
+            ':unit_price' => $item['unit_price'],
+            ':quantity'   => $item['quantity'],
+            ':unit'       => $item['unit'],
+            ':subtotal'   => $item['subtotal'],
         ]);
-
-        $order_id = (int) get_last_insert_id();
-
-        // Insert each order item
-        $item_sql = "INSERT INTO hri_order_item
-                     (order_item_order_id, order_item_product_id,
-                      order_item_name_fr, order_item_name_ar,
-                      order_item_unit_price, order_item_quantity,
-                      order_item_unit, order_item_subtotal)
-                     VALUES
-                     (:order_id, :product_id, :name_fr, :name_ar,
-                      :unit_price, :quantity, :unit, :subtotal)";
-
-        foreach ($order_items as $item) {
-            execute_query($item_sql, [
-                ':order_id'   => $order_id,
-                ':product_id' => $item['product_id'],
-                ':name_fr'    => $item['product_name_fr'],
-                ':name_ar'    => $item['product_name_ar'],
-                ':unit_price' => $item['unit_price'],
-                ':quantity'   => $item['quantity'],
-                ':unit'       => $item['unit'],
-                ':subtotal'   => $item['subtotal'],
-            ]);
-        }
-
-        $db_connection->commit();
-        return $order_id;
-
-    } catch (Exception $e) {
-        $db_connection->rollBack();
-        error_log('[HRI_ORDER_ERROR] ' . $e->getMessage());
-        return 0;
     }
+
+    $db_connection->commit();
+    return $order_id;
 }
 
 /**
@@ -123,8 +106,8 @@ function build_whatsapp_message(array $order_data, array $order_items): string
     $msg  = "🛒 *طلب جديد — Nouvelle Commande*\n";
     $msg .= "━━━━━━━━━━━━━━━━\n";
     $msg .= "📋 *رقم الطلب — N° Commande:* #" . $order_data['order_number'] . "\n\n";
-   $msg .= "👤 *الاسم:* " . $order_data['order_customer_name'] . "\n";
-    $msg .= "📞 *الهات:* " . $order_data['order_customer_phone'] . "\n";
+    $msg .= "👤 *الاسم:* " . $order_data['order_customer_name'] . "\n";
+    $msg .= "📞 *الهاتف:* " . $order_data['order_customer_phone'] . "\n";
     $msg .= "📍 *العنوان:* " . $order_data['order_customer_address'] . "\n";
 
     if (!empty($order_data['order_customer_neighborhood'])) {

@@ -1138,6 +1138,28 @@ function redirect(string $url): void
 }
 
 /**
+ * Delete an order and its items.
+ *
+ * @param  int $order_id  ID of order to delete
+ * @return bool           True if deleted
+ */
+function delete_order(int $order_id): bool
+{
+    // Items will be deleted automatically if ON DELETE CASCADE is set, 
+    // but let's be explicit if not sure.
+    execute_query("DELETE FROM hri_order_item WHERE order_item_order_id = :id", [':id' => $order_id]);
+    
+    $sql = "DELETE FROM hri_order WHERE order_id = :id";
+    try {
+        execute_query($sql, [':id' => $order_id]);
+        return true;
+    } catch (PDOException $e) {
+        error_log("Delete Order Error: " . $e->getMessage());
+        return false;
+    }
+}
+
+/**
  * Get a list of common Bootstrap Icons for categories.
  *
  * @return array
