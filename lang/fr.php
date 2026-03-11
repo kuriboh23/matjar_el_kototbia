@@ -144,7 +144,7 @@ $lang = [
     'thanks_confidence'     => 'Merci pour votre confiance !',
     'generating_receipt_error' => 'Erreur lors de la génération du bon.',
     'receipt_downloaded_msg' => 'Le bon a été téléchargé sur votre téléphone. Veuillez maintenant l\'envoyer à la boutique sur WhatsApp.',
-    'delete_order'          => 'Supprimer la commande',
+    'delete_order'          => 'Supprimer',
     'show_receipt'          => 'Afficher le bon',
     'confirm_delete_order'  => 'Êtes-vous sûr de vouloir supprimer cette commande ? Cette action est irréversible.',
 ];

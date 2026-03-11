@@ -1,5 +1,8 @@
 # Matjar El Kotobia PRD
 
+> **Last Updated:** 2026-03-11  
+> _Added order printing & sharing, AJAX cart/count endpoints, and admin UX enhancements._
+
 ---
 
 ## Table of Contents
@@ -15,6 +18,7 @@
 9. Security
 10. Deployment Considerations
 11. Risks
+12. Revision History
 
 ---
 
@@ -31,7 +35,7 @@ Matjar El Kotobia (`matjar_el_kotobia`)
 
 ### 1.3 Purpose
 
-Build a **mobile-first, bilingual (French/Arabic) grocery e-commerce website** for a local Moroccan supermarket located in **Safi, Morocco**. The platform allows customers to browse products, add items to a cart, and **complete checkout via WhatsApp** — sending a beautifully formatted order message directly to the store owner's phone number. There is **no online payment gateway**; payment is handled upon delivery (Cash on Delivery).
+Build a **mobile-first, bilingual (French/Arabic) grocery e-commerce website** for a local Moroccan supermarket located in **Safi, Morocco**. The platform allows customers to browse products, add items to a cart, and **complete checkout via WhatsApp** — sending a beautifully formatted order message directly to the store owner's phone number. There is **no online payment gateway**; payment is handled upon delivery (Cash on Delivery). The **admin panel** provides intuitive management of products, orders, and customers, including the ability to **print/share order receipts** for delivery and bookkeeping.
 
 ### 1.4 Business Model
 
@@ -187,6 +191,7 @@ text
 - Running total calculation
 - Minimum order amount display (configurable by admin)
 - Cart badge counter on header icon
+- All cart operations (add/update/remove/clear/count) handled via AJAX for seamless UX
 
 #### F-C05: WhatsApp Checkout
 
@@ -419,12 +424,25 @@ text
 ├────────┼────────────────────────────────────────────────────────────┼──────────┤
 │ US-A10 │ As an admin, I want to log in securely with my own       │  HIGH    │
 │        │ credentials separate from customer accounts.              │          │
+├────────┼────────────────────────────────────────────────────────────┼──────────┤
+│ US-A11 │ As an admin, I want to print or share order receipts     │  MEDIUM  │
+│        │ for record‑keeping and delivery slips.                    │          │
 └────────┴────────────────────────────────────────────────────────────┴──────────┘
 ```
 
 ---
 
 ## 4. Tech Requirements
+
+
+---
+
+## 12. Revision History
+
+* **2026-03-11** – Added admin order printing/sharing, AJAX cart/count
+  operations, included update to purpose description and user stories.
+
+---
 
 ### 4.1 Tech Stack
 
