@@ -22,145 +22,108 @@ $recent_orders = fetch_all("SELECT * FROM hri_order ORDER BY order_created_at DE
 require_once __DIR__ . '/includes/admin_header.php';
 ?>
 
-<div class="container-fluid">
-    <div class="row g-4 mb-4">
-        <!-- Stats Cards -->
-        <div class="col-md-3">
-            <div class="card border-0 shadow-sm rounded-3">
-                <div class="card-body p-4">
-                    <div class="d-flex justify-content-between align-items-center mb-2">
-                        <h6 class="text-muted mb-0">Commandes Aujourd'hui</h6>
-                        <i class="bi bi-cart-check fs-4 text-primary"></i>
-                    </div>
-                    <h3 class="fw-bold mb-0"><?= $today_orders ?></h3>
-                </div>
-            </div>
+<div class="stats-grid">
+    <a href="orders.php" class="stat-box">
+        <small>Commandes (Auj)</small>
+        <h2><?= $today_orders ?></h2>
+    </a>
+    <div class="stat-box">
+        <small>Revenu (Auj)</small>
+        <h2 style="color: var(--success);"><?= format_price($today_revenue) ?></h2>
+    </div>
+    <a href="orders.php?status=pending" class="stat-box">
+        <small>En Attente</small>
+        <h2 style="color: var(--princeton-orange);"><?= $pending_orders ?></h2>
+    </a>
+    <a href="products.php?stock=low" class="stat-box">
+        <small>Stock Faible</small>
+        <h2 style="color: var(--danger);"><?= $low_stock ?></h2>
+    </a>
+</div>
+
+<div style="display: grid; grid-template-columns: 2.5fr 1fr; gap: 30px; align-items: start;">
+    <!-- Recent Orders Table -->
+    <div class="card">
+        <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:30px;">
+            <h3 style="margin:0; font-weight: 900; font-size: 22px;">Dernières Commandes</h3>
+            <a href="<?= SITE_URL ?>/admin/orders.php" class="btn btn-light">Toutes les commandes</a>
         </div>
-        <div class="col-md-3">
-            <div class="card border-0 shadow-sm rounded-3">
-                <div class="card-body p-4">
-                    <div class="d-flex justify-content-between align-items-center mb-2">
-                        <h6 class="text-muted mb-0">Revenu Aujourd'hui</h6>
-                        <i class="bi bi-cash-stack fs-4 text-success"></i>
-                    </div>
-                    <h3 class="fw-bold mb-0"><?= format_price($today_revenue) ?></h3>
-                </div>
-            </div>
-        </div>
-        <div class="col-md-3">
-            <div class="card border-0 shadow-sm rounded-3">
-                <div class="card-body p-4">
-                    <div class="d-flex justify-content-between align-items-center mb-2">
-                        <h6 class="text-muted mb-0">Commandes En Attente</h6>
-                        <i class="bi bi-clock-history fs-4 text-warning"></i>
-                    </div>
-                    <h3 class="fw-bold mb-0"><?= $pending_orders ?></h3>
-                </div>
-            </div>
-        </div>
-        <div class="col-md-3">
-            <div class="card border-0 shadow-sm rounded-3">
-                <div class="card-body p-4">
-                    <div class="d-flex justify-content-between align-items-center mb-2">
-                        <h6 class="text-muted mb-0">Stock Faible</h6>
-                        <i class="bi bi-exclamation-triangle fs-4 text-danger"></i>
-                    </div>
-                    <h3 class="fw-bold mb-0"><?= $low_stock ?></h3>
-                </div>
-            </div>
+        <div class="table-responsive">
+            <table>
+                <thead>
+                    <tr>
+                        <th>N° Commande</th>
+                        <th>Client</th>
+                        <th>Total</th>
+                        <th>Statut</th>
+                        <th style="text-align: right;">Action</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <?php foreach ($recent_orders as $order): ?>
+                        <tr>
+                            <td style="font-weight: 900; color: var(--princeton-orange); font-size: 16px;">#<?= $order['order_number'] ?></td>
+                            <td>
+                                <div style="font-weight: 800; font-size: 16px; color: var(--carbon-black);"><?= htmlspecialchars($order['order_customer_name']) ?></div>
+                                <div style="font-size: 13px; color: var(--text-muted); font-weight: 700; margin-top: 2px;"><?= htmlspecialchars($order['order_customer_phone']) ?></div>
+                            </td>
+                            <td style="font-weight: 900; font-size: 16px;"><?= format_price($order['order_total']) ?></td>
+                            <td>
+                                <?php 
+                                $status_class = 'status-pending';
+                                switch($order['order_status']) {
+                                    case 'pending': $status_class = 'status-pending'; break;
+                                    case 'confirmed': $status_class = 'status-info'; break;
+                                    case 'preparing': $status_class = 'status-info'; break;
+                                    case 'out_for_delivery': $status_class = 'status-info'; break;
+                                    case 'delivered': $status_class = 'status-success'; break;
+                                    case 'cancelled': $status_class = 'status-danger'; break;
+                                }
+                                ?>
+                                <span class="status-pill <?= $status_class ?>"><?= translate('status_' . $order['order_status']) ?></span>
+                            </td>
+                            <td style="text-align: right;">
+                                <a href="<?= SITE_URL ?>/admin/order_detail.php?id=<?= $order['order_id'] ?>" class="btn btn-light" style="padding: 10px 15px;">
+                                    <i data-lucide="eye" size="18"></i>
+                                </a>
+                            </td>
+                        </tr>
+                    <?php endforeach; ?>
+                    <?php if (empty($recent_orders)): ?>
+                        <tr>
+                            <td colspan="5" style="text-align: center; color: var(--text-muted); padding: 50px; font-weight: 700;">Aucune commande récente</td>
+                        </tr>
+                    <?php endif; ?>
+                </tbody>
+            </table>
         </div>
     </div>
 
-    <div class="row g-4">
-        <!-- Recent Orders Table -->
-        <div class="col-lg-8">
-            <div class="card border-0 shadow-sm rounded-3">
-                <div class="card-header bg-white border-bottom py-3 d-flex justify-content-between align-items-center">
-                    <h5 class="fw-bold mb-0">Dernières Commandes</h5>
-                    <a href="<?= SITE_URL ?>/admin/orders.php" class="btn btn-sm btn-link text-decoration-none">Voir tout</a>
+    <!-- Global Summary & Quick Actions -->
+    <div style="display: flex; flex-direction: column; gap: 30px;">
+        <div class="card" style="padding: 30px;">
+            <h3 style="margin:0 0 25px 0; font-weight: 900; font-size: 18px;">Résumé Global</h3>
+            <div style="display: flex; flex-direction: column; gap: 20px;">
+                <div style="display: flex; justify-content: space-between; align-items: center; background: var(--gray-bg); padding: 15px 20px; border-radius: 14px;">
+                    <span style="font-weight: 700; color: var(--text-muted); font-size: 14px;">Total Produits</span>
+                    <span style="font-weight: 900; color: var(--carbon-black); font-size: 18px;"><?= $total_products ?></span>
                 </div>
-                <div class="card-body p-0">
-                    <div class="table-responsive">
-                        <table class="table table-hover align-middle mb-0">
-                            <thead class="table-light">
-                                <tr class="small text-uppercase">
-                                    <th class="ps-4">N° Commande</th>
-                                    <th>Client</th>
-                                    <th>Total</th>
-                                    <th>Statut</th>
-                                    <th class="text-end pe-4">Action</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                <?php foreach ($recent_orders as $order): ?>
-                                    <tr>
-                                        <td class="ps-4 fw-bold">#<?= $order['order_number'] ?></td>
-                                        <td>
-                                            <div class="fw-semibold"><?= htmlspecialchars($order['order_customer_name']) ?></div>
-                                            <small class="text-muted"><?= htmlspecialchars($order['order_customer_phone']) ?></small>
-                                        </td>
-                                        <td class="fw-bold text-primary"><?= format_price($order['order_total']) ?></td>
-                                        <td>
-                                            <?php 
-                                            $status_class = 'bg-secondary';
-                                            switch($order['order_status']) {
-                                                case 'pending': $status_class = 'bg-warning text-dark'; break;
-                                                case 'confirmed': $status_class = 'bg-info'; break;
-                                                case 'preparing': $status_class = 'bg-primary'; break;
-                                                case 'out_for_delivery': $status_class = 'bg-info'; break;
-                                                case 'delivered': $status_class = 'bg-success'; break;
-                                                case 'cancelled': $status_class = 'bg-danger'; break;
-                                            }
-                                            ?>
-                                            <span class="badge <?= $status_class ?> rounded-pill px-3"><?= translate('status_' . $order['order_status']) ?></span>
-                                        </td>
-                                        <td class="text-end pe-4">
-                                            <a href="<?= SITE_URL ?>/admin/order_detail.php?id=<?= $order['order_id'] ?>" class="btn btn-sm btn-light border">
-                                                <i class="bi bi-eye"></i>
-                                            </a>
-                                        </td>
-                                    </tr>
-                                <?php endforeach; ?>
-                            </tbody>
-                        </table>
-                    </div>
+                <div style="display: flex; justify-content: space-between; align-items: center; background: var(--gray-bg); padding: 15px 20px; border-radius: 14px;">
+                    <span style="font-weight: 700; color: var(--text-muted); font-size: 14px;">Total Clients</span>
+                    <span style="font-weight: 900; color: var(--carbon-black); font-size: 18px;"><?= $total_customers ?></span>
                 </div>
             </div>
         </div>
 
-        <!-- Quick Stats -->
-        <div class="col-lg-4">
-            <div class="card border-0 shadow-sm rounded-3 mb-4">
-                <div class="card-header bg-white border-bottom py-3">
-                    <h5 class="fw-bold mb-0">Résumé Global</h5>
-                </div>
-                <div class="card-body">
-                    <div class="list-group list-group-flush">
-                        <div class="list-group-item d-flex justify-content-between align-items-center px-0">
-                            <span>Total Produits</span>
-                            <span class="badge bg-light text-dark rounded-pill"><?= $total_products ?></span>
-                        </div>
-                        <div class="list-group-item d-flex justify-content-between align-items-center px-0">
-                            <span>Total Clients</span>
-                            <span class="badge bg-light text-dark rounded-pill"><?= $total_customers ?></span>
-                        </div>
-                    </div>
-                </div>
-            </div>
-
-            <!-- Actions Rapides -->
-            <div class="card border-0 shadow-sm rounded-3 bg-dark text-white">
-                <div class="card-body p-4">
-                    <h5 class="fw-bold mb-3">Actions Rapides</h5>
-                    <div class="d-grid gap-2">
-                        <a href="<?= SITE_URL ?>/admin/product_add.php" class="btn btn-primary border-0">
-                            <i class="bi bi-plus-circle me-2"></i> Nouveau Produit
-                        </a>
-                        <a href="<?= SITE_URL ?>/admin/settings.php" class="btn btn-outline-light border-secondary">
-                            <i class="bi bi-gear me-2"></i> Paramètres du Magasin
-                        </a>
-                    </div>
-                </div>
+        <div class="card" style="background: var(--carbon-black); color: white; border: none; padding: 35px;">
+            <h3 style="margin:0 0 25px 0; font-weight: 900; font-size: 18px;">Actions Rapides</h3>
+            <div style="display: flex; gap: 15px;">
+                <a href="<?= SITE_URL ?>/admin/product_add.php" class="btn btn-orange" style="width: 100%; justify-content: center; padding: 18px;">
+                    <i data-lucide="plus-circle" size="20"></i> Nouveau Produit
+                </a>
+                <a href="<?= SITE_URL ?>/admin/settings.php" class="btn" style="width: 100%; justify-content: center; background: rgba(255,255,255,0.1); color: white; padding: 18px;">
+                    <i data-lucide="settings" size="20"></i> Paramètres du store
+                </a>
             </div>
         </div>
     </div>

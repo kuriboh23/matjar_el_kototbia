@@ -1138,6 +1138,24 @@ function redirect(string $url): void
 }
 
 /**
+ * Get a list of common Bootstrap Icons for categories.
+ *
+ * @return array
+ */
+function get_common_category_icons(): array
+{
+    return [
+        'bi-apple', 'bi-basket', 'bi-box', 'bi-cup-straw', 'bi-droplet', 
+        'bi-egg-fried', 'bi-flower1', 'bi-fruit-apple', 'bi-gift', 'bi-heart', 
+        'bi-house', 'bi-lightning', 'bi-moon', 'bi-music-note', 'bi-pencils', 
+        'bi-person', 'bi-phone', 'bi-shop', 'bi-star', 'bi-tag', 
+        'bi-trash', 'bi-truck', 'bi-tv', 'bi-umbrella', 'bi-wallet',
+        'bi-water', 'bi-wind', 'bi-wrench', 'bi-bag-heart', 'bi-balloon',
+        'bi-box-seam', 'bi-camera', 'bi-cart', 'bi-cloud', 'bi-coffee'
+    ];
+}
+
+/**
  * Get the current page URL.
  *
  * @return string  Current full URL
