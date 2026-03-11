@@ -317,19 +317,7 @@ if (!$order) {
                 </div>
             </div>
         </div>
-
-        <!-- Signature Area -->
-        <div style="margin-top: 40px; display: grid; grid-template-columns: 1fr 1fr; gap: 50px; page-break-inside: avoid;">
-            <div style="text-align: center; border: 1px dashed var(--gray-border); padding: 20px; border-radius: 15px;">
-                <div style="font-size: 10px; text-transform: uppercase; font-weight: 800; color: #64748b; margin-bottom: 40px;">Cachet du Magasin</div>
-                <div style="font-weight: 900; font-size: 12px; opacity: 0.2;">MATJAR EL KOTOBIA</div>
-            </div>
-            <div style="text-align: center; border: 1px dashed var(--gray-border); padding: 20px; border-radius: 15px;">
-                <div style="font-size: 10px; text-transform: uppercase; font-weight: 800; color: #64748b; margin-bottom: 40px;">Signature Client</div>
-                <div style="border-top: 1px solid #eee; width: 80%; margin: 0 auto;"></div>
-            </div>
-        </div>
-
+        
         <?php if ($order['order_notes']): ?>
             <div style="margin-top: 20px; background: #fff9f2; padding: 15px; border-radius: 12px; border: 1px solid #ffe8d1; page-break-inside: avoid;">
                 <h3 style="margin: 0 0 8px 0; font-size: 14px; text-transform: uppercase; color: #e67700f4; font-weight: 800;">Notes de livraison:</h3>
