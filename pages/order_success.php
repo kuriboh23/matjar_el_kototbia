@@ -113,6 +113,7 @@ require_once __DIR__ . '/../includes/header.php';
                 <div class="receipt-title">
                     <div><?= translate('receipt_title') ?></div>
                     <div style="font-size: 11px; opacity: 0.6;">#<?= $order['order_number'] ?></div>
+                    <div style="font-size: 11px; opacity: 0.6;"><?= date('d/m/Y H:i', strtotime($order['order_created_at'])) ?></div>
                 </div>
             </div>
 
@@ -132,7 +133,7 @@ require_once __DIR__ . '/../includes/header.php';
             <table class="receipt-table">
                 <thead>
                     <tr>
-                        <th style="width: 40px;"><?= translate('quantity') ?></th>
+                        <th><?= translate('quantity') ?></th>
                         <th><?= translate('designation') ?></th>
                         <th style="text-align: <?= $is_rtl ? 'left' : 'right' ?>;"><?= translate('total') ?></th>
                     </tr>

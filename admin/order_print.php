@@ -30,12 +30,13 @@ $order_items = get_order_items($order_id);
             --carbon-black: #171711;
             --gray-bg: #f8fafc;
             --gray-border: #e2e8f0;
+            
         }
 
         body {
             margin: 0;
             padding: 40px;
-            font-family: 'Plus Jakarta Sans', sans-serif;
+            font-family: 'Plus Jakarta Sans' ;
             background-color: var(--gray-bg);
             color: var(--carbon-black);
             display: flex;
@@ -63,6 +64,14 @@ $order_items = get_order_items($order_id);
             margin-bottom: 20px;
         }
 
+        table th:first-child{
+        border-radius:10px 0 0 10px;
+        }
+
+        table th:last-child{
+        border-radius:0 10px 10px 0;
+        }
+
         .logo-area h1 {
             margin: 0;
             font-weight: 900;
@@ -74,7 +83,7 @@ $order_items = get_order_items($order_id);
 
         .order-meta { text-align: right; }
         .order-meta h2 { margin: 0; font-size: 18px; font-weight: 800; }
-        .order-meta p { margin: 2px 0 0; font-size: 12px; font-weight: 600; color: #64748b; }
+        .order-meta p { margin: 2px 0 0; font-size: 11px; font-weight: 600; color: #64748b; opacity: 0.8;}
 
         /* Customer Info Grid */
         .info-grid {
@@ -213,12 +222,11 @@ $order_items = get_order_items($order_id);
         <div class="header">
             <div class="logo-area">
                 <h1>MATJAR<span>.</span>KOTOBIA</h1>
-                <p>Supermarché en ligne — Safi</p>
             </div>
             <div class="order-meta">
                 <h2>BON DE COMMANDE</h2>
-                <p>N° #<?= $order['order_number'] ?></p>
-                <p>Date: <?= date('d/m/Y H:i', strtotime($order['order_created_at'])) ?></p>
+                <p>#<?= $order['order_number'] ?></p>
+                <p><?= date('d/m/Y H:i', strtotime($order['order_created_at'])) ?></p>
             </div>
         </div>
 
@@ -230,8 +238,8 @@ $order_items = get_order_items($order_id);
             </div>
             <div class="info-section">
                 <h3>Livraison / توصيل</h3>
-                <p>Quartier: <strong><?= htmlspecialchars($order['order_customer_neighborhood'] ?? '-') ?></strong></p>
-                <p>Adresse: <?= htmlspecialchars($order['order_customer_address']) ?></p>
+                <p><strong><?= htmlspecialchars($order['order_customer_address']) ?></strong></p>
+                <p style="font-size: 12px; color: #717171;"><?= htmlspecialchars($order['order_customer_city']) ?></p>
             </div>
         </div>
 
@@ -277,16 +285,16 @@ $order_items = get_order_items($order_id);
         </div>
 
         <?php if ($order['order_notes']): ?>
-            <div style="margin-top: 20px; background: #fffbeb; padding: 15px; border-radius: 12px; border: 1px solid #fde68a; page-break-inside: avoid;">
-                <h3 style="margin: 0 0 8px 0; font-size: 10px; text-transform: uppercase; color: #92400e; font-weight: 800;">Notes de livraison:</h3>
-                <p style="margin: 0; font-size: 12px; font-weight: 600; line-height: 1.4; color: #92400e;"><?= nl2br(htmlspecialchars($order['order_notes'])) ?></p>
+            <div style="margin-top: 20px; background: #fff9f2; padding: 15px; border-radius: 12px; border: 1px solid #ffe8d1; page-break-inside: avoid;">
+                <h3 style="margin: 0 0 8px 0; font-size: 14px; text-transform: uppercase; color: #e67700f4; font-weight: 800;">Notes de livraison:</h3>
+                <p style="margin: 0; font-size: 13px; font-weight: 600; line-height: 1.4; color: #717171;"><?= nl2br(htmlspecialchars($order['order_notes'])) ?></p>
             </div>
         <?php endif; ?>
 
         <div class="receipt-footer">
             <p>Merci pour votre confiance ! / شكرا لثقتكم</p>
-            <p>Paiement à la livraison (COD) • Matjar El Kotobia • Safi, Maroc</p>
-            <p style="margin-top: 8px; font-style: italic; opacity: 0.6;">Document généré par le système de gestion Matjar El Kotobia</p>
+            <p>Paiement à la livraison • Matjar El Kotobia • Safi, Maroc</p>
+            <p style="margin-top: 8px; font-style: italic; opacity: 0.4;">Document généré par le système de gestion Matjar El Kotobia</p>
         </div>
     </div>
 
