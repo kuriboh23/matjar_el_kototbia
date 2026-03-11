@@ -9,9 +9,17 @@ require_once __DIR__ . '/../includes/admin_auth_check.php';
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $order_id = (int)$_POST['order_id'];
     $new_status = $_POST['new_status'];
+    $livreur_id = isset($_POST['livreur_id']) ? (int)$_POST['livreur_id'] : null;
 
     if ($order_id > 0 && !empty($new_status)) {
         update_order_status($order_id, $new_status);
+        
+        // Update livreur if provided
+        global $db_connection;
+        $stmt = $db_connection->prepare("UPDATE hri_order SET order_livreur_id = :livreur_id WHERE order_id = :order_id");
+        $stmt->bindValue(':livreur_id', $livreur_id ? $livreur_id : null, $livreur_id ? PDO::PARAM_INT : PDO::PARAM_NULL);
+        $stmt->bindValue(':order_id', $order_id, PDO::PARAM_INT);
+        $stmt->execute();
         
         // Get order data to prepare notification
         $order = get_order_by_id($order_id);

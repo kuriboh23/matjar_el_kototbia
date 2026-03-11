@@ -158,6 +158,8 @@ text
 │ Upload product images                │    ❌    │   ✅    │
 │ Set featured / on-sale products      │    ❌    │   ✅    │
 │ View basic analytics                 │    ❌    │   ✅    │
+│ Manage delivery personnel            │    ❌    │   ✅    │
+│ Assign delivery person to orders     │    ❌    │   ✅    │
 └──────────────────────────────────────┴──────────┴─────────┘
 ```
 
@@ -316,6 +318,13 @@ text
 - View customer order history
 - No customer editing/deletion in V1
 
+#### F-A08: Delivery Personnel Management
+
+- Add/Edit/Deactivate delivery personnel ("livreurs")
+- Store name, phone number and active status
+- Assign a livreur to an order from the order detail screen
+- Display assigned livreur info on printed receipts and in WhatsApp messages
+
 #### F-A06: Store Settings
 
 - Store name, phone (WhatsApp number), address
@@ -427,6 +436,9 @@ text
 ├────────┼────────────────────────────────────────────────────────────┼──────────┤
 │ US-A11 │ As an admin, I want to print or share order receipts     │  MEDIUM  │
 │        │ for record‑keeping and delivery slips.                    │          │
+├────────┼────────────────────────────────────────────────────────────┼──────────┤
+│ US-A12 │ As an admin, I want to manage delivery personnel and     │  MEDIUM  │
+│        │ assign them to orders.                                   │          │
 └────────┴────────────────────────────────────────────────────────────┴──────────┘
 ```
 
@@ -441,6 +453,9 @@ text
 
 * **2026-03-11** – Added admin order printing/sharing, AJAX cart/count
   operations, included update to purpose description and user stories.
+* **2026-03-11** – Added delivery personnel (`hri_livreur`) and guest info
+  (`hri_guest_info`) support; updated feature list, user stories, workflow, and
+  database design.
 
 ---
 

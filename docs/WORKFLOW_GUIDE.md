@@ -25,6 +25,7 @@ Web -> Customer : Affiche l'aperçu du reçu\n"Veuillez attendre la confirmation
 == Phase 2 : Confirmation (Manager) ==
 Admin -> Manager : Notification en temps réel (Toast) 🔔
 Manager -> Admin : Ouvre les "Détails de la Commande"
+Manager -> Admin : Assigne un livreur depuis le menu déroulant (optionnel avant confirmation)
 Manager -> Admin : Choisit la langue du script (AR/FR)
 Manager -> Admin : Clique sur "Envoyer Confirmation WhatsApp"
 Admin -> WA : Ouvre le chat avec le texte pré-rempli

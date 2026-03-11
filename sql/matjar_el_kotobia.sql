@@ -192,13 +192,35 @@ CREATE TABLE IF NOT EXISTS `hri_product` (
 
 
 -- ================================================================
--- 5. TABLE: hri_order
+-- 5. TABLE: hri_livreur
+-- PURPOSE: Delivery personnel (Livreurs)
+-- ================================================================
+CREATE TABLE IF NOT EXISTS `hri_livreur` (
+    `livreur_id`            INT UNSIGNED    NOT NULL AUTO_INCREMENT,
+    `livreur_name`          VARCHAR(100)    NOT NULL                 COMMENT 'Full name of delivery person',
+    `livreur_phone`         VARCHAR(20)              DEFAULT NULL    COMMENT 'Phone number',
+    `livreur_is_active`     TINYINT(1)      NOT NULL DEFAULT 1       COMMENT '1=active, 0=inactive',
+    `livreur_created_at`    DATETIME        NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    `livreur_updated_at`    DATETIME        NOT NULL DEFAULT CURRENT_TIMESTAMP
+                                                     ON UPDATE CURRENT_TIMESTAMP,
+
+    PRIMARY KEY (`livreur_id`),
+    INDEX `idx_livreur_active` (`livreur_is_active`)
+) ENGINE=InnoDB
+  DEFAULT CHARSET=utf8mb4
+  COLLATE=utf8mb4_unicode_ci
+  COMMENT='Delivery personnel tracking';
+
+
+-- ================================================================
+-- 6. TABLE: hri_order
 -- PURPOSE: Customer orders (WhatsApp checkout)
 -- ================================================================
 CREATE TABLE IF NOT EXISTS `hri_order` (
     `order_id`                      INT UNSIGNED    NOT NULL AUTO_INCREMENT,
     `order_number`                  VARCHAR(30)     NOT NULL                 COMMENT 'Human-readable ref e.g. HRI-20260101-001',
     `order_customer_id`             INT UNSIGNED             DEFAULT NULL    COMMENT 'FK → hri_customer (NULL for guests)',
+    `order_livreur_id`              INT UNSIGNED             DEFAULT NULL    COMMENT 'FK → hri_livreur (Assigned delivery person)',
     `order_customer_name`           VARCHAR(100)    NOT NULL                 COMMENT 'Name snapshot at checkout',
     `order_customer_phone`          VARCHAR(20)     NOT NULL                 COMMENT 'Phone snapshot at checkout',
     `order_customer_address`        VARCHAR(255)    NOT NULL                 COMMENT 'Address snapshot at checkout',
@@ -232,9 +254,16 @@ CREATE TABLE IF NOT EXISTS `hri_order` (
         ON DELETE SET NULL
         ON UPDATE CASCADE,
 
+    CONSTRAINT `fk_order_livreur`
+        FOREIGN KEY (`order_livreur_id`)
+        REFERENCES `hri_livreur` (`livreur_id`)
+        ON DELETE SET NULL
+        ON UPDATE CASCADE,
+
     -- ---- Indexes ----
     INDEX `idx_order_number`      (`order_number`),
     INDEX `idx_order_customer`    (`order_customer_id`),
+    INDEX `idx_order_livreur`     (`order_livreur_id`),
     INDEX `idx_order_status`      (`order_status`),
     INDEX `idx_order_date`        (`order_created_at`),
     INDEX `idx_order_status_date` (`order_status`, `order_created_at`)
@@ -246,7 +275,7 @@ CREATE TABLE IF NOT EXISTS `hri_order` (
 
 
 -- ================================================================
--- 6. TABLE: hri_order_item
+-- 7. TABLE: hri_order_item
 -- PURPOSE: Line items within an order (price snapshot)
 -- ================================================================
 CREATE TABLE IF NOT EXISTS `hri_order_item` (
@@ -350,14 +379,4 @@ CREATE TABLE IF NOT EXISTS `hri_guest_info` (
 --   SELECT table_name, table_comment FROM information_schema.tables
 --   WHERE table_schema = 'matjar_el_kotobia_db';
 -- ================================================================
--- ================================================================
--- 9. SEED DATA: Settings
--- ================================================================
-INSERT INTO hri_settings (setting_key, setting_value, setting_type, setting_group, setting_label_fr, setting_label_ar) VALUES
-('store_whatsapp_number', '212600000000', 'text', 'contact', 'Numéro WhatsApp', 'رقم الواتساب'),
-('store_phone_display', '06 00 00 00 08', 'text', 'contact', 'Téléphone (Affichage)', 'رقم الهاتف (للعرض)'),
-('store_address', 'Safi, Morocco', 'text', 'contact', 'Adresse du magasin', 'عنوان المتجر'),
-('delivery_fee', '10.00', 'number', 'payment', 'Frais de livraison', 'مصاريف التوصيل'),
-('min_order_amount', '50.00', 'number', 'payment', 'Montant minimum de commande', 'الحد الأدنى للطلب'),
-('free_delivery_threshold', '200.00', 'number', 'payment', 'Seuil de livraison gratuite', 'الحد الأدنى للتوصيل المجاني')
-ON DUPLICATE KEY UPDATE setting_value = VALUES(setting_value);
+

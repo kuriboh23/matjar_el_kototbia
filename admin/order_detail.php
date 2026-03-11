@@ -181,6 +181,19 @@ require_once __DIR__ . '/includes/admin_header.php';
             <form action="order_update_status.php" method="POST">
                 <input type="hidden" name="order_id" value="<?= $order['order_id'] ?>">
                 <div class="form-group">
+                    <label>Livreur Assigné</label>
+                    <select name="livreur_id" class="form-control" style="margin-bottom: 15px;">
+                        <option value="">-- Choisir un livreur --</option>
+                        <?php 
+                        $livreurs = get_all_livreurs(true);
+                        foreach ($livreurs as $l): ?>
+                            <option value="<?= $l['livreur_id'] ?>" <?= ($order['order_livreur_id'] == $l['livreur_id']) ? 'selected' : '' ?>>
+                                <?= htmlspecialchars($l['livreur_name']) ?>
+                            </option>
+                        <?php endforeach; ?>
+                    </select>
+                </div>
+                <div class="form-group">
                     <label>Changer le Statut</label>
                     <select name="new_status" class="form-control">
                         <option value="pending" <?= $order['order_status'] == 'pending' ? 'selected' : '' ?>>En attente</option>

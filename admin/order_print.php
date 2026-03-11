@@ -13,9 +13,29 @@ if (!$order) {
     die("Commande non trouvée.");
 }
 
-$order_items = get_order_items($order_id);
-?>
-<!DOCTYPE html>
+    $order_items = get_order_items($order_id);
+    $livreur = $order['order_livreur_id'] ? get_livreur_by_id($order['order_livreur_id']) : null;
+
+    // Build WhatsApp Messages
+    $customer_msg = build_whatsapp_message_for_customer($order, $livreur);
+    $customer_phone_clean = clean_phone_number($order['order_customer_phone']);
+    // Ensure international format (assuming Morocco +212 if starting with 0)
+    if (str_starts_with($customer_phone_clean, '0')) {
+        $customer_phone_clean = '212' . substr($customer_phone_clean, 1);
+    }
+    $customer_wa_url = "https://wa.me/" . $customer_phone_clean . "?text=" . rawurlencode($customer_msg);
+
+    $livreur_wa_url = "#";
+    if ($livreur && $livreur['livreur_phone']) {
+        $livreur_msg = build_whatsapp_message_for_livreur($order, $livreur);
+        $livreur_phone_clean = clean_phone_number($livreur['livreur_phone']);
+        if (str_starts_with($livreur_phone_clean, '0')) {
+            $livreur_phone_clean = '212' . substr($livreur_phone_clean, 1);
+        }
+        $livreur_wa_url = "https://wa.me/" . $livreur_phone_clean . "?text=" . rawurlencode($livreur_msg);
+    }
+    ?>
+    <!DOCTYPE html>
 <html lang="fr">
 <head>
     <meta charset="UTF-8">
@@ -224,7 +244,7 @@ $order_items = get_order_items($order_id);
                 <h1>MATJAR<span>.</span>KOTOBIA</h1>
             </div>
             <div class="order-meta">
-                <h2>BON DE COMMANDE</h2>
+                <h2 style="color: var(--princeton-orange);">BON DE LIVRAISON</h2>
                 <p>#<?= $order['order_number'] ?></p>
                 <p><?= date('d/m/Y H:i', strtotime($order['order_created_at'])) ?></p>
             </div>
@@ -233,7 +253,7 @@ $order_items = get_order_items($order_id);
         <div class="info-grid">
             <div class="info-section">
                 <h3>Client / العميل</h3>
-                <p><?= htmlspecialchars($order['order_customer_name']) ?></p>
+                <p style="font-size: 16px;"><?= htmlspecialchars($order['order_customer_name']) ?></p>
                 <p><?= htmlspecialchars($order['order_customer_phone']) ?></p>
             </div>
             <div class="info-section">
@@ -242,6 +262,20 @@ $order_items = get_order_items($order_id);
                 <p style="font-size: 12px; color: #717171;"><?= htmlspecialchars($order['order_customer_city']) ?></p>
             </div>
         </div>
+
+        <?php if ($order['order_livreur_id']): 
+            $livreur = get_livreur_by_id($order['order_livreur_id']);
+            if ($livreur): ?>
+            <div style="margin-bottom: 25px; padding: 15px; background: #f1f5f9; border-radius: 12px; border: 1px solid var(--gray-border);">
+                <div style="font-size: 10px; text-transform: uppercase; font-weight: 800; color: #64748b; margin-bottom: 5px;">Livreur Assigné:</div>
+                <div style="font-weight: 800; font-size: 15px; display: flex; align-items: center; gap: 10px;">
+                    <i class="bi bi-truck"></i> <?= htmlspecialchars($livreur['livreur_name']) ?> 
+                    <?php if ($livreur['livreur_phone']): ?>
+                        <span style="font-weight: 600; opacity: 0.7;">(<?= htmlspecialchars($livreur['livreur_phone']) ?>)</span>
+                    <?php endif; ?>
+                </div>
+            </div>
+        <?php endif; endif; ?>
 
         <table>
             <thead>
@@ -284,6 +318,18 @@ $order_items = get_order_items($order_id);
             </div>
         </div>
 
+        <!-- Signature Area -->
+        <div style="margin-top: 40px; display: grid; grid-template-columns: 1fr 1fr; gap: 50px; page-break-inside: avoid;">
+            <div style="text-align: center; border: 1px dashed var(--gray-border); padding: 20px; border-radius: 15px;">
+                <div style="font-size: 10px; text-transform: uppercase; font-weight: 800; color: #64748b; margin-bottom: 40px;">Cachet du Magasin</div>
+                <div style="font-weight: 900; font-size: 12px; opacity: 0.2;">MATJAR EL KOTOBIA</div>
+            </div>
+            <div style="text-align: center; border: 1px dashed var(--gray-border); padding: 20px; border-radius: 15px;">
+                <div style="font-size: 10px; text-transform: uppercase; font-weight: 800; color: #64748b; margin-bottom: 40px;">Signature Client</div>
+                <div style="border-top: 1px solid #eee; width: 80%; margin: 0 auto;"></div>
+            </div>
+        </div>
+
         <?php if ($order['order_notes']): ?>
             <div style="margin-top: 20px; background: #fff9f2; padding: 15px; border-radius: 12px; border: 1px solid #ffe8d1; page-break-inside: avoid;">
                 <h3 style="margin: 0 0 8px 0; font-size: 14px; text-transform: uppercase; color: #e67700f4; font-weight: 800;">Notes de livraison:</h3>
@@ -302,53 +348,70 @@ $order_items = get_order_items($order_id);
         <a href="order_detail.php?id=<?= $order_id ?>" class="print-btn" style="background: white; color: var(--carbon-black); border: 1px solid var(--gray-border);">
             <i class="bi bi-arrow-left"></i> Retour
         </a>
-        <button class="print-btn" style="background: #25D366;" onclick="shareAsImage()">
-            <i class="bi bi-share"></i> Partager l'image
+        
+        <button class="print-btn" style="background: #25D366;" onclick="shareAsImage('<?= $customer_wa_url ?>', this)">
+            <i class="bi bi-whatsapp"></i> Envoyer au Client
         </button>
+
+        <?php if ($livreur && $livreur['livreur_phone']): ?>
+        <button class="print-btn" style="background: #128C7E;" onclick="shareAsImage('<?= $livreur_wa_url ?>', this)">
+            <i class="bi bi-truck"></i> Envoyer au Livreur
+        </button>
+        <?php endif; ?>
+
         <button class="print-btn" onclick="window.print()">
             <i class="bi bi-printer"></i> Imprimer
         </button>
     </div>
 
     <script>
-        async function shareAsImage() {
+        async function shareAsImage(targetUrl, btn) {
             const container = document.querySelector('.receipt-container');
-            const btn = document.querySelector('button[onclick="shareAsImage()"]');
             const originalBtnText = btn.innerHTML;
             
-            btn.innerHTML = '<i class="bi bi-hourglass-split"></i> Génération...';
+            btn.innerHTML = '<i class="bi bi-hourglass-split"></i> Copie en cours...';
             btn.disabled = true;
 
             try {
                 const canvas = await html2canvas(container, {
-                    scale: 2, // Higher quality
+                    scale: 3, // Very high quality for zoom
                     useCORS: true,
                     backgroundColor: '#ffffff'
                 });
 
                 canvas.toBlob(async (blob) => {
-                    const file = new File([blob], "Bon_<?= $order['order_number'] ?>.png", { type: 'image/png' });
-                    
-                    // Check if Web Share API is available and can share files
-                    if (navigator.canShare && navigator.canShare({ files: [file] })) {
-                        try {
-                            await navigator.share({
-                                files: [file],
-                                title: 'Bon de Commande <?= $order['order_number'] ?>',
-                                text: 'Voici votre bon de commande Matjar El Kotobia.'
-                            });
-                        } catch (err) {
-                            if (err.name !== 'AbortError') {
-                                downloadFallback(canvas);
+                    try {
+                        const data = [new ClipboardItem({ [blob.type]: blob })];
+                        await navigator.clipboard.write(data);
+                        
+                        btn.innerHTML = '<i class="bi bi-check2-all"></i> Copié ! Redirection...';
+                        
+                        // Short delay to let user see "Copié !"
+                        setTimeout(() => {
+                            btn.innerHTML = originalBtnText;
+                            btn.disabled = false;
+                            
+                            // Redirect to WhatsApp
+                            if (targetUrl && targetUrl !== '#') {
+                                window.open(targetUrl, '_blank');
                             }
+                        }, 1500);
+
+                    } catch (clipboardError) {
+                        console.error('Clipboard error:', clipboardError);
+                        // Fallback: Download if clipboard fails (e.g. non-HTTPS)
+                        const link = document.createElement('a');
+                        link.download = "Bon_<?= $order['order_number'] ?>.png";
+                        link.href = canvas.toDataURL('image/png');
+                        link.click();
+                        alert("L'image a été téléchargée (impossible de copier au presse-papier).");
+                        
+                        btn.innerHTML = originalBtnText;
+                        btn.disabled = false;
+                        if (targetUrl && targetUrl !== '#') {
+                            window.open(targetUrl, '_blank');
                         }
-                    } else {
-                        // Fallback: Download the image
-                        downloadFallback(canvas);
                     }
-                    
-                    btn.innerHTML = originalBtnText;
-                    btn.disabled = false;
                 }, 'image/png');
 
             } catch (error) {
@@ -357,14 +420,6 @@ $order_items = get_order_items($order_id);
                 btn.innerHTML = originalBtnText;
                 btn.disabled = false;
             }
-        }
-
-        function downloadFallback(canvas) {
-            const link = document.createElement('a');
-            link.download = "Bon_<?= $order['order_number'] ?>.png";
-            link.href = canvas.toDataURL('image/png');
-            link.click();
-            alert("L'image a été téléchargée. Vous pouvez maintenant l'envoyer manuellement via WhatsApp.");
         }
     </script>
 

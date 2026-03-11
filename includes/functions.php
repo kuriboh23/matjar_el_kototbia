@@ -607,9 +607,35 @@ function get_product_effective_price(array $product_data): float
 }
 
 
-/* ================================================================
- * 5. CATEGORY FUNCTIONS
- * ================================================================ */
+/**
+ * Get all delivery personnel from the database.
+ *
+ * @param  bool  $active_only  If true, only returns active livreurs
+ * @return array               Array of livreur rows
+ */
+function get_all_livreurs(bool $active_only = false): array
+{
+    $sql = "SELECT * FROM hri_livreur";
+    if ($active_only) {
+        $sql .= " WHERE livreur_is_active = 1";
+    }
+    $sql .= " ORDER BY livreur_name ASC";
+    return fetch_all($sql);
+}
+
+/**
+ * Get a single delivery person by ID.
+ *
+ * @param  int        $livreur_id  Livreur ID
+ * @return array|null              Livreur data or null
+ */
+function get_livreur_by_id(int $livreur_id): ?array
+{
+    return fetch_one(
+        "SELECT * FROM hri_livreur WHERE livreur_id = :id",
+        [':id' => $livreur_id]
+    );
+}
 
 /**
  * Get all active categories ordered by display_order.

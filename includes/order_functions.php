@@ -34,22 +34,27 @@ function create_order(array $order_data, array $order_items): int
     try {
         $db_connection->beginTransaction();
 
+        // Get default livreur (first active one)
+        $default_livreur = fetch_one("SELECT livreur_id FROM hri_livreur WHERE livreur_is_active = 1 ORDER BY livreur_id ASC LIMIT 1");
+        $livreur_id = $default_livreur ? $default_livreur['livreur_id'] : null;
+
         // Insert order header
         $sql = "INSERT INTO hri_order
-                (order_number, order_customer_id, order_customer_name,
+                (order_number, order_customer_id, order_livreur_id, order_customer_name,
                  order_customer_phone, order_customer_address,
                  order_customer_neighborhood, order_customer_city,
                  order_notes, order_subtotal, order_delivery_fee,
                  order_total, order_item_count, order_status,
                  order_payment_method, order_language, order_ip_address)
                 VALUES
-                (:number, :customer_id, :name, :phone, :address,
+                (:number, :customer_id, :livreur_id, :name, :phone, :address,
                  :neighborhood, :city, :notes, :subtotal, :delivery_fee,
                  :total, :item_count, :status, :payment, :lang, :ip)";
 
         execute_query($sql, [
             ':number'       => $order_data['order_number'],
             ':customer_id'  => $order_data['order_customer_id'],
+            ':livreur_id'   => $livreur_id,
             ':name'         => $order_data['order_customer_name'],
             ':phone'        => $order_data['order_customer_phone'],
             ':address'      => $order_data['order_customer_address'],
@@ -147,6 +152,32 @@ function build_whatsapp_message(array $order_data, array $order_items): string
 
     $msg .= "\n━━━━━━━━━━━━━━━━\n";
     $msg .= "✅ الدفع عند الاستلام\n";
+    return $msg;
+}
+
+/**
+ * Build WhatsApp message for the customer about their delivery.
+ */
+function build_whatsapp_message_for_customer(array $order, ?array $livreur): string
+{
+    $msg  = "*الطلب — " . $order['order_number'] . "*\n";
+    if ($livreur) {
+        $msg .= "*الموصل:* " . $livreur['livreur_name'] . " (" . $livreur['livreur_phone'] . ")\n";
+    }
+    $msg .= "شكرا لثقتكم — Matjar El Kotobia";
+    return $msg;
+}
+
+/**
+ * Build WhatsApp message for the livreur about a new delivery task.
+ */
+function build_whatsapp_message_for_livreur(array $order, array $livreur): string
+{
+    $msg  = "*توصيل جديد — " . $order['order_number'] . "*\n";
+    $msg .= $order['order_customer_name'] . "\n";
+    $msg .= "*الهاتف:* " . $order['order_customer_phone'] . "\n";
+    $msg .= "*المبلغ: " . format_price($order['order_total']) . "*\n";
+    $msg .= "بالتوفيق!";
     return $msg;
 }
 

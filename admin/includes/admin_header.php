@@ -167,6 +167,9 @@ $admin_page_title = $admin_page_title ?? 'Dashboard';
         <a href="<?= SITE_URL ?>/admin/customers.php" class="nav-link <?= strpos($_SERVER['PHP_SELF'], 'customer') !== false ? 'active' : '' ?>">
             <i data-lucide="users"></i> <span>Clients</span>
         </a>
+        <a href="<?= SITE_URL ?>/admin/livreurs.php" class="nav-link <?= strpos($_SERVER['PHP_SELF'], 'livreur') !== false ? 'active' : '' ?>">
+            <i data-lucide="truck"></i> <span>Livreurs</span>
+        </a>
         <a href="<?= SITE_URL ?>/admin/settings.php" class="nav-link <?= strpos($_SERVER['PHP_SELF'], 'settings') !== false ? 'active' : '' ?>">
             <i data-lucide="settings"></i> <span>Paramètres</span>
         </a>
