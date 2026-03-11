@@ -57,6 +57,29 @@ $is_rtl         = ($current_language === 'ar');
 $text_direction = $is_rtl ? 'rtl' : 'ltr';
 $font_family    = $is_rtl ? "'Cairo', sans-serif" : "'Poppins', sans-serif";
 
+/**
+ * Load the language array for a specific code.
+ * Updates global variables.
+ *
+ * @param  string $code  Language code ('fr' or 'ar')
+ * @return void
+ */
+function load_language(string $code): void
+{
+    global $current_language, $lang, $is_rtl, $text_direction, $font_family;
+
+    if (in_array($code, SUPPORTED_LANGUAGES)) {
+        $current_language = $code;
+        $lang_file = SITE_ROOT . '/lang/' . $code . '.php';
+        if (file_exists($lang_file)) {
+            require $lang_file; // This re-defines $lang
+        }
+        $is_rtl         = ($code === 'ar');
+        $text_direction = $is_rtl ? 'rtl' : 'ltr';
+        $font_family    = $is_rtl ? "'Cairo', sans-serif" : "'Poppins', sans-serif";
+    }
+}
+
 /* ----------------------------------------------------------------
  * SET LANGUAGE FUNCTION (for switching)
  * ---------------------------------------------------------------- */

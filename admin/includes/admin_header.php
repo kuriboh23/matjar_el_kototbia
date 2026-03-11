@@ -107,6 +107,27 @@ $admin_page_title = $admin_page_title ?? 'Dashboard';
         .top-bar { display: flex; justify-content: space-between; align-items: center; margin-bottom: 40px; }
         .top-bar h1 { margin: 0; font-weight: 900; font-size: 32px; }
 
+        /* Notification Toast */
+        #hri-notifications-container {
+            position: fixed; top: 20px; right: 20px; z-index: 9999;
+            display: flex; flex-direction: column; gap: 10px;
+        }
+        .hri-notification {
+            background: white; border-radius: 16px; border: 1px solid var(--gray-border);
+            box-shadow: 0 10px 30px rgba(0,0,0,0.1); padding: 20px;
+            width: 320px; display: flex; gap: 15px;
+            animation: slideInRight 0.3s ease-out; position: relative;
+        }
+        @keyframes slideInRight { from { transform: translateX(100%); opacity: 0; } to { transform: translateX(0); opacity: 1; } }
+        .hri-notification__icon {
+            width: 40px; height: 40px; background: #fffbeb; color: #92400e;
+            border-radius: 50%; display: flex; align-items: center; justify-content: center;
+        }
+        .hri-notification__close { position: absolute; top: 10px; right: 10px; cursor: pointer; color: var(--text-muted); }
+        .hri-notification__title { font-weight: 800; font-size: 14px; margin-bottom: 2px; }
+        .hri-notification__text { font-size: 13px; color: var(--text-muted); font-weight: 600; }
+        .hri-notification__btn { margin-top: 12px; font-size: 12px; font-weight: 800; color: var(--princeton-orange); text-decoration: none; display: inline-flex; align-items: center; gap: 5px; }
+
         /* Responsive */
         @media (max-width: 1200px) {
             .stats-grid { grid-template-columns: repeat(2, 1fr); }
@@ -154,6 +175,8 @@ $admin_page_title = $admin_page_title ?? 'Dashboard';
             <i data-lucide="log-out"></i> <span>Déconnexion</span>
         </a>
     </aside>
+
+    <div id="hri-notifications-container"></div>
 
     <main id="main-content">
         <div class="top-bar">

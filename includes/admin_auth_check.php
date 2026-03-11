@@ -10,3 +10,6 @@ if (empty($_SESSION[ADMIN_SESSION_KEY])) {
     header('Location: ' . SITE_URL . '/admin/login.php');
     exit;
 }
+
+// Force admin panel into French
+load_language('fr');

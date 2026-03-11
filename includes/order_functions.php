@@ -199,7 +199,11 @@ function get_order_by_number(string $order_number): ?array
 function get_order_items(int $order_id): array
 {
     return fetch_all(
-        "SELECT * FROM hri_order_item WHERE order_item_order_id = :oid ORDER BY order_item_id ASC",
+        "SELECT oi.*, p.product_image 
+         FROM hri_order_item oi 
+         LEFT JOIN hri_product p ON oi.order_item_product_id = p.product_id 
+         WHERE oi.order_item_order_id = :oid 
+         ORDER BY oi.order_item_id ASC",
         [':oid' => $order_id]
     );
 }

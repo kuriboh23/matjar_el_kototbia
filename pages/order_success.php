@@ -1,7 +1,7 @@
 <?php
 /**
  * FILE: pages/order_success.php
- * PURPOSE: Show order success page, generate image receipt, and share to WhatsApp.
+ * PURPOSE: Show order success page and receipt preview. Customer waits for manager confirmation.
  */
 
 require_once __DIR__ . '/../config/config.php';
@@ -13,17 +13,8 @@ if (!$order) {
     redirect(SITE_URL);
 }
 
-// Security: Check if order belongs to user if logged in
-$customer_id = get_current_customer_id();
-if ($order['order_customer_id'] && $order['order_customer_id'] != $customer_id) {
-    // If order has a customer ID but it's not the current logged in user, restrict access
-    // However, if they just placed it as guest and then logged in, it might be tricky.
-    // For now, let's just allow it if the ID matches or if it's a guest order.
-}
-
 $order_items = get_order_items($order_id);
 $settings = get_all_settings();
-$store_whatsapp = $settings['store_whatsapp'] ?? STORE_WHATSAPP_NUMBER;
 
 $page_title = translate('order_success');
 require_once __DIR__ . '/../includes/header.php';
@@ -73,22 +64,17 @@ require_once __DIR__ . '/../includes/header.php';
     
     .receipt-footer { margin-top: 20px; text-align: center; font-size: 10px; color: #717171; font-weight: 600; border-top: 1px dashed #eee; padding-top: 15px; }
 
-    .action-button-fixed {
-        position: fixed; bottom: 0; left: 0; width: 100%; background: white;
-        padding: 20px; box-shadow: 0 -10px 30px rgba(0,0,0,0.08); z-index: 1000;
-        box-sizing: border-box; display: flex; justify-content: center;
-    }
-    .btn-whatsapp-share {
-        background: #25D366; color: white; border: none; width: 100%;
-        max-width: 500px; padding: 18px; border-radius: 20px; font-weight: 800;
-        font-size: 16px; cursor: pointer; display: flex; align-items: center;
-        justify-content: center; gap: 10px; box-shadow: 0 8px 25px rgba(37,211,102,0.3);
-    }
     .loading-overlay {
         position: fixed; inset: 0; background: rgba(255,255,255,0.9);
         display: flex; flex-direction: column; align-items: center; justify-content: center;
         z-index: 2000; font-weight: 800; gap: 15px;
     }
+    .btn-home {
+        display: inline-flex; align-items: center; gap: 8px; background: var(--carbon-black);
+        color: white; padding: 12px 30px; border-radius: 12px; font-weight: 700;
+        text-decoration: none; margin-top: 20px; transition: all 0.2s;
+    }
+    .btn-home:hover { transform: translateY(-2px); opacity: 0.9; }
 </style>
 
 <div id="loading-receipt" class="loading-overlay">
@@ -101,8 +87,8 @@ require_once __DIR__ . '/../includes/header.php';
         <i data-lucide="check-circle-2" size="40"></i>
     </div>
     <h1 style="font-weight: 900; font-size: 24px;"><?= translate('order_received') ?></h1>
-    <p style="color: #717171; font-weight: 600; margin-top: 10px;">
-        <?= translate('order_ready_msg') ?>
+    <p style="color: #717171; font-weight: 600; margin-top: 10px; line-height: 1.6;">
+        <?= translate('order_wait_manager_msg') ?>
     </p>
 
     <!-- Hidden container for capture -->
@@ -178,19 +164,12 @@ require_once __DIR__ . '/../includes/header.php';
         <!-- Canvas/Image will be injected here -->
     </div>
 
-    <div style="margin-top: 30px; text-align: <?= $is_rtl ? 'right' : 'left' ?>; background: #fff9f2; padding: 20px; border-radius: 16px; border: 1px solid #ffe8d1;">
-        <h3 style="font-size: 14px; font-weight: 800; color: #e67500; margin-bottom: 10px;"><?= translate('next_step') ?></h3>
-        <p style="font-size: 13px; font-weight: 600; color: #717171; line-height: 1.5;">
-            <?= translate('share_whatsapp_hint') ?>
-        </p>
+    <div style="margin-top: 30px;">
+        <a href="<?= SITE_URL ?>" class="btn-home">
+            <i data-lucide="home" size="18"></i>
+            <?= translate('home') ?>
+        </a>
     </div>
-</div>
-
-<div class="action-button-fixed">
-    <button type="button" id="btnShareWhatsapp" class="btn-whatsapp-share" disabled>
-        <i class="bi bi-whatsapp" style="font-size: 20px;"></i>
-        <?= translate('send_via_whatsapp') ?>
-    </button>
 </div>
 
 <script>
@@ -198,9 +177,9 @@ require_once __DIR__ . '/../includes/header.php';
         const container = document.getElementById('receipt-to-capture');
         const preview = document.getElementById('receipt-preview');
         const loading = document.getElementById('loading-receipt');
-        const btnShare = document.getElementById('btnShareWhatsapp');
 
         try {
+            // Wait for fonts/images to load
             await new Promise(resolve => setTimeout(resolve, 800));
 
             const canvas = await html2canvas(container, {
@@ -217,39 +196,6 @@ require_once __DIR__ . '/../includes/header.php';
             preview.appendChild(img);
 
             loading.style.display = 'none';
-            btnShare.disabled = false;
-
-            btnShare.addEventListener('click', async () => {
-                canvas.toBlob(async (blob) => {
-                    const file = new File([blob], "Bon_<?= $order['order_number'] ?>.png", { type: 'image/png' });
-                    
-                    const shareData = {
-                        title: 'Bon de Commande <?= $order['order_number'] ?>',
-                        text: '<?= translate("home") ?>: <?= SITE_URL ?>', // Just some text
-                        files: [file]
-                    };
-
-                    if (navigator.canShare && navigator.canShare({ files: [file] })) {
-                        try {
-                            await navigator.share(shareData);
-                        } catch (err) {
-                            if (err.name !== 'AbortError') {
-                                window.open('https://wa.me/<?= $store_whatsapp ?>?text=' + encodeURIComponent('Bonjour, voici ma commande #<?= $order['order_number'] ?>'), '_blank');
-                            }
-                        }
-                    } else {
-                        const link = document.createElement('a');
-                        link.download = "Bon_<?= $order['order_number'] ?>.png";
-                        link.href = canvas.toDataURL('image/png');
-                        link.click();
-                        
-                        setTimeout(() => {
-                            alert("<?= translate('receipt_downloaded_msg') ?>");
-                            window.open('https://wa.me/<?= $store_whatsapp ?>?text=' + encodeURIComponent('Bonjour, voici ma commande #<?= $order['order_number'] ?>'), '_blank');
-                        }, 1000);
-                    }
-                }, 'image/png');
-            });
 
         } catch (error) {
             console.error('Error generating receipt image:', error);
