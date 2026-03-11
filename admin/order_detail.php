@@ -20,6 +20,7 @@ $admin_page_title = 'Détails Commande #' . $order['order_number'];
 // Load Settings for Store WhatsApp
 $settings = get_all_settings();
 $store_whatsapp = $settings['store_whatsapp'] ?? STORE_WHATSAPP_NUMBER;
+$prep_whatsapp = $settings['preparation_whatsapp'] ?? $store_whatsapp;
 
 // Prepare WhatsApp Scripts for both languages (Confirmation to Customer)
 $customer_phone = clean_phone_number($order['order_customer_phone']);
@@ -471,7 +472,7 @@ document.addEventListener('DOMContentLoaded', function() {
                     btnSendPrep.style.color = '#00a650';
 
                     // Prepare WhatsApp Message for Owner
-                    const ownerWAUrl = "https://wa.me/<?= clean_phone_number($store_whatsapp) ?>?text=" + encodeURIComponent("⚡ *BON DE PRÉPARATION* - Commande #<?= $order['order_number'] ?>\n(Veuillez coller l'image ci-dessous)");
+                    const ownerWAUrl = "https://wa.me/<?= clean_phone_number($prep_whatsapp) ?>?text=" + encodeURIComponent("*BON DE PRÉPARATION* - Commande *#<?= $order['order_number'] ?>*");
                     
                     setTimeout(() => {
                         window.open(ownerWAUrl, '_blank');

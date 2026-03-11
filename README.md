@@ -29,6 +29,39 @@
   * Customer listing, settings page, and basic analytics
   * Admin authentication separate from customers
 
+* **Multi‑Role WhatsApp Workflow**
+  * Store WhatsApp number for customer confirmation.
+  * Dedicated **Preparation Worker Number** for sending picking lists.
+  * Livreur management and assignment per order.
+  * Real‑time order status update notifications via WhatsApp.
+
+---
+
+## 📊 Visual Workflow
+
+The project follows a structured lifecycle involving Customers, Managers, Preparators, and Livreurs.
+
+```plantuml
+@startuml
+skinparam style strictuml
+actor "Customer" as C
+participant "Admin" as A
+actor "Manager" as M
+actor "Preparator" as P
+participant "WhatsApp" as WA
+
+C -> WA : Order Message
+M -> A : View & Confirm Order
+M -> WA : Send Receipt to C
+M -> A : Copy Prep Slip (Photos)
+M -> WA : Send to Preparator Worker
+P -> P : Pack Order
+M -> A : Assign Livreur & Print
+@enduml
+```
+
+> See [Ultimate Workflow Guide](docs/WORKFLOW_GUIDE.md) for full diagrams and role details.
+
 * **Technology**
   * PHP 8.x, MySQL, vanilla JS/AJAX, Bootstrap/UIkit
   * Structured with includes for headers, footers, and shared helpers

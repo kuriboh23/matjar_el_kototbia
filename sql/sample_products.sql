@@ -40,6 +40,7 @@ VALUES
     ('store_name_ar',           'متجر الكتابية',            'text',    'general',  'Nom du magasin (AR)',         'اسم المتجر (عربية)'),
     ('store_phone',             '0600000000',               'text',    'contact',  'Téléphone du magasin',        'هاتف المتجر'),
     ('store_whatsapp',          '212620283725',             'text',    'contact',  'Numéro WhatsApp',             'رقم واتساب'),
+    ('preparation_whatsapp',    '212620283725',             'text',    'contact',  'Numéro WhatsApp de Préparation (Ouvrier)', 'رقم واتساب التحضير (العامل)'),
     ('store_email',             'contact@matjarelkotobia.ma','text',   'contact',  'Email du magasin',            'بريد المتجر'),
     ('store_address',           'Safi, Maroc',              'text',    'contact',  'Adresse du magasin',          'عنوان المتجر'),
     ('store_city',              'Safi',                     'text',    'contact',  'Ville',                       'المدينة'),
