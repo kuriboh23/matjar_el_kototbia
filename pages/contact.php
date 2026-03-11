@@ -7,6 +7,7 @@
 // Load master configuration
 require_once __DIR__ . '/../config/config.php';
 
+
 global $current_language, $is_rtl, $lang;
 
 $page_title = translate('contact_us') . ' - ' . $lang['site_name'];
@@ -46,7 +47,7 @@ require_once __DIR__ . '/../includes/header.php';
                             <i class="bi bi-whatsapp fs-3 me-3"></i>
                             <div>
                                 <h6 class="fw-bold mb-0">WhatsApp</h6>
-                                <p class="small mb-0"><?= STORE_PHONE_DISPLAY ?></p>
+                                <p class="small mb-0"><?= preg_replace('/^212/', '0', STORE_WHATSAPP_NUMBER) ?></p>
                             </div>
                         </div>
 

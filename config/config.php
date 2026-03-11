@@ -43,6 +43,9 @@ require_once dirname(__DIR__) . '/includes/functions.php';
 /* ----------------------------------------------------------------
  * INITIALIZE DYNAMIC CONSTANTS (DB Overrides)
  * ---------------------------------------------------------------- */
+
+// at the top of config/constants.php (before $hri_defaults):
+
 try {
     $db_settings = get_all_settings();
     
@@ -77,6 +80,19 @@ try {
         }
     }
 } catch (Exception $e) {
+    if (!defined('STORE_PHONE_DISPLAY')) {
+    define('STORE_PHONE_DISPLAY', '');
+}
+if (!defined('STORE_WHATSAPP_NUMBER')) {
+    define('STORE_WHATSAPP_NUMBER', '');
+}
+if (!defined('DEFAULT_CITY')) {
+    define('DEFAULT_CITY', 'Safi');
+}
+if (!defined('DEFAULT_LANGUAGE')) {
+    define('DEFAULT_LANGUAGE', 'fr');
+}
+
     // Fallback to defaults if DB fails
     error_log("Settings init error: " . $e->getMessage());
 }
