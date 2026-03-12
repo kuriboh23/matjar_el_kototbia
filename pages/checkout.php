@@ -54,6 +54,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['submit_order'])) {
     $full_name = sanitize_input($_POST['full_name'] ?? '');
     $phone     = sanitize_input($_POST['phone'] ?? '');
     $address   = sanitize_input($_POST['address'] ?? '');
+    $neighborhood = sanitize_input($customer_data['customer_neighborhood'] ?? '');
     $notes     = sanitize_input($_POST['notes'] ?? '');
 
     // Validation
@@ -69,7 +70,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['submit_order'])) {
             'order_customer_name'         => $full_name,
             'order_customer_phone'        => clean_phone_number($phone),
             'order_customer_address'      => $address,
-            'order_customer_neighborhood' => null, // Simplified for this UI
+            'order_customer_neighborhood' => $neighborhood, // Simplified for this UI
             'order_customer_city'         => $store_city,
             'order_notes'                 => $notes,
             'order_subtotal'              => $subtotal,
@@ -154,10 +155,10 @@ require_once __DIR__ . '/../includes/header.php';
         box-sizing: border-box; display: flex; justify-content: center;
     }
     .btn-confirm-checkout {
-        background: var(--princeton-orange); color: white; border: none; width: 100%;
+        background: var(--brand-color); color: white; border: none; width: 100%;
         max-width: 500px; padding: 18px; border-radius: 20px; font-weight: 800;
         font-size: 16px; cursor: pointer; display: flex; align-items: center;
-        justify-content: center; gap: 10px; box-shadow: 0 8px 25px rgba(255,130,0,0.3);
+        justify-content: center; gap: 10px; box-shadow: 0 8px 25px rgba(103, 13, 12,0.3);
     }
     .login-suggestion-alert {
         background: var(--alice-blue); border-radius: 16px; padding: 15px 20px;
@@ -171,7 +172,7 @@ require_once __DIR__ . '/../includes/header.php';
     <main>
         <?php if (!$customer_id): ?>
             <div class="login-suggestion-alert">
-                <i data-lucide="user-circle" style="color: var(--princeton-orange);"></i>
+                <i data-lucide="user-circle" style="color: var(--brand-color);"></i>
                 <div class="small fw-bold">
                     <?= translate('login_suggestion') ?> 
                     <a href="<?= SITE_URL ?>/pages/login.php?redirect=checkout" class="text-primary"><?= translate('login_now') ?></a>
@@ -262,7 +263,7 @@ require_once __DIR__ . '/../includes/header.php';
             <div class="total-box-premium">
                 <div style="display: flex; justify-content: space-between; align-items: center;">
                     <span style="font-weight: 800; font-size: 16px;"><?= translate('total') ?></span>
-                    <span style="font-weight: 900; font-size: 22px; color: var(--princeton-orange);"><?= format_price($total) ?></span>
+                    <span style="font-weight: 900; font-size: 22px; color: white;"><?= format_price($total) ?></span>
                 </div>
             </div>
 
@@ -289,3 +290,5 @@ require_once __DIR__ . '/../includes/header.php';
 </div>
 
 <?php require_once __DIR__ . '/../includes/footer.php'; ?>
+
+

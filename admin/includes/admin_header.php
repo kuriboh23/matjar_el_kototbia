@@ -63,7 +63,7 @@ $admin_page_title = $admin_page_title ?? 'Dashboard';
             font-size: 15px; border-radius: 16px; margin-bottom: 8px; cursor: pointer; transition: var(--transition);
         }
         .nav-link:hover, .nav-link.active { background: rgba(255,255,255,0.1); color: white; }
-        .nav-link.active i, .nav-link.active [data-lucide] { color: var(--princeton-orange); }
+        .nav-link.active i, .nav-link.active [data-lucide] { color: white; }
 
         /* --- MAIN CONTENT --- */
         main { margin-left: var(--sidebar-width); flex-grow: 1; padding: 50px; width: calc(100% - var(--sidebar-width)); box-sizing: border-box; }

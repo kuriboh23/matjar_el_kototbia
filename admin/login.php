@@ -69,6 +69,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
     <style>
         :root {
+            --brand-color: #670d0c;
             --princeton-orange: #ff8200;
             --carbon-black: #171711;
             --white: #ffffff;
@@ -104,7 +105,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             font-family: inherit; font-weight: 600; color: white; box-sizing: border-box;
             transition: var(--transition);
         }
-        .form-control:focus { outline: none; border-color: var(--princeton-orange); background: rgba(255,255,255,0.1); }
+        .form-control:focus { outline: none; border-color: white; background: rgba(255,255,255,0.1); }
 
         .btn { 
             padding: 16px 20px; border-radius: 14px; font-weight: 800; font-size: 15px; 
@@ -112,8 +113,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             gap: 10px; text-decoration: none; width: 100%; justify-content: center;
             transition: var(--transition);
         }
-        .btn-orange { background: var(--princeton-orange); color: white; }
-        .btn-orange:hover { transform: translateY(-2px); box-shadow: 0 10px 20px rgba(255,130,0,0.2); }
+        .btn-brand { background: var(--brand-color); color: white; }
+        .btn-brand:hover { transform: translateY(-2px); box-shadow: 0 10px 20px rgba(103, 13, 12,0.2); }
 
         .error-box {
             background: rgba(239, 68, 68, 0.1); color: var(--danger);
@@ -156,7 +157,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 <input type="password" name="password" class="form-control" required placeholder="••••••••">
             </div>
 
-            <button type="submit" class="btn btn-orange">
+            <button type="submit" class="btn btn-brand">
                 Se connecter <i data-lucide="arrow-right" size="18"></i>
             </button>
         </form>
@@ -172,3 +173,5 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     </script>
 </body>
 </html>
+
+

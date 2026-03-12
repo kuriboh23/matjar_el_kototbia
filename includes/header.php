@@ -77,7 +77,7 @@ $active_categories = get_active_categories();
         <div class="barcode-wrap">
             <div class="laser"></div>
             <i data-lucide="barcode" size="64"></i>
-            <div style="margin-top:15px; font-weight:900; letter-spacing:1px;">MATJAR<span style="color:var(--princeton-orange)">.</span>KOTOBIA</div>
+            <div style="margin-top:15px; font-weight:900; letter-spacing:1px;">MATJAR<span style="color:var(--brand-color)">.</span>KOTOBIA</div>
         </div>
     </div>
 
@@ -109,8 +109,8 @@ $active_categories = get_active_categories();
 
             <div id="hri-search-loader">
                 <div style="position:relative; display:flex; align-items:center; justify-content:center;">
-                    <div style="position:absolute; width:60px; height:60px; border:2px solid var(--princeton-orange); border-radius:50%; animation: ring-pulse 1s infinite;"></div>
-                    <i data-lucide="refresh-cw" class="spin" style="color:var(--princeton-orange)"></i>
+                    <div style="position:absolute; width:60px; height:60px; border:2px solid var(--brand-color); border-radius:50%; animation: ring-pulse 1s infinite;"></div>
+                    <i data-lucide="refresh-cw" class="spin" style="color:var(--brand-color)"></i>
                 </div>
             </div>
 
@@ -205,3 +205,4 @@ $active_categories = get_active_categories();
                 </nav>
             </div>
         </div>
+

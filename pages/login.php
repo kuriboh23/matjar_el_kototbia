@@ -86,7 +86,7 @@ require_once __DIR__ . '/../includes/header.php';
                         <input type="password" name="password" class="form-control" required>
                     </div>
 
-                    <button type="submit" class="btn hri-btn-orange text-white w-100 fw-bold py-2 mb-3">
+                    <button type="submit" class="btn hri-btn-brand text-white w-100 fw-bold py-2 mb-3">
                         <?= translate('login_now') ?>
                     </button>
 
@@ -105,3 +105,4 @@ require_once __DIR__ . '/../includes/header.php';
 <?php
 require_once __DIR__ . '/../includes/footer.php';
 ?>
+

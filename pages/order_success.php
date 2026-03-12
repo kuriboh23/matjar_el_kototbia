@@ -46,17 +46,17 @@ require_once __DIR__ . '/../includes/header.php';
         flex-direction: <?= $is_rtl ? 'row-reverse' : 'row' ?>;
     }
     .receipt-logo { font-weight: 900; font-size: 18px; }
-    .receipt-logo span { color: var(--princeton-orange); }
+    .receipt-logo span { color: var(--brand-color); }
     .receipt-title { font-weight: 800; font-size: 14px; text-align: <?= $is_rtl ? 'left' : 'right' ?>; }
     
     .receipt-info-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; margin-bottom: 20px; }
-    .receipt-info-label { font-size: 9px; text-transform: uppercase; font-weight: 800; color: var(--princeton-orange); margin-bottom: 4px; }
+    .receipt-info-label { font-size: 9px; text-transform: uppercase; font-weight: 800; color: var(--brand-color); margin-bottom: 4px; }
     .receipt-info-value { font-size: 12px; font-weight: 700; line-height: 1.4; }
     
     .receipt-table { width: 100%; border-collapse: collapse; margin-bottom: 20px; }
     .receipt-table th { text-align: <?= $is_rtl ? 'right' : 'left' ?>; font-size: 10px; text-transform: uppercase; padding: 8px 0; border-bottom: 1px solid #eee; }
     .receipt-table td { padding: 10px 0; font-size: 12px; font-weight: 600; border-bottom: 1px solid #f9f9f9; }
-    .receipt-qty { color: var(--princeton-orange); font-weight: 800; padding-inline-end: 10px; }
+    .receipt-qty { color: var(--brand-color); font-weight: 800; padding-inline-end: 10px; }
     
     .receipt-totals { margin-inline-start: auto; width: 200px; }
     .receipt-total-row { display: flex; justify-content: space-between; padding: 5px 0; font-size: 12px; }
@@ -205,3 +205,4 @@ require_once __DIR__ . '/../includes/header.php';
 </script>
 
 <?php require_once __DIR__ . '/../includes/footer.php'; ?>
+

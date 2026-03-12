@@ -44,7 +44,7 @@ require_once __DIR__ . '/../includes/header.php';
         <div class="text-center py-5">
             <i class="bi bi-search fs-1 text-muted mb-3 d-block"></i>
             <p class="text-muted">Désolé, aucun produit ne correspond à votre recherche.</p>
-            <a href="<?= SITE_URL ?>/pages/products.php" class="btn hri-btn-orange text-white fw-bold">
+            <a href="<?= SITE_URL ?>/pages/products.php" class="btn hri-btn-brand text-white fw-bold">
                 <?= translate('view_all') ?>
             </a>
         </div>
@@ -62,3 +62,4 @@ require_once __DIR__ . '/../includes/header.php';
 <?php
 require_once __DIR__ . '/../includes/footer.php';
 ?>
+

@@ -1,6 +1,6 @@
 # Matjar El Kotobia
 
-![PHP](https://img.shields.io/badge/PHP-8.1+-blue.svg) ![MySQL](https://img.shields.io/badge/MySQL-8.0+-orange.svg) ![License](https://img.shields.io/badge/License-MIT-green.svg)
+![PHP](https://img.shields.io/badge/PHP-8.1+-blue.svg) ![MySQL](https://img.shields.io/badge/MySQL-8.0+-darkred.svg) ![License](https://img.shields.io/badge/License-MIT-green.svg)
 
 > **Matjar El Kotobia** is a mobile‑first, bilingual (French/Arabic) grocery
 > e‑commerce web application for a local supermarket in Safi, Morocco. Users

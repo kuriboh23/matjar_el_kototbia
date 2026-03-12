@@ -74,7 +74,7 @@ require_once __DIR__ . '/../includes/header.php';
                 </div>
                 <h3 class="fw-bold h5"><?= translate('no_orders') ?></h3>
                 <p class="text-muted small px-4"><?= $current_language === 'ar' ? 'لم تقم بإجراء أي طلبات بعد.' : "Vous n'avez pas encore passé de commande." ?></p>
-                <a href="<?= SITE_URL ?>/index.php" class="btn hri-btn-orange text-white fw-bold px-4 rounded-pill mt-3">
+                <a href="<?= SITE_URL ?>/index.php" class="btn hri-btn-brand text-white fw-bold px-4 rounded-pill mt-3">
                     <?= translate('continue_shopping') ?>
                 </a>
             </div>
@@ -142,3 +142,4 @@ require_once __DIR__ . '/../includes/header.php';
 <?php
 require_once __DIR__ . '/../includes/footer.php';
 ?>
+

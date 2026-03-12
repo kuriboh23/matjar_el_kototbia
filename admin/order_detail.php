@@ -87,11 +87,11 @@ require_once __DIR__ . '/includes/admin_header.php';
             </h3>
             <table>
                 <thead>
-                    <tr>
-                        <th>Produit</th>
-                        <th style="text-align: center;">Prix</th>
-                        <th style="text-align: center;">Quantité</th>
-                        <th style="text-align: right;">Sous-total</th>
+                    <tr style="background: var(--carbon-black);">
+                        <th style="color: whitesmoke;  border-radius:10px 0 0 10px;">Produit</th>
+                        <th style="text-align: center; color: whitesmoke;">Prix</th>
+                        <th style="text-align: center; color: whitesmoke;">Quantité</th>
+                        <th style="text-align: right; color: whitesmoke;  border-radius:0 10px 10px 0;">Sous-total</th>
                     </tr>
                 </thead>
                 <tbody>
@@ -103,7 +103,7 @@ require_once __DIR__ . '/includes/admin_header.php';
                             </td>
                             <td style="text-align: center; font-weight: 600;"><?= format_price($item['order_item_unit_price']) ?></td>
                             <td style="text-align: center; font-weight: 700;">
-                                <?= (float)$item['order_item_quantity'] ?> <small style="font-size: 10px; color: var(--text-muted);"><?= translate('unit_' . $item['order_item_unit']) ?></small>
+                                <?= (float)$item['order_item_quantity'] ?> <small style="font-size: 10px; color: var(--text-muted);"><?= translate($item['order_item_unit']) ?></small>
                             </td>
                             <td style="text-align: right; font-weight: 800; color: var(--princeton-orange);"><?= format_price($item['order_item_subtotal']) ?></td>
                         </tr>
@@ -118,11 +118,13 @@ require_once __DIR__ . '/includes/admin_header.php';
                 </div>
                 <div style="display: flex; gap: 40px; font-weight: 600; color: var(--text-muted);">
                     <span>Livraison:</span>
-                    <span style="min-width: 100px; text-align: right;"><?= format_price($order['order_delivery_fee']) ?></span>
+                    <span style="min-width: 100px; text-align: right; color: <?= (float)$order['order_delivery_fee'] > 0 ? '#1d1d1d' : ('#14a549') ?>;">
+                    <?= (float)$order['order_delivery_fee'] > 0 ? format_price((float)$order['order_delivery_fee']) : ('Gratuit') ?>
+                </span>
                 </div>
                 <div style="display: flex; gap: 40px; font-weight: 900; font-size: 20px; color: var(--carbon-black); margin-top: 5px;">
                     <span>TOTAL:</span>
-                    <span style="min-width: 100px; text-align: right; color: var(--princeton-orange);"><?= format_price($order['order_total']) ?></span>
+                    <span style="min-width: 100px; text-align: right; color: var(--brand-color);"><?= format_price($order['order_total']) ?></span>
                 </div>
             </div>
         </div>
@@ -236,12 +238,12 @@ require_once __DIR__ . '/includes/admin_header.php';
 
         <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 20px; margin-bottom: 20px;">
             <div>
-                <div style="font-size: 9px; text-transform: uppercase; font-weight: 800; color: #F68B1E; margin-bottom: 4px;"><?= translate('client') ?></div>
+                <div style="font-size: 9px; text-transform: uppercase; font-weight: 800; color: #670d0c; margin-bottom: 4px;"><?= translate('client') ?></div>
                 <div style="font-size: 12px; font-weight: 700; line-height: 1.4;"><?= htmlspecialchars($order['order_customer_name']) ?></div>
                 <div style="font-size: 12px; font-weight: 700; line-height: 1.4;"><?= htmlspecialchars($order['order_customer_phone']) ?></div>
             </div>
             <div>
-                <div style="font-size: 9px; text-transform: uppercase; font-weight: 800; color: #F68B1E; margin-bottom: 4px;"><?= translate('delivery') ?></div>
+                <div style="font-size: 9px; text-transform: uppercase; font-weight: 800; color: #670d0c; margin-bottom: 4px;"><?= translate('delivery') ?></div>
                 <div style="font-size: 12px; font-weight: 700; line-height: 1.4;"><?= htmlspecialchars($order['order_customer_address']) ?></div>
                 <div style="font-size: 10px; color: #717171;"><?= htmlspecialchars($order['order_customer_city']) ?></div>
             </div>
@@ -249,18 +251,18 @@ require_once __DIR__ . '/includes/admin_header.php';
 
         <table style="width: 100%; border-collapse: collapse; margin-bottom: 20px;">
             <thead>
-                <tr>
-                    <th style="text-align: left; font-size: 10px; text-transform: uppercase; padding: 8px 0; border-bottom: 1px solid #eee;"><?= translate('quantity') ?></th>
-                    <th style="text-align: left; font-size: 10px; text-transform: uppercase; padding: 8px 0; border-bottom: 1px solid #eee;"><?= translate('designation') ?></th>
-                    <th style="text-align: right; font-size: 10px; text-transform: uppercase; padding: 8px 0; border-bottom: 1px solid #eee;"><?= translate('total') ?></th>
+                <tr style="background: var(--carbon-black);">
+                    <th style="text-align: left; font-size: 10px; text-transform: uppercase; padding: 8px 10px;color: #ffffff; "><?= translate('quantity') ?></th>
+                    <th style="text-align: left; font-size: 10px; text-transform: uppercase; padding: 8px 0;  color: #ffffff;"><?= translate('designation') ?></th>
+                    <th style="text-align: right; font-size: 10px; text-transform: uppercase; padding: 8px 10px; color: #ffffff; "><?= translate('total') ?></th>
                 </tr>
             </thead>
             <tbody>
                 <?php foreach ($order_items as $item): ?>
                     <tr>
-                        <td style="padding: 10px 0; font-size: 12px; font-weight: 800; color: #F68B1E;"><?= (float)$item['order_item_quantity'] ?>x</td>
+                        <td style="padding: 10px 8px; font-size: 12px; font-weight: 800; color: #F68B1E;"><?= (float)$item['order_item_quantity'] ?>x</td>
                         <td style="padding: 10px 0; font-size: 12px; font-weight: 600;"><?= htmlspecialchars($item['order_item_name_fr']) ?></td>
-                        <td style="padding: 10px 0; font-size: 12px; font-weight: 600; text-align: right;"><?= format_price($item['order_item_subtotal']) ?></td>
+                        <td style="padding: 10px 8px; font-size: 12px; font-weight: 600; text-align: right;"><?= format_price($item['order_item_subtotal']) ?></td>
                     </tr>
                 <?php endforeach; ?>
             </tbody>
@@ -273,11 +275,13 @@ require_once __DIR__ . '/includes/admin_header.php';
             </div>
             <div style="display: flex; justify-content: space-between; padding: 5px 0; font-size: 12px;">
                 <span><?= translate('delivery_fee') ?></span>
-                <span><?= format_price($order['order_delivery_fee']) ?></span>
+                <span style="color: <?= (float)$order['order_delivery_fee'] > 0 ? '#1d1d1d' : ('#14a549') ?>;">
+                    <?= (float)$order['order_delivery_fee'] > 0 ? format_price((float)$order['order_delivery_fee']) : ('Gratuit') ?>
+                </span>
             </div>
             <div style="display: flex; justify-content: space-between; padding: 10px 0; font-size: 16px; font-weight: 900; border-top: 2px solid #000; margin-top: 5px;">
                 <span><?= translate('total') ?></span>
-                <span style="color: #F68B1E;"><?= format_price($order['order_total']) ?></span>
+                <span style="color: #670d0c;"><?= format_price($order['order_total']) ?></span>
             </div>
         </div>
 
@@ -317,10 +321,10 @@ require_once __DIR__ . '/includes/admin_header.php';
 
         <table style="width: 100%; border-collapse: collapse;">
             <thead>
-                <tr style="background: #1e1e1e; color: #ffffff;">
-                    <th style="padding: 12px 10px; text-align: center; font-size: 14px; font-weight: 900; width: 60px;">QTY</th>
-                    <th style="padding: 12px 10px; text-align: center; font-size: 14px; font-weight: 900; width: 80px;">IMG</th>
-                    <th style="padding: 12px 10px; text-align: left; font-size: 14px; font-weight: 900;"><?= translate('designation') ?></th>
+                <tr style="background: #1a1a1a;">
+                    <th style="padding: 12px 10px; text-align: center; font-size: 14px; font-weight: 900; width: 60px; color: #ffffff;">QTY</th>
+                    <th style="padding: 12px 10px; text-align: center; font-size: 14px; font-weight: 900; width: 80px; color: #ffffff;">IMG</th>
+                    <th style="padding: 12px 10px; text-align: left; font-size: 14px; font-weight: 900; color: #ffffff;"><?= translate('designation') ?></th>
                 </tr>
             </thead>
             <tbody>
@@ -328,7 +332,7 @@ require_once __DIR__ . '/includes/admin_header.php';
                     $img_url = !empty($item['product_image']) ? UPLOAD_URL . $item['product_image'] : UPLOAD_URL . DEFAULT_PRODUCT_IMAGE;
                 ?>
                     <tr style="border-bottom: 2px solid #000;">
-                        <td style="padding: 15px 10px; text-align: center; font-size: 18px; font-weight: 800; background: #f7f7f7; color:#ff8200;">
+                        <td style="padding: 15px 10px; text-align: center; font-size: 18px; font-weight: 800; background: #f7f7f7; color:var(--brand-color);">
                             <?= (float)$item['order_item_quantity'] ?>x
                         </td>
                         <td style="padding: 10px; text-align: center; background: #f7f7f7; width: 80px; height: 80px;">
@@ -347,10 +351,6 @@ require_once __DIR__ . '/includes/admin_header.php';
                 <?php endforeach; ?>
             </tbody>
         </table>
-
-        <div style="margin-top: 30px; padding-top: 20px; text-align: center; font-weight: 900; font-size: 14px; border-top: 3px solid #000; letter-spacing: 2px;">
-            MATJAR EXPRESS ⚡ SAFI
-        </div>
     </div>
 </div>
 

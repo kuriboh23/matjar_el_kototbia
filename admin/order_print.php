@@ -46,7 +46,8 @@ if (!$order) {
     <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
     <style>
         :root {
-            --princeton-orange: #ff8200;
+            --brand-color: #670d0c;
+            --princeton-orange: #FF6C0C;
             --carbon-black: #171711;
             --gray-bg: #f8fafc;
             --gray-border: #e2e8f0;
@@ -309,11 +310,13 @@ if (!$order) {
                 </div>
                 <div class="total-row">
                     <span>Livraison (Safi)</span>
-                    <span><?= format_price($order['order_delivery_fee']) ?></span>
+                    <span style="color: <?= (float)$order['order_delivery_fee'] > 0 ? '#1d1d1d' : ('#14a549') ?>;">
+                    <?= (float)$order['order_delivery_fee'] > 0 ? format_price((float)$order['order_delivery_fee']) : ('Gratuit') ?>
+                </span>
                 </div>
                 <div class="total-row grand-total">
                     <span>TOTAL</span>
-                    <span style="color: var(--princeton-orange);"><?= format_price($order['order_total']) ?></span>
+                    <span style="color: var(--brand-color);"><?= format_price($order['order_total']) ?></span>
                 </div>
             </div>
         </div>
@@ -413,3 +416,4 @@ if (!$order) {
 
 </body>
 </html>
+

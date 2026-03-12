@@ -187,8 +187,8 @@ require_once __DIR__ . '/../includes/header.php';
             </div>
             <div class="hri-summary-line">
                 <span class="text-muted"><?= translate('delivery_fee') ?></span>
-                <span style="color: #10b981;">
-                    <?= (float)$order['order_delivery_fee'] > 0 ? format_price((float)$order['order_delivery_fee']) : (translate('free') ?? 'Gratuit') ?>
+                <span style="color: <?= (float)$order['order_delivery_fee'] > 0 ? '#1d1d1d' : ('#10b981') ?>;">
+                    <?= (float)$order['order_delivery_fee'] > 0 ? format_price((float)$order['order_delivery_fee']) : (translate('free_delivery') ?? 'Gratuit') ?>
                 </span>
             </div>
             <div class="hri-summary-total">
@@ -216,3 +216,4 @@ require_once __DIR__ . '/../includes/header.php';
 <?php
 require_once __DIR__ . '/../includes/footer.php';
 ?>
+

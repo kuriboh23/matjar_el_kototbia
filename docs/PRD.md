@@ -68,12 +68,12 @@ text
 ```
 PRIMARY COLORS:
 ┌─────────────────────────────────────────────────┐
-│  Jumia Orange     : #F68B1E  (Brand Primary)    │
+│  Primary Dark Red : #670d0c  (Brand Primary)    │
 │  Dark UI          : #313133  (Headers/nav)      │
 │  Light Gray BG    : #F5F5F5  (Backgrounds)      │
 │                                                   │
 │  SECONDARY COLORS:                                │
-│  Accent Orange    : #F68B1E  (Buttons/CTA)       │
+│  Accent Primary   : #670d0c  (Buttons/CTA)       │
 │  Accent Red       : #DF3B3B  (Sale/badges)       │
 │                                                   │
 │  NEUTRALS:                                        │
@@ -88,10 +88,10 @@ PRIMARY COLORS:
 └─────────────────────────────────────────────────┘
 
 CSS VARIABLE NAMES (permanent):
---color-primary         : #F68B1E;
+--color-primary         : #670d0c;
 --color-primary-dark    : #313133;
 --color-primary-light   : #F5F5F5;
---color-accent-orange   : #F68B1E;
+--color-accent-brand   : #670d0c;
 --color-accent-red      : #DF3B3B;
 --color-white           : #FFFFFF;
 --color-gray-light      : #F5F5F5;
