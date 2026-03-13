@@ -157,7 +157,7 @@ $current_year = date('Y');
                         <a href="#" class="text-white me-3" title="Instagram" aria-label="Instagram">
                             <i class="bi bi-instagram fs-5"></i>
                         </a>
-                        <a href="https://wa.me/<?php echo preg_replace('/[^0-9]/', '', $store_phone); ?>" class="text-white" title="WhatsApp" aria-label="WhatsApp" target="_blank" rel="noopener">
+                        <a href="https://wa.me/<?php echo preg_replace('/[^0-9]/', '', $store_phone); ?>" class="<?php echo ($current_language === 'ar') ?? 'me-3'?> text-white" title="WhatsApp" aria-label="WhatsApp" target="_blank" rel="noopener">
                             <i class="bi bi-whatsapp fs-5"></i>
                         </a>
                     </div>
