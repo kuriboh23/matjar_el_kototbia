@@ -37,10 +37,10 @@ include_once __DIR__ . '/includes/header.php';
     <!-- Hero Banner -->
     <?php $css_version = get_setting('css_version') ?? '1.0.0'; ?>
     <div class="hri-hero-banner shadow-sm mb-4">
-        <img src="<?php echo SITE_URL; ?>/assets/images/banners/hero_banner.gif?v=<?php echo $css_version; ?>" class="w-100 h-100" style="object-fit: cover;" onerror="this.src='https://placehold.co/800x200/f5f5f5/9e9e9e?text=Matjar+El+Kotobia'">
+        <img src="<?php echo SITE_URL; ?>/assets/images/banners/hero_banner.svg?v=<?php echo $css_version; ?>" class="w-100 h-100" style="object-fit: cover;" onerror="this.src='https://placehold.co/800x200/f5f5f5/9e9e9e?text=Matjar+El+Kotobia'">
         <div class="hri-hero-banner__content">
-            <h5 class="text-white fw-bold mb-0"><?php echo $lang['site_name']; ?></h5>
-            <p class="text-white-50 small mb-0"><?php echo $lang['site_tagline']; ?></p>
+<!--             <h5 class="text-white fw-bold mb-0"><?php echo $lang['site_name']; ?></h5>
+            <p class="text-white-50 small mb-0"><?php echo $lang['site_tagline']; ?></p> -->
         </div>
     </div>
 
