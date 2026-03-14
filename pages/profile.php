@@ -70,7 +70,8 @@ require_once __DIR__ . '/../includes/header.php';
 <div id="hri-profile-page">
     <div class="hri-profile-hero">
         <div class="hri-avatar-container">
-            <?= strtoupper(substr($customer['customer_full_name'], 0, 1)) ?>
+             <!-- <?= strtoupper(substr($customer['customer_full_name'], 0, 1)) ?> -->
+              <i data-lucide="user"></i>
         
         </div>
         <h1 style="margin: 0; font-weight: 900; font-size: 24px;"><?= htmlspecialchars($customer['customer_full_name']) ?></h1>

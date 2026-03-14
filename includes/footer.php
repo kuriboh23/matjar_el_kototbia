@@ -184,5 +184,65 @@ $current_year = date('Y');
             <script src="<?php echo SITE_URL; ?>/assets/js/<?php echo htmlspecialchars($script); ?>?v=<?php echo $asset_version; ?>"></script>
         <?php endforeach; ?>
     <?php endif; ?>
+
+    <!-- Admin Notifications (If logged in as admin) -->
+    <?php if (is_admin_logged_in()): ?>
+    <script>
+        /* Real-time New Order Notifications for Admin */
+        let lastOrderId = 0;
+        const checkInterval = 10000; // 10 seconds
+
+        // Request permission for browser notifications
+        if (Notification.permission !== "granted" && Notification.permission !== "denied") {
+            Notification.requestPermission();
+        }
+
+        async function initLastOrderId() {
+            try {
+                const response = await fetch('<?= SITE_URL ?>/ajax/admin_check_new_orders.php');
+                const data = await response.json();
+                lastOrderId = data.latest_id;
+            } catch (e) { console.error('Notification init error:', e); }
+        }
+
+        async function checkForNewOrders() {
+            if (lastOrderId === 0) return;
+            try {
+                const response = await fetch(`<?= SITE_URL ?>/ajax/admin_check_new_orders.php?last_id=${lastOrderId}`);
+                const data = await response.json();
+                
+                if (data.new_orders && data.new_orders.length > 0) {
+                    data.new_orders.forEach(order => {
+                        showBrowserNotification(order);
+                    });
+                    lastOrderId = data.latest_id;
+                    
+                    // Play notification sound
+                    const audio = new Audio('<?= SITE_URL ?>/assets/sounds/notification.mp3');
+                    audio.play().catch(e => { console.warn('Could not play notification sound:', e); }); 
+                }
+            } catch (e) { console.error('Polling error:', e); }
+        }
+
+        function showBrowserNotification(order) {
+            if (Notification.permission === "granted") {
+                const title = "New Order Notification";
+                const options = {
+                    body: `#${order.order_number} - ${order.order_customer_name} (${order.order_total} DH)`,
+                    icon: '<?= SITE_URL ?>/assets/images/logo/logo.png'
+                };
+                const notification = new Notification(title, options);
+                notification.onclick = function() {
+                    window.focus();
+                    window.location.href = `<?= SITE_URL ?>/admin/order_detail.php?id=${order.order_id}`;
+                };
+            }
+        }
+
+        initLastOrderId().then(() => {
+            setInterval(checkForNewOrders, checkInterval);
+        });
+    </script>
+    <?php endif; ?>
 </body>
 </html>

@@ -152,6 +152,9 @@ $admin_page_title = $admin_page_title ?? 'Dashboard';
         <a href="<?= SITE_URL ?>/admin/index.php" class="nav-link <?= $admin_page_title == 'Tableau de Bord' ? 'active' : '' ?>">
             <i data-lucide="home"></i> <span>Dashboard</span>
         </a>
+        <a href="<?= SITE_URL ?>/admin/analytics.php" class="nav-link <?= strpos($_SERVER['PHP_SELF'], 'analytics') !== false ? 'active' : '' ?>">
+            <i data-lucide="bar-chart-3"></i> <span>Statistiques</span>
+        </a>
         <a href="<?= SITE_URL ?>/admin/orders.php" class="nav-link <?= strpos($_SERVER['PHP_SELF'], 'order') !== false ? 'active' : '' ?>">
             <i data-lucide="shopping-bag"></i> <span>Commandes</span>
         </a>

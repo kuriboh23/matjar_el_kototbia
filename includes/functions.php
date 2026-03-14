@@ -700,6 +700,8 @@ function get_category_by_slug(string $category_slug): ?array
  * @param  int        $customer_id
  * @return array|null
  */
+
+
 function get_customer_by_id(int $customer_id): ?array
 {
     return fetch_one(
@@ -811,6 +813,11 @@ function is_customer_logged_in(): bool
     return !empty($_SESSION[CUSTOMER_SESSION_KEY]);
 }
 
+function get_current_customer_id(): ?int
+{
+    return $_SESSION[CUSTOMER_SESSION_KEY] ?? null;
+}
+
 /**
  * Get today's order count.
  *
@@ -821,7 +828,7 @@ function get_today_orders_count(): int
     $today_start = date('Y-m-d 00:00:00');
     $today_end   = date('Y-m-d 23:59:59');
     return count_rows(
-        "SELECT COUNT(*) FROM hri_order WHERE order_created_at BETWEEN :start AND :end",
+        "SELECT COUNT(*) FROM hri_order WHERE (order_created_at BETWEEN :start AND :end) AND order_status != 'cancelled'",
         [':start' => $today_start, ':end' => $today_end]
     );
 }
@@ -836,7 +843,7 @@ function get_today_revenue(): float
     $today_start = date('Y-m-d 00:00:00');
     $today_end   = date('Y-m-d 23:59:59');
     $row = fetch_one(
-        "SELECT SUM(order_total) as revenue FROM hri_order WHERE order_created_at BETWEEN :start AND :end",
+        "SELECT SUM(order_total) as revenue FROM hri_order WHERE (order_created_at BETWEEN :start AND :end) AND order_status != 'cancelled'",
         [':start' => $today_start, ':end' => $today_end]
     );
     return (float) ($row['revenue'] ?? 0);
@@ -884,14 +891,121 @@ function get_admin_total_customers_count(): int
 }
 
 /**
- * Get the currently logged-in customer's ID.
- *
- * @return int|null  Customer ID or null
+ * Get revenue data for the last X days.
  */
-function get_current_customer_id(): ?int
+function get_revenue_data_daily(int $days = 30): array
 {
-    return $_SESSION[CUSTOMER_SESSION_KEY] ?? null;
+    $data = [];
+    for ($i = $days - 1; $i >= 0; $i--) {
+        $date = date('Y-m-d', strtotime("-$i days"));
+        $row = fetch_one(
+            "SELECT SUM(order_total) as revenue FROM hri_order WHERE DATE(order_created_at) = :date AND order_status != 'cancelled'",
+            [':date' => $date]
+        );
+        $data[$date] = (float)($row['revenue'] ?? 0);
+    }
+    return $data;
 }
+
+/**
+ * Get monthly revenue data for a specific year.
+ */
+function get_revenue_data_monthly(int $year = null): array
+{
+    if (!$year) $year = (int)date('Y');
+    $data = [];
+    for ($m = 1; $m <= 12; $m++) {
+        $month = str_pad($m, 2, '0', STR_PAD_LEFT);
+        $row = fetch_one(
+            "SELECT SUM(order_total) as revenue FROM hri_order WHERE YEAR(order_created_at) = :year AND MONTH(order_created_at) = :month AND order_status != 'cancelled'",
+            [':year' => $year, ':month' => $month]
+        );
+        $month_name = date('M', mktime(0, 0, 0, $m, 1));
+        $data[$month_name] = (float)($row['revenue'] ?? 0);
+    }
+    return $data;
+}
+
+/**
+ * Get yearly revenue data.
+ */
+function get_revenue_data_yearly(): array
+{
+    return fetch_all(
+        "SELECT YEAR(order_created_at) as year, SUM(order_total) as revenue FROM hri_order WHERE order_status != 'cancelled' GROUP BY YEAR(order_created_at) ORDER BY year ASC"
+    );
+}
+
+/**
+ * Get top customers by total spend.
+ */
+function get_top_customers(int $limit = 5): array
+{
+    return fetch_all(
+        "SELECT order_customer_name, order_customer_phone, SUM(order_total) as total_spent, COUNT(*) as order_count 
+         FROM hri_order 
+         WHERE order_status != 'cancelled' 
+         GROUP BY order_customer_phone 
+         ORDER BY total_spent DESC 
+         LIMIT :limit",
+        [':limit' => $limit]
+    );
+}
+
+/**
+ * Get top selling products.
+ */
+function get_top_selling_products(int $limit = 5): array
+{
+    return fetch_all(
+        "SELECT order_item_name_fr, order_item_name_ar, SUM(order_item_quantity) as total_qty, SUM(order_item_subtotal) as total_revenue 
+         FROM hri_order_item 
+         JOIN hri_order ON order_item_order_id = order_id
+         WHERE order_status != 'cancelled'
+         GROUP BY order_item_product_id 
+         ORDER BY total_qty DESC 
+         LIMIT :limit",
+        [':limit' => $limit]
+    );
+}
+
+/**
+ * Get order status distribution.
+ */
+function get_order_status_stats(): array
+{
+    return fetch_all(
+        "SELECT order_status, COUNT(*) as count FROM hri_order GROUP BY order_status"
+    );
+}
+
+/**
+ * Get lifetime revenue.
+ */
+function get_lifetime_revenue(): float
+{
+    $row = fetch_one("SELECT SUM(order_total) as revenue FROM hri_order WHERE order_status != 'cancelled'");
+    return (float)($row['revenue'] ?? 0);
+}
+
+/**
+ * Get average order value.
+ */
+function get_average_order_value(): float
+{
+    $row = fetch_one("SELECT AVG(order_total) as aov FROM hri_order WHERE order_status != 'cancelled'");
+    return (float)($row['aov'] ?? 0);
+}
+
+/**
+ * Get count of active customers (those who have placed at least one order).
+ */
+function get_active_customers_count(): int
+{
+    $row = fetch_one("SELECT COUNT(DISTINCT order_customer_phone) as count FROM hri_order WHERE order_status != 'cancelled'");
+    return (int)($row['count'] ?? 0);
+}
+
 
 /**
  * Log in a customer by setting session variables.

@@ -14,6 +14,11 @@
         let lastOrderId = 0;
         const checkInterval = 10000; // 10 seconds
 
+        // Request permission for browser notifications
+        if (Notification.permission !== "granted" && Notification.permission !== "denied") {
+            Notification.requestPermission();
+        }
+
         async function initLastOrderId() {
             try {
                 const response = await fetch('<?= SITE_URL ?>/ajax/admin_check_new_orders.php');
@@ -31,18 +36,21 @@
                 if (data.new_orders && data.new_orders.length > 0) {
                     data.new_orders.forEach(order => {
                         showOrderNotification(order);
+                        showBrowserNotification(order); // Added for background alerts
                     });
                     lastOrderId = data.latest_id;
                     
-                    // Optional: Play a sound
-                    const audio = new Audio('<?= SITE_URL ?>/assets/ui/notification.mp3');
-                    audio.play().catch(e => {}); 
+                    // Play notification sound
+                    const audio = new Audio('<?= SITE_URL ?>/assets/sounds/notification.mp3');
+                    audio.play().catch(e => { console.warn('Could not play notification sound:', e); }); 
                 }
             } catch (e) { console.error('Polling error:', e); }
         }
 
         function showOrderNotification(order) {
             const container = document.getElementById('hri-notifications-container');
+            if (!container) return; // Guard clause
+
             const notif = document.createElement('div');
             notif.className = 'hri-notification';
             notif.innerHTML = `
@@ -68,6 +76,21 @@
 
             // Auto-remove after 30 seconds
             setTimeout(() => { if (notif.parentElement) notif.remove(); }, 30000);
+        }
+
+        function showBrowserNotification(order) {
+            if (Notification.permission === "granted") {
+                const title = "<?= translate('new_order_notification') ?>";
+                const options = {
+                    body: `#${order.order_number} - ${order.order_customer_name} (${order.order_total} DH)`,
+                    icon: '<?= SITE_URL ?>/assets/images/logo/logo.png'
+                };
+                const notification = new Notification(title, options);
+                notification.onclick = function() {
+                    window.focus();
+                    window.location.href = `<?= SITE_URL ?>/admin/order_detail.php?id=${order.order_id}`;
+                };
+            }
         }
 
         initLastOrderId().then(() => {

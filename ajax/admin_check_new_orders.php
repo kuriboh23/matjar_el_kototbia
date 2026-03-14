@@ -11,9 +11,13 @@ header('Content-Type: application/json');
 $last_id = isset($_GET['last_id']) ? (int)$_GET['last_id'] : 0;
 
 if ($last_id <= 0) {
-    // If no last_id provided, just return the latest order ID as a starting point
+    // Initialization: return current max order ID so we only notify for FUTURE orders
     $latest = fetch_one("SELECT MAX(order_id) as max_id FROM hri_order");
-    echo json_encode(['new_orders' => [], 'latest_id' => (int)($latest['max_id'] ?? 0)]);
+    $latest_id = (int)($latest['max_id'] ?? 0);
+    echo json_encode([
+        'new_orders' => [], 
+        'latest_id' => $latest_id
+    ]);
     exit;
 }
 

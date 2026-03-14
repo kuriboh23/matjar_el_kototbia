@@ -8,6 +8,7 @@
 /* ============================================================
  * CORE SYSTEM SETTINGS (Hardcoded)
  * ============================================================ */
+//define('SITE_URL', 'https://matjarelkotobia.com');   // Change for production
 define('SITE_URL', 'http://localhost/matjar_el_kotobia');   // Change for production
 define('SITE_ROOT', dirname(__DIR__));                    // Absolute path to project root
 
